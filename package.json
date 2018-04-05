@@ -19,10 +19,17 @@
   "homepage": "https://github.com/axelmichael11/poller#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "connect-ensure-login": "^0.1.1",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
+    "express-session": "^1.15.6",
     "morgan": "^1.9.0",
+    "passport": "^0.4.0",
+    "passport-auth0": "^0.6.1",
+    "path": "^0.12.7",
     "pg": "^7.4.1",
     "process": "^0.11.10"
   },
