@@ -5,16 +5,14 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 
-
 //Methods
-// import { storeId } from '../../action/user-id-actions.js'
+import { storeId } from '../../action/user-id-actions.js'
 import { login, logout } from '../../action/auth-actions.js'
 import * as util from '../../lib/util.js'
 //These will be used, to store id of the user in the database...
-// import {
-//   profileUpdate,
-//   profileFetchRequest,
-// } from '../../action/profile-actions.js'
+import {
+  profileFetchRequest,
+} from '../../action/profile-actions.js'
 
 //Style
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
@@ -53,14 +51,15 @@ class LandingContainer extends React.Component {
   }
 
   componentWillMount() {
-    // console.log(this.props.history)
+    console.log(this.props.history)
 
     const options = {
       oidcConformant: true,
+      rememberLastLogin: true,
       auth: {
-        audience: process.env.AUTH0_AUDIENCE,
+        audience: __AUTH0_AUDIENCE__,
         params: {
-          scope: 'openid profile ', //need to research the scope parameter...
+          scope: 'openid profile email', //need to research the scope parameter...
         },
       },
       theme: {
@@ -72,8 +71,8 @@ class LandingContainer extends React.Component {
     }
 
     this.lock = new Auth0Lock(
-        process.env.AUTH0_CLIENT_ID,
-        process.env.AUTH0_CLIENT_DOMAIN,
+        __AUTH0_CLIENT_ID__,
+        __AUTH0_CLIENT_DOMAIN__,
       options
     )
 
@@ -83,13 +82,15 @@ class LandingContainer extends React.Component {
 
     this.lock.on('authenticated', authResult => {
       this.lock.getUserInfo(authResult.accessToken, (err, profile) => {
-        if (err) return new Error('failed to authenticate')
-        // console.log('profile!!!!!!', profile.sub)
-        // this.props.storeId(profile.sub)
-        // this.props.login(authResult.accessToken)
-        // this.props.profileFetch()
-        // localStorage.setItem('loggedIn', true)
-        // localStorage.setItem('userInfo', JSON.stringify(profile))
+        if (err) return new Error('failed to authenticate');
+
+        console.log('profile', profile, authResult)
+        this.props.storeId(profile.sub)
+        this.props.login(authResult.accessToken)
+        console.log('this.props',this.props);
+        this.props.profileFetch()
+        localStorage.setItem('loggedIn', true)
+        localStorage.setItem('userInfo', JSON.stringify(profile))
         // this.state.signUp
         //   ? this.props.history.push('/settings')
         //   : this.props.history.push('/dashboard')
@@ -126,34 +127,14 @@ class LandingContainer extends React.Component {
               fontWeight: '800',
             }}
             iconElementLeft={
-              <IconMenu
-                iconButtonElement={
-                  <IconButton
-                    iconStyle={{ fill: 'white' }}
-                    style={{ padding: '0px' }}
-                  >
                     <FontAwesome
-        className="bar-chart"
-        name="bar-chart"
-        size="2x"
-        style={{ textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)' }}
-      />
-                  </IconButton>
-                }
-              >
-                <MenuItem
-                  primaryText="Home"
-                  containerElement={<Link to="/" />}
-                />
-              </IconMenu>
+                        className="bar-chart"
+                        name="bar-chart"
+                        size="2x"
+                        style={{ textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)' }}
+                    />
             }
-            iconElementRight={
-              <RaisedButton
-                onClick={this.state.loggedIn ? this.logout : this.showLock}
-                label={this.state.loggedIn ? 'Logout' : 'Login'}
-                style={{ marginTop: '4px', marginRight: '10px' }}
-              />
-            }
+                
           />
         </MuiThemeProvider>
         <div>
@@ -174,9 +155,9 @@ export const mapStateToProps = state => ({})
 
 export const mapDispatchToProps = dispatch => ({
 //   logout: () => dispatch(logout()),
-//   storeId: id => dispatch(storeId(id)),
-//   login: token => dispatch(login(token)),
-//   profileFetch: () => dispatch(profileFetchRequest()),
+  storeId: id => dispatch(storeId(id)),
+  login: token => dispatch(login(token)),
+  profileFetch: () => dispatch(profileFetchRequest()),
 //   profileUpdate: profile => dispatch(profileUpdate(profile)),
 })
 
