@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 
-
 //Methods
 // import { storeId } from '../../action/user-id-actions.js'
 import { login, logout } from '../../action/auth-actions.js'
@@ -58,7 +57,7 @@ class LandingContainer extends React.Component {
     const options = {
       oidcConformant: true,
       auth: {
-        audience: process.env.AUTH0_AUDIENCE,
+        audience: __AUTH0_AUDIENCE__,
         params: {
           scope: 'openid profile ', //need to research the scope parameter...
         },
@@ -72,8 +71,8 @@ class LandingContainer extends React.Component {
     }
 
     this.lock = new Auth0Lock(
-        process.env.AUTH0_CLIENT_ID,
-        process.env.AUTH0_CLIENT_DOMAIN,
+        __AUTH0_CLIENT_ID__,
+        __AUTH0_CLIENT_DOMAIN__,
       options
     )
 
@@ -86,7 +85,7 @@ class LandingContainer extends React.Component {
         if (err) return new Error('failed to authenticate')
         // console.log('profile!!!!!!', profile.sub)
         // this.props.storeId(profile.sub)
-        // this.props.login(authResult.accessToken)
+        this.props.login(authResult.accessToken)
         // this.props.profileFetch()
         // localStorage.setItem('loggedIn', true)
         // localStorage.setItem('userInfo', JSON.stringify(profile))
@@ -126,34 +125,14 @@ class LandingContainer extends React.Component {
               fontWeight: '800',
             }}
             iconElementLeft={
-              <IconMenu
-                iconButtonElement={
-                  <IconButton
-                    iconStyle={{ fill: 'white' }}
-                    style={{ padding: '0px' }}
-                  >
                     <FontAwesome
-        className="bar-chart"
-        name="bar-chart"
-        size="2x"
-        style={{ textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)' }}
-      />
-                  </IconButton>
-                }
-              >
-                <MenuItem
-                  primaryText="Home"
-                  containerElement={<Link to="/" />}
-                />
-              </IconMenu>
+                        className="bar-chart"
+                        name="bar-chart"
+                        size="2x"
+                        style={{ textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)' }}
+                    />
             }
-            iconElementRight={
-              <RaisedButton
-                onClick={this.state.loggedIn ? this.logout : this.showLock}
-                label={this.state.loggedIn ? 'Logout' : 'Login'}
-                style={{ marginTop: '4px', marginRight: '10px' }}
-              />
-            }
+                
           />
         </MuiThemeProvider>
         <div>

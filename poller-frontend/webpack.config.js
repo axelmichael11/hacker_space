@@ -36,9 +36,8 @@ module.exports = {
   },
   devtool: production ? undefined : 'cheap-module-eval-source-map',
   output: {
-    path: path.resolve(`${__dirname}/build`),
+    path: path.resolve(__dirname,'build'),
     filename: 'bundle-[hash].js',
-    publicPath: '/',
   },
   module: {
     rules: [
@@ -51,6 +50,7 @@ module.exports = {
         test: /\.scss$/,
         loader: ExtractPlugin.extract({
           use: [
+              'style-loader',
             'css-loader',
             'resolve-url-loader',
             {
