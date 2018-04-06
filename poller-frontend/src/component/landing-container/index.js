@@ -6,14 +6,13 @@ import { Link } from 'react-router-dom'
 
 
 //Methods
-// import { storeId } from '../../action/user-id-actions.js'
+import { storeId } from '../../action/user-id-actions.js'
 import { login, logout } from '../../action/auth-actions.js'
 import * as util from '../../lib/util.js'
 //These will be used, to store id of the user in the database...
-// import {
-//   profileUpdate,
-//   profileFetchRequest,
-// } from '../../action/profile-actions.js'
+import {
+  profileFetchRequest,
+} from '../../action/profile-actions.js'
 
 //Style
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
@@ -52,14 +51,15 @@ class LandingContainer extends React.Component {
   }
 
   componentWillMount() {
-    // console.log(this.props.history)
+    console.log(this.props.history)
 
     const options = {
       oidcConformant: true,
+      rememberLastLogin: true,
       auth: {
         audience: __AUTH0_AUDIENCE__,
         params: {
-          scope: 'openid profile ', //need to research the scope parameter...
+          scope: 'openid profile email', //need to research the scope parameter...
         },
       },
       theme: {
@@ -82,13 +82,15 @@ class LandingContainer extends React.Component {
 
     this.lock.on('authenticated', authResult => {
       this.lock.getUserInfo(authResult.accessToken, (err, profile) => {
-        if (err) return new Error('failed to authenticate')
-        // console.log('profile!!!!!!', profile.sub)
-        // this.props.storeId(profile.sub)
+        if (err) return new Error('failed to authenticate');
+
+        console.log('profile', profile, authResult)
+        this.props.storeId(profile.sub)
         this.props.login(authResult.accessToken)
-        // this.props.profileFetch()
-        // localStorage.setItem('loggedIn', true)
-        // localStorage.setItem('userInfo', JSON.stringify(profile))
+        console.log('this.props',this.props);
+        this.props.profileFetch()
+        localStorage.setItem('loggedIn', true)
+        localStorage.setItem('userInfo', JSON.stringify(profile))
         // this.state.signUp
         //   ? this.props.history.push('/settings')
         //   : this.props.history.push('/dashboard')
@@ -153,9 +155,9 @@ export const mapStateToProps = state => ({})
 
 export const mapDispatchToProps = dispatch => ({
 //   logout: () => dispatch(logout()),
-//   storeId: id => dispatch(storeId(id)),
-//   login: token => dispatch(login(token)),
-//   profileFetch: () => dispatch(profileFetchRequest()),
+  storeId: id => dispatch(storeId(id)),
+  login: token => dispatch(login(token)),
+  profileFetch: () => dispatch(profileFetchRequest()),
 //   profileUpdate: profile => dispatch(profileUpdate(profile)),
 })
 
