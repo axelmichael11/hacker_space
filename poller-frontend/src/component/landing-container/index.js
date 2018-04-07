@@ -11,7 +11,8 @@ import { login, logout } from '../../action/auth-actions.js'
 import * as util from '../../lib/util.js'
 //These will be used, to store id of the user in the database...
 import {
-  profileFetchRequest,
+    profileCreateRequest,
+    checkProfileExist,
 } from '../../action/profile-actions.js'
 
 //Style
@@ -88,12 +89,12 @@ class LandingContainer extends React.Component {
         this.props.storeId(profile.sub)
         this.props.login(authResult.accessToken)
         console.log('this.props',this.props);
-        this.props.profileFetch()
+        this.props.checkForProfile(profile.sub);
         localStorage.setItem('loggedIn', true)
         localStorage.setItem('userInfo', JSON.stringify(profile))
-        // this.state.signUp
-        //   ? this.props.history.push('/settings')
-        //   : this.props.history.push('/dashboard')
+        this.props.profile
+          ? this.props.history.push('/settings')
+          : this.props.history.push('/dashboard')
       })
     })
   }
@@ -103,13 +104,13 @@ class LandingContainer extends React.Component {
   }
 
   logout() {
-    // localStorage.removeItem('loggedIn')
+    localStorage.removeItem('loggedIn')
     localStorage.removeItem('poller_token')
-    // localStorage.removeItem('reduxPersist:auth')
+    localStorage.removeItem('reduxPersist:auth')
     //might need these later... need to research redux persist
-    // localStorage.removeItem('reduxPersist:userId')
-    // localStorage.removeItem('reduxPersist:profile')
-    // localStorage.removeItem('reduxPersist:listings')
+    localStorage.removeItem('reduxPersist:userId')
+    localStorage.removeItem('reduxPersist:profile')
+    localStorage.removeItem('reduxPersist:userInfo')
     this.lock.logout()
   }
 
@@ -155,9 +156,10 @@ export const mapStateToProps = state => ({})
 
 export const mapDispatchToProps = dispatch => ({
 //   logout: () => dispatch(logout()),
+checkForProfile: id => dispatch(checkProfileExist(id)),
   storeId: id => dispatch(storeId(id)),
   login: token => dispatch(login(token)),
-  profileFetch: () => dispatch(profileFetchRequest()),
+  profileCreate: () => dispatch(profileCreateRequest()),
 //   profileUpdate: profile => dispatch(profileUpdate(profile)),
 })
 
