@@ -130,6 +130,22 @@ const state = {
     })
   }
   
+
+  server.stop = () => {
+    return new Promise((resolve, reject) => {
+      if (!state.isOn) return reject(new Error('USAGE ERROR: the state is off'))
+      return client.end()
+        .then(() => {
+          state.http.close(() => {
+            console.log('__SERVER_DOWN__')
+            state.isOn = false
+            state.http = null
+            resolve()
+          })
+        })
+        .catch(reject)
+    })
+  }
   
   
   module.exports = server;
