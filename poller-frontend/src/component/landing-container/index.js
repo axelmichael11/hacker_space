@@ -12,21 +12,32 @@ import * as util from '../../lib/util.js'
 //These will be used, to store id of the user in the database...
 import {
     profileCreateRequest,
-    checkProfileExist,
+    checkProfileExists,
 } from '../../action/profile-actions.js'
+
+
+import LoggedInMenu from '../menu/loggedin-menu'
+
 
 //Style
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import RaisedButton from 'material-ui/RaisedButton'
-import IconMenu from 'material-ui/IconMenu'
+
 import AppBar from 'material-ui/AppBar'
-import MenuItem from 'material-ui/MenuItem'
-import IconButton from 'material-ui/IconButton'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import Avatar from 'material-ui/Avatar'
-import Paper from 'material-ui/Paper'
+
+
+
+
 import FlatButton from 'material-ui/FlatButton'
 import FontAwesome from 'react-fontawesome' 
+
+import DropDownMenu from 'material-ui/DropDownMenu';
+import MenuItem from 'material-ui/MenuItem';
+import IconMenu from 'material-ui/IconMenu';
+import IconButton from 'material-ui/IconButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import ContentFilter from 'material-ui/svg-icons/content/filter-list';
+import FileFileDownload from 'material-ui/svg-icons/file/file-download';
 
 import {
   Card,
@@ -36,8 +47,6 @@ import {
   CardTitle,
   CardText,
 } from 'material-ui/Card'
-import Dialog from 'material-ui/Dialog'
-import { GridList, GridTile } from 'material-ui/GridList'
 
 class LandingContainer extends React.Component {
   constructor(props) {
@@ -46,9 +55,12 @@ class LandingContainer extends React.Component {
       signUp: false,
       landing: true,
       loggedIn: localStorage.loggedIn ? true : false,
+      openMenu: false,
     }
     this.logout = this.logout.bind(this)
     this.showLock = this.showLock.bind(this)
+    this.handleOpenMenu = this.handleOpenMenu.bind(this)
+    this.handleOnRequestChange = this.handleOnRequestChange.bind(this)
   }
 
   componentWillMount() {
@@ -89,9 +101,10 @@ class LandingContainer extends React.Component {
         this.props.storeId(profile.sub)
         this.props.login(authResult.accessToken)
         console.log('this.props',this.props);
-        this.props.checkForProfile(profile.sub);
         localStorage.setItem('loggedIn', true)
         localStorage.setItem('userInfo', JSON.stringify(profile))
+
+
         this.props.profile
           ? this.props.history.push('/settings')
           : this.props.history.push('/dashboard')
@@ -104,6 +117,7 @@ class LandingContainer extends React.Component {
   }
 
   logout() {
+    console.log('LOGGING OUT')
     localStorage.removeItem('loggedIn')
     localStorage.removeItem('poller_token')
     localStorage.removeItem('reduxPersist:auth')
@@ -114,7 +128,21 @@ class LandingContainer extends React.Component {
     this.lock.logout()
   }
 
+  handleOpenMenu(){
+    this.setState({
+      openMenu: true,
+    });
+  }
+
+  handleOnRequestChange(value){
+
+    this.setState({
+      openMenu: value,
+    });
+  }
+
   render() {
+    console.log('this.STATE', this.state)
     return (
       <div className="login-box">
         <MuiThemeProvider>
@@ -127,26 +155,27 @@ class LandingContainer extends React.Component {
               letterSpacing: '.2em',
               fontWeight: '800',
             }}
-            iconElementLeft={
-                    <FontAwesome
-                        className="bar-chart"
-                        name="bar-chart"
-                        size="2x"
-                        style={{ textShadow: '0 1px 0 rgba(0, 0, 0, 0.1)' }}
-                    />
+            iconElementRight={
+              this.state.loggedIn ?
+              <LoggedInMenu logout={this.logout}/> :
+              <p> not logged in </p>
             }
-                
           />
         </MuiThemeProvider>
         <div>
-          <MuiThemeProvider>
+         { 
+         util.renderIf(
+           !this.loggedIn,
+           <MuiThemeProvider>
           <RaisedButton
                 onClick={this.state.loggedIn ? this.logout : this.showLock}
                 label={this.state.loggedIn ? 'Logout' : 'Login'}
                 style={{ marginTop: '4px', marginRight: '10px' }}
               />
-        </MuiThemeProvider>
-        </div>
+          </MuiThemeProvider>
+         )
+        }
+      </div>
       </div>
     )
   }
@@ -156,7 +185,7 @@ export const mapStateToProps = state => ({})
 
 export const mapDispatchToProps = dispatch => ({
 //   logout: () => dispatch(logout()),
-checkForProfile: id => dispatch(checkProfileExist(id)),
+  checkProfileExists: id => dispatch(checkProfileExists(id)),
   storeId: id => dispatch(storeId(id)),
   login: token => dispatch(login(token)),
   profileCreate: () => dispatch(profileCreateRequest()),

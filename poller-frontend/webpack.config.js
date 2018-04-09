@@ -3,10 +3,9 @@
 require('dotenv').config();
 const path = require('path');
 
-console.log('this is the production environment', process.env.NODE_ENV)
 const production = process.env.NODE_ENV === 'production'
 
-const { DefinePlugin,HotModuleReplacementPlugin, EnvironmentPlugin } = require('webpack')
+const { DefinePlugin, EnvironmentPlugin } = require('webpack')
 const HTMLPlugin = require('html-webpack-plugin')
 const CleanPlugin = require('clean-webpack-plugin')
 const UglifyPlugin = require('uglifyjs-webpack-plugin')
@@ -28,7 +27,12 @@ let plugins = [
 if (production)
   plugins = plugins.concat([new CleanPlugin(), new UglifyPlugin()])
 
+
+  
+console.log('this is the production environment!!!!', process.env.NODE_ENV)
+
 module.exports = {
+  mode:'production',
   plugins,
   entry: `${__dirname}/src/main.js`,
   devServer: {

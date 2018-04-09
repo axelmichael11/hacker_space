@@ -22,7 +22,7 @@ export const profileCreateRequest = (profile) => (dispatch, getState) => {
   }
 
 
-  export const checkProfileExist = (sub) => (dispatch, getState) => {
+  export const checkProfileExists = (sub) => (dispatch, getState) => {
     let { authReducer } = getState()
     console.log('this is the token', authReducer)
     return superagent
