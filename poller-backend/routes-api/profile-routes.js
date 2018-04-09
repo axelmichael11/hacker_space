@@ -19,14 +19,19 @@ const profile = require('../lib/profile-methods');
     })
 
     app.get('/api/user', checkJwt, function(req, res) {
+      console.log('this is the req', req.body);
+
       let id = profile.idHashCreate(req.body.sub)
 
-      client.query(`select exists (select 1 from ${env.users} where id=${id});`,[id],
+      client.query(`SELECT exists (SELECT 1 FROM poller_data WHERE id=$1 LIMIT 1);`,[id],
       function(err, result) {
-        if (err) console.error(err)
-        res.send(result)
+        if (err) console.error('this is the ERROR!!!',err)
+        if (result ='t') {
+          res.send('true')
+        } else {
+          res.send('false')
+        }
       })
-
     })
 
       // client.query(`INSERT INTO ${process.env.userTable}(email) VALUES($1)`,
