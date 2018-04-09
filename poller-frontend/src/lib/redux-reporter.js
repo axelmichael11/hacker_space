@@ -8,7 +8,7 @@ export default store => next => action => {
     return result
   } catch (err) {
     err.action = action
-    util.logError('__ERROR__', err)
+    console.log('__ERROR__', err)
     return action
   }
 }

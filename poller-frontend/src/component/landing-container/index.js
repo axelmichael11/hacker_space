@@ -106,8 +106,8 @@ class LandingContainer extends React.Component {
 
 
         this.props.profile
-          ? this.props.history.push('/settings')
-          : this.props.history.push('/dashboard')
+          ? this.props.history.push('/dashboard')
+          : this.props.history.push('/settings')
       })
     })
   }
@@ -142,7 +142,7 @@ class LandingContainer extends React.Component {
   }
 
   render() {
-    console.log('this.STATE', this.state)
+    console.log('LANDING CONTAINER', this.state, this.props)
     return (
       <div className="login-box">
         <MuiThemeProvider>
@@ -162,20 +162,14 @@ class LandingContainer extends React.Component {
             }
           />
         </MuiThemeProvider>
-        <div>
-         { 
-         util.renderIf(
-           !this.loggedIn,
-           <MuiThemeProvider>
-          <RaisedButton
-                onClick={this.state.loggedIn ? this.logout : this.showLock}
-                label={this.state.loggedIn ? 'Logout' : 'Login'}
-                style={{ marginTop: '4px', marginRight: '10px' }}
-              />
-          </MuiThemeProvider>
-         )
-        }
-      </div>
+        <MuiThemeProvider>
+          {util.renderIf(!this.state.loggedIn,
+           <RaisedButton
+            onClick={this.showLock}
+            label={'Login'}
+            style={{ marginTop: '4px', marginRight: '10px' }}
+          />)}
+        </MuiThemeProvider>
       </div>
     )
   }

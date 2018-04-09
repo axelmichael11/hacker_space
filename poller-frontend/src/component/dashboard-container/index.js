@@ -1,6 +1,6 @@
 
 import React from 'react'
-import LandingContainer from '../landing-container'
+// import LandingContainer from '../landing-container'
 
 class DashboardContainer extends React.Component {
   constructor(props) {
@@ -11,7 +11,7 @@ class DashboardContainer extends React.Component {
   render() {
     return (
       <div>
-        <LandingContainer />
+        <p> DASHBOARD </p>
       </div>
     )
   }

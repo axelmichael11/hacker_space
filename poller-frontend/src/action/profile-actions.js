@@ -1,13 +1,15 @@
 const superagent = require('superagent');
 
 
-export const profileCreateRequest = (profile) => (dispatch, getState) => {
-    let { authReducer } = getState()
-    console.log('this is the token', authReducer)
+export const profileRetrieval = (profile) => (dispatch, getState) => {
+    let { puller_token, id } = getState()
+    console.log('this is the token', puller_token)
     return superagent
       .post(`http://localhost:3000/api/usercreate`)
-      .set('Authorization', `Bearer ${authReducer}`)
-      .send(profile)
+      .set('Authorization', `Bearer ${puller_token}`)
+      .send({
+        'id':id
+      })
       .then(res => {
         try {
           let parsed = JSON.parse(res.text)
@@ -22,13 +24,13 @@ export const profileCreateRequest = (profile) => (dispatch, getState) => {
   }
 
 
-  export const checkProfileExists = (sub) => (dispatch, getState) => {
-    let { authReducer } = getState()
-    console.log('this is the token', authReducer)
+  export const checkProfileExists = () => (dispatch, getState) => {
+    let { poller_token, userId } = getState()
+    console.log('this is the token', poller_token)
     return superagent
       .get(`http://localhost:3000/api/user`)
-      .set('Authorization', `Bearer ${authReducer}`)
-      .send(sub)
+      .set('Authorization', `Bearer ${poller_token}`)
+      .send({'id':userId})
       .then(res => {
           console.log('this is the response from database', res.body)
           if (res.body === null){

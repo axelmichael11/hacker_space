@@ -1,21 +1,31 @@
 import React from 'react'
 import { connect } from 'react-redux'
-// import { profileUpdateRequest } from '../../action/profile-actions.js'
+import { checkProfileExists } from '../../action/profile-actions.js'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
+import FontAwesome from 'react-fontawesome' 
 
+
+import Pets from 'material-ui/svg-icons/action/pets'
+import TextField from 'material-ui/TextField'
+import Checkbox from 'material-ui/Checkbox'
+import Paper from 'material-ui/Paper'
+import Divider from 'material-ui/Divider'
+import TimePicker from 'material-ui/TimePicker'
 import RaisedButton from 'material-ui/RaisedButton'
 import LandingContainer from '../landing-container'
 import * as util from '../../lib/util.js'
-
+import uuid from 'uuid/v1'
 import Avatar from 'material-ui/Avatar'
-
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton'
 class ProfileSettings extends React.Component {
   constructor(props) {
     super(props)
     this.state = props.profile
-      ? { ...props.profile }
+      ? { ...props.profile, openProfileAlert:false }
       : {
+        openProfileAlert: false,
         username: '',
         age:'',
         profession: '',
@@ -26,20 +36,30 @@ class ProfileSettings extends React.Component {
       }
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleOpenCreateProfileAlert = this.handleOpenCreateProfileAlert.bind(this)
   }
 
   componentWillMount() {
-    if (this.props.profile) this.setState(this.props.profile)
+    this.props.checkProfileExists()
+    if (this.props.profile) {
+      this.setState(this.props.profile)
+    } else {
+      this.handleOpenCreateProfileAlert()
+    }
     if (!this.props.avatar) {
       console.log('will mount avatar', this.props.avatar)
       try {
         let userInfo = JSON.parse(localStorage.getItem('userInfo'))
         this.setState({ preview: userInfo.picture })
       } catch (err) {
-        util.logError(err)
+        console.log(err)
       }
     }
   }
+  handleOpenCreateProfileAlert(){
+    this.setState({openProfileAlert: !this.state.openProfileAlert});
+  };
+
 
   handleChange(e) {
     let { value, name, files } = e.target
@@ -61,11 +81,24 @@ class ProfileSettings extends React.Component {
     const formStyle = {
       marginLeft: 20,
     }
-    console.log(this.state)
+    console.log('profile SETINGS',this.state, this.props)
     return (
       <div className="profile-form">
         <LandingContainer avatar={this.state.preview} />
         <MuiThemeProvider>
+          <Dialog
+              title="Welcome to Poller!"
+              actions={<FlatButton
+                label="OK"
+                primary={true}
+                onClick={this.handleOpenCreateProfileAlert}
+              />}
+              modal={false}
+              open={this.state.openProfileAlert}
+              onRequestClose={this.handleOpenCreateProfileAlert}
+            >
+              Welcome to Poller! We didn't find a profile for you... Before you get started you have to fill out a profile!
+          </Dialog>
           <Paper zDepth={2}>
             <form onSubmit={this.handleSubmit}>
               <Avatar
@@ -139,39 +172,7 @@ class ProfileSettings extends React.Component {
                 hintText="Occupation"
               />
               <Divider />
-              <Checkbox
-                checkedIcon={<Smoke />}
-                uncheckedIcon={<SmokeFree style={{ fill: 'red' }} />}
-                value={this.state.smoke}
-                onChange={this.handleChange}
-                iconStyle={{ fill: 'black' }}
-                style={{ margin: 20, float: 'left' }}
-                label="Smoker"
-                labelStyle={{ opacity: '.3' }}
-              />
-              <Checkbox
-                checkedIcon={<Pets />}
-                uncheckedIcon={<Pets style={{ fill: 'red ' }} />}
-                value={this.state.smoke}
-                onChange={this.handleChange}
-                iconStyle={{ fill: 'black' }}
-                style={{ margin: 20 }}
-                label="Pets"
-                labelStyle={{ opacity: '.3' }}
-              />
-              <Divider />
-              <TimePicker
-                hintText="Regular Hours"
-                style={formStyle}
-                dialogStyle={{
-                  backgroundColor: '#3AB08F',
-                }}
-                dialogBodyStyle={{
-                  color: 'black',
-                }}
-                underlineShow={false}
-              />
-              <Divider />
+      
 
               <RaisedButton
                 style={{ margin: 20 }}
@@ -187,11 +188,10 @@ class ProfileSettings extends React.Component {
 }
 
 export const mapStateToProps = state => ({
-  profile: state.profile,
 })
 
 export const mapDispatchToProps = dispatch => ({
-  profileUpdate: profile => dispatch(profileUpdateRequest(profile)),
+  checkProfileExists: id => dispatch(checkProfileExists(id)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileSettings)

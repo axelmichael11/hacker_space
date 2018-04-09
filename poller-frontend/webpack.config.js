@@ -29,7 +29,7 @@ if (production)
 
 
   
-console.log('this is the production environment!!!!', process.env.NODE_ENV)
+// console.log('this is the debug!!!!', __DEBUG__)
 
 module.exports = {
   mode:'production',
