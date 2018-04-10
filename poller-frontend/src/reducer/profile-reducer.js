@@ -1,6 +1,6 @@
 export default (state= {}, {type, payload}) => {
     switch(type){
-        case "profile":
+        case "AUTHPROFILE":
             return payload
         default:
             return state

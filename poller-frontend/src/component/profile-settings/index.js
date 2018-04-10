@@ -40,7 +40,6 @@ class ProfileSettings extends React.Component {
   }
 
   componentWillMount() {
-    this.props.checkProfileExists()
     if (this.props.profile) {
       this.setState(this.props.profile)
     } else {
@@ -191,7 +190,6 @@ export const mapStateToProps = state => ({
 })
 
 export const mapDispatchToProps = dispatch => ({
-  checkProfileExists: id => dispatch(checkProfileExists(id)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileSettings)
