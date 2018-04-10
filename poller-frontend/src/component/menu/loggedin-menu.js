@@ -52,6 +52,8 @@ class LoggedInMenu extends React.Component{
         });
       }
       handleOnItemChange(value){
+        // if (value = 2) this.props.history.push('/explore')
+        // if (value = 3) this.props.history.push('/settings')
         if (value = 4) this.props.logout()
       }
     
@@ -73,7 +75,7 @@ class LoggedInMenu extends React.Component{
               >
                 <MenuItem value="1" primaryText="Home" />
                 <MenuItem value="2" primaryText="Explore" />
-                <MenuItem value="3" primaryText="Post" />
+                <MenuItem value="3" primaryText="Settings" />
                 <MenuItem value="4" primaryText="Logout" />
               </IconMenu>
               </div>

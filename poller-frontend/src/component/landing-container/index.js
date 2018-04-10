@@ -11,8 +11,9 @@ import { login, logout } from '../../action/auth-actions.js'
 import * as util from '../../lib/util.js'
 //These will be used, to store id of the user in the database...
 import {
+  profileCreate,
     profileCreateRequest,
-    checkProfileExists,
+    setProfile,
 } from '../../action/profile-actions.js'
 
 
@@ -38,6 +39,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import ContentFilter from 'material-ui/svg-icons/content/filter-list';
 import FileFileDownload from 'material-ui/svg-icons/file/file-download';
+
 
 import {
   Card,
@@ -98,16 +100,17 @@ class LandingContainer extends React.Component {
         if (err) return new Error('failed to authenticate');
 
         console.log('profile', profile, authResult)
+        this.props.setProfile(profile)
         this.props.storeId(profile.sub)
         this.props.login(authResult.accessToken)
         console.log('this.props',this.props);
-        localStorage.setItem('loggedIn', true)
+        localStorage.setItem('loggedIn', true);
         localStorage.setItem('userInfo', JSON.stringify(profile))
-
+        this.props.profileCreate();
 
         this.props.profile
-          ? this.props.history.push('/settings')
-          : this.props.history.push('/dashboard')
+          ? this.props.history.push('/dashboard')
+          : this.props.history.push('/settings')
       })
     })
   }
@@ -142,7 +145,7 @@ class LandingContainer extends React.Component {
   }
 
   render() {
-    console.log('this.STATE', this.state)
+    console.log('LANDING CONTAINER', this.state, this.props)
     return (
       <div className="login-box">
         <MuiThemeProvider>
@@ -162,20 +165,16 @@ class LandingContainer extends React.Component {
             }
           />
         </MuiThemeProvider>
-        <div>
-         { 
-         util.renderIf(
-           !this.loggedIn,
-           <MuiThemeProvider>
-          <RaisedButton
-                onClick={this.state.loggedIn ? this.logout : this.showLock}
-                label={this.state.loggedIn ? 'Logout' : 'Login'}
-                style={{ marginTop: '4px', marginRight: '10px' }}
-              />
-          </MuiThemeProvider>
-         )
-        }
-      </div>
+        <MuiThemeProvider>
+          {!this.state.loggedIn ?
+           <RaisedButton
+            onClick={this.showLock}
+            label={'Login'}
+            style={{ marginTop: '4px', marginRight: '10px' }}
+          /> :
+          null
+          }
+        </MuiThemeProvider>
       </div>
     )
   }
@@ -184,11 +183,10 @@ class LandingContainer extends React.Component {
 export const mapStateToProps = state => ({})
 
 export const mapDispatchToProps = dispatch => ({
-//   logout: () => dispatch(logout()),
-  checkProfileExists: id => dispatch(checkProfileExists(id)),
+  setProfile: (profile) => dispatch(setProfile(profile)),
   storeId: id => dispatch(storeId(id)),
   login: token => dispatch(login(token)),
-  profileCreate: () => dispatch(profileCreateRequest()),
+  profileCreate: () => dispatch(profileCreate()),
 //   profileUpdate: profile => dispatch(profileUpdate(profile)),
 })
 

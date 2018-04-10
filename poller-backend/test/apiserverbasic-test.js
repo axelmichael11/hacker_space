@@ -13,10 +13,10 @@ describe('testing listing router', () => {
   after(server.stop)
   // afterEach(cleanDB);
 
-  it('this is api get request to put a profile in the database..', () => {
+  it('this is api get request to check for a profile in the database..', () => {
       console.log('this is the token', process.env.API_TOKEN)
       console.log('this is the apiurl', process.env.API_URL)
-    return superagent.post(`${API_URL}/api/usercreate`)
+    return superagent.get(`${API_URL}/api/user:id`)
     .set('Authorization',`Bearer ${API_TOKEN}`)
     // .send({
     //     userName: 'maxelson11',
@@ -30,10 +30,10 @@ describe('testing listing router', () => {
     // })
     .then(res => {
         console.log('this is the response!!', res)
-        //   let parsed = JSON.parse(res.text)
-        //   dispatch(profileFetch(parsed.user_metadata.profile))
-        console.log('res.body',res.body)
+          let parsed = JSON.parse(res.text)
+        console.log('res.body',res.body, parsed)
         expect(res.body).toExist();
+        done();
       })
       .catch(err => console.log('something wrong with this authorization im assuiming',err))
 
