@@ -19,9 +19,13 @@ profile.idHashCreate = function(id){
 }
 
 profile.createUser = function(data){
-    let id = data.sub;
-    delete data.sub;
+    let id = data.id;
+    delete data.id;
     return userProfileValidate(data).idHashCreate(id)
+}
+
+profile.createUserId = function(authId){
+    
 }
 
 module.exports = profile;
