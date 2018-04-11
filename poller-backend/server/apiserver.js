@@ -90,16 +90,16 @@ app.use(function(req, res, next) {
     next(err);
   });
 
-  // Handle auth failure error messages
-app.use(function(req, res, next) {
-    if (req && req.query && req.query.error) {
-      req.flash("error", req.query.error);
-    }
-    if (req && req.query && req.query.error_description) {
-      req.flash("error_description", req.query.error_description);
-    }
-    next();
-   });
+//   // Handle auth failure error messages
+// app.use(function(req, res, next) {
+//     if (req && req.query && req.query.error) {
+//       req.flash("error", req.query.error);
+//     }
+//     if (req && req.query && req.query.error_description) {
+//       req.flash("error_description", req.query.error_description);
+//     }
+//     next();
+//    });
 
 
 const state = {
