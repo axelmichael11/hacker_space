@@ -6,14 +6,15 @@ import { Link } from 'react-router-dom'
 
 
 //Methods
-import { storeId } from '../../action/user-id-actions.js'
+import { storeUserProfile } from '../../action/user-profile-actions.js'
+import { setAuth0Profile } from '../../action/auth0-actions.js'
 import { login, logout } from '../../action/auth-actions.js'
+
 import * as util from '../../lib/util.js'
 //These will be used, to store id of the user in the database...
 import {
   profileCreate,
-    profileCreateRequest,
-    setProfile,
+    profileFetch,
 } from '../../action/profile-actions.js'
 
 
@@ -69,12 +70,12 @@ class LandingContainer extends React.Component {
     console.log(this.props.history)
 
     const options = {
-      oidcConformant: true,
+      // oidcConformant: true,
       rememberLastLogin: true,
       auth: {
         audience: __AUTH0_AUDIENCE__,
         params: {
-          scope: 'openid profile email', //need to research the scope parameter...
+          scope: 'openid profile user_metadata email read:clients write:clients update:users_app_metadata update:users update:current_user_metadata', //need to research the scope parameter...
         },
       },
       theme: {
@@ -98,21 +99,40 @@ class LandingContainer extends React.Component {
     this.lock.on('authenticated', authResult => {
       this.lock.getUserInfo(authResult.accessToken, (err, profile) => {
         if (err) return new Error('failed to authenticate');
-
-        console.log('profile', profile, authResult)
-        this.props.setProfile(profile)
-        this.props.storeId(profile.sub)
-        this.props.login(authResult.accessToken)
+        console.log('this IS THE PROFILE RESPONES',profile)
+        this.props.setAuth0Profile(profile);
+        this.props.login(authResult.accessToken); //sets token
         console.log('this.props',this.props);
-        localStorage.setItem('loggedIn', true);
-        localStorage.setItem('userInfo', JSON.stringify(profile))
-        this.props.profileCreate();
+        // this.props.profileFetch(authResult.)
+        if (!this.props.auth0Profile.user_metadata) {
+          console.log('HITTING PROFILE CREATE')
+          this.props.profileCreate()
+          .then((profile)=>{
+            // this.props.setAuth0Profile(profile);
+            this.props.history.push('/settings')
+          })
+          .catch(error=>console.error(error))
+        }
 
-        this.props.profile
-          ? this.props.history.push('/dashboard')
-          : this.props.history.push('/settings')
+        if (this.props.auth0Profile.user_metadata) {
+          console.log('HITTING PROFILE CREATE')
+          this.props.profileFetch()
+          .then((profile)=>{
+            this.props.setAuth0Profile(profile);
+            this.props.history.push('/dashboard')
+          })
+          .catch(error=>console.error(error))
+        }
       })
     })
+
+    this.lock.on('signup submit', authResult => {
+      this.lock.getUserInfo(authResult.accessToken, (err, profile) => {
+
+      })
+    })
+
+
   }
 
   showLock() {
@@ -180,13 +200,16 @@ class LandingContainer extends React.Component {
   }
 }
 
-export const mapStateToProps = state => ({})
+export const mapStateToProps = state => ({
+  auth0Profile: state.auth0Profile
+})
 
 export const mapDispatchToProps = dispatch => ({
-  setProfile: (profile) => dispatch(setProfile(profile)),
-  storeId: id => dispatch(storeId(id)),
+  setAuth0Profile: (profile) => dispatch(setAuth0Profile(profile)),
   login: token => dispatch(login(token)),
+  logout: () => dispatch(logout()),
   profileCreate: () => dispatch(profileCreate()),
+  profileFetch: () => dispatch(profileFetch()),
 //   profileUpdate: profile => dispatch(profileUpdate(profile)),
 })
 
