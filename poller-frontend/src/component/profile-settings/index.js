@@ -45,6 +45,15 @@ class ProfileSettings extends React.Component {
     } else {
       this.handleOpenCreateProfileAlert()
     }
+    if (!this.props.avatar) {
+      console.log('will mount avatar', this.props.avatar)
+      try {
+        let userInfo = JSON.parse(localStorage.getItem('userInfo'))
+        this.setState({ preview: userInfo.picture })
+      } catch (err) {
+        console.log(err)
+      }
+    }
   }
   handleOpenCreateProfileAlert(){
     this.setState({openProfileAlert: !this.state.openProfileAlert});

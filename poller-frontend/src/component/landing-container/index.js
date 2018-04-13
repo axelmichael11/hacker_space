@@ -13,6 +13,7 @@ import { login, logout } from '../../action/auth-actions.js'
 import * as util from '../../lib/util.js'
 //These will be used, to store id of the user in the database...
 import {
+  profileCreate2,
   profileCreate,
     profileFetch,
 } from '../../action/profile-actions.js'
@@ -70,16 +71,14 @@ class LandingContainer extends React.Component {
     console.log(this.props.history)
 
     const options = {
-      // oidcConformant: true,
+      sso: true,
+      oidcConformant: true, //this determines METADATA is returned in scope...
       rememberLastLogin: true,
       auth: {
         audience: __AUTH0_AUDIENCE__,
         params: {
-          scope: 'openid profile user_metadata email read:clients write:clients update:users_app_metadata update:users update:current_user_metadata', //need to research the scope parameter...
+          scope: 'openid profile userId update:users_app_metadata openid email profile read:clients write:clients update:users_app_metadata update:users update:current_user_metadata', //need to research the scope parameter...
         },
-      },
-      theme: {
-        primaryColor: '#E8660C',
       },
       languageDictionary: {
         title: 'Poller',
@@ -100,29 +99,11 @@ class LandingContainer extends React.Component {
       this.lock.getUserInfo(authResult.accessToken, (err, profile) => {
         if (err) return new Error('failed to authenticate');
         console.log('this IS THE PROFILE RESPONES',profile)
-        this.props.setAuth0Profile(profile);
+        // this.props.setAuth0Profile(profile);
         this.props.login(authResult.accessToken); //sets token
         console.log('this.props',this.props);
-        // this.props.profileFetch(authResult.)
-        if (!this.props.auth0Profile.user_metadata) {
-          console.log('HITTING PROFILE CREATE')
-          this.props.profileCreate()
-          .then((profile)=>{
-            // this.props.setAuth0Profile(profile);
-            this.props.history.push('/settings')
-          })
-          .catch(error=>console.error(error))
-        }
+        this.props.profileFetch()
 
-        if (this.props.auth0Profile.user_metadata) {
-          console.log('HITTING PROFILE CREATE')
-          this.props.profileFetch()
-          .then((profile)=>{
-            this.props.setAuth0Profile(profile);
-            this.props.history.push('/dashboard')
-          })
-          .catch(error=>console.error(error))
-        }
       })
     })
 
@@ -205,6 +186,7 @@ export const mapStateToProps = state => ({
 })
 
 export const mapDispatchToProps = dispatch => ({
+  profileCreate2: () => dispatch(profileCreate2()),
   setAuth0Profile: (profile) => dispatch(setAuth0Profile(profile)),
   login: token => dispatch(login(token)),
   logout: () => dispatch(logout()),
