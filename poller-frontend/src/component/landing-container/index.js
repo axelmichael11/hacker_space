@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 
 //Methods
 import { storeUserProfile } from '../../action/user-profile-actions.js'
-import { setAuth0Profile } from '../../action/auth0-actions.js'
+import { setAuthToken } from '../../action/auth0-actions.js'
 import { login, logout } from '../../action/auth-actions.js'
 
 import * as util from '../../lib/util.js'
@@ -96,21 +96,29 @@ class LandingContainer extends React.Component {
     })
 
     this.lock.on('authenticated', authResult => {
-      this.lock.getUserInfo(authResult.accessToken, (err, profile) => {
-        if (err) return new Error('failed to authenticate');
-        console.log('this IS THE PROFILE RESPONES',profile)
-        // this.props.setAuth0Profile(profile);
-        this.props.login(authResult.accessToken); //sets token
-        console.log('this.props',this.props);
+      // this.lock.getUserInfo(authResult.accessToken, (err, profile) => {
+      //   if (err) return new Error('failed to authenticate');
+      //   console.log('this IS THE PROFILE RESPONES',profile)
+      //   // this.props.setAuth0Profile(profile);
+      //   this.props.setAuthToken(authResult.accessToken); //sets token
+      //   console.log('this.props',this.props);
+      //   this.props.profileFetch()
+      //   .then(profile=>{
+      //     this.props.storeUserProfile(profile);
+
+      //   })
+      // })
+      if (!authResult) return new Error('failed to authenticate');
+        console.log('this IS THE accesstoken',authResult.accessToken)
+        this.props.setAuthToken(authResult.accessToken)
         this.props.profileFetch()
-
-      })
-    })
-
-    this.lock.on('signup submit', authResult => {
-      this.lock.getUserInfo(authResult.accessToken, (err, profile) => {
-
-      })
+        .then((profile)=>{
+          console.log('THIS IS THE PROFILE', profile)
+          this.props.storeUserProfile(profile);
+          this.props.login();
+          this.props.history.push('/settings');
+        })
+        .catch(err=>console.log('ERROR',err))
     })
 
 
@@ -131,7 +139,6 @@ class LandingContainer extends React.Component {
     localStorage.removeItem('reduxPersist:userInfo')
     this.lock.logout()
   }
-
   handleOpenMenu(){
     this.setState({
       openMenu: true,
@@ -186,11 +193,10 @@ export const mapStateToProps = state => ({
 })
 
 export const mapDispatchToProps = dispatch => ({
-  profileCreate2: () => dispatch(profileCreate2()),
-  setAuth0Profile: (profile) => dispatch(setAuth0Profile(profile)),
-  login: token => dispatch(login(token)),
+  storeUserProfile: (profile) => dispatch(storeUserProfile(profile)),
+  setAuthToken: (token) => dispatch(setAuthToken(token)),
+  login: () => dispatch(login()),
   logout: () => dispatch(logout()),
-  profileCreate: () => dispatch(profileCreate()),
   profileFetch: () => dispatch(profileFetch()),
 //   profileUpdate: profile => dispatch(profileUpdate(profile)),
 })

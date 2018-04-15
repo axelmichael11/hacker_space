@@ -40,20 +40,7 @@ class ProfileSettings extends React.Component {
   }
 
   componentWillMount() {
-    if (this.props.profile) {
-      this.setState(this.props.profile)
-    } else {
-      this.handleOpenCreateProfileAlert()
-    }
-    if (!this.props.avatar) {
-      console.log('will mount avatar', this.props.avatar)
-      try {
-        let userInfo = JSON.parse(localStorage.getItem('userInfo'))
-        this.setState({ preview: userInfo.picture })
-      } catch (err) {
-        console.log(err)
-      }
-    }
+
   }
   handleOpenCreateProfileAlert(){
     this.setState({openProfileAlert: !this.state.openProfileAlert});
@@ -68,8 +55,8 @@ class ProfileSettings extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault()
-    this.props.profileUpdate(this.state)
-    this.props.history.push('/dashboard')
+    // this.props.profileUpdate(this.state)
+    // this.props.history.push('/dashboard')
   }
 
   render() {
