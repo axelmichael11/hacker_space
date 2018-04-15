@@ -40,11 +40,7 @@ class ProfileSettings extends React.Component {
   }
 
   componentWillMount() {
-    if (this.props.profile) {
-      this.setState(this.props.profile)
-    } else {
-      this.handleOpenCreateProfileAlert()
-    }
+
   }
   handleOpenCreateProfileAlert(){
     this.setState({openProfileAlert: !this.state.openProfileAlert});
@@ -59,8 +55,8 @@ class ProfileSettings extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault()
-    this.props.profileUpdate(this.state)
-    this.props.history.push('/dashboard')
+    // this.props.profileUpdate(this.state)
+    // this.props.history.push('/dashboard')
   }
 
   render() {

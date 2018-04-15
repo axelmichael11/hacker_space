@@ -7,7 +7,13 @@ var cors = require('cors')
 
 const app = express()
 
-app.use(cors())
+console.log('about to hit cors')
+app.use(cors({
+  preflightContinue: false,
+  origin: 'http://localhost:8080',
+  credentials: true, 
+  methods: ['GET', 'PUT', 'POST'],
+}))
 app.use(morgan('common'))
 const staticAssetsPath = path.join(__dirname, 'build');
 app.use(express.static(staticAssetsPath));
