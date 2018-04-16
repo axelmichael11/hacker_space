@@ -1,10 +1,7 @@
-export const login = () => (dispatch, getState) => {
-  let {auth0Token} = getState();
-    localStorage.setItem('poller_token', auth0Token)
-    // console.log('LOCAL STORAGE', localStorage)
+export const login = () => {
     return {
       type: 'LOGIN',
-      payload: auth0Token,
+      payload: true,
     }
   }
 

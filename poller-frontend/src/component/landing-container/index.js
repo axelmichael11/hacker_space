@@ -13,8 +13,6 @@ import { login, logout } from '../../action/auth-actions.js'
 import * as util from '../../lib/util.js'
 //These will be used, to store id of the user in the database...
 import {
-  profileCreate2,
-  profileCreate,
     profileFetch,
 } from '../../action/profile-actions.js'
 
@@ -56,11 +54,11 @@ class LandingContainer extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      signUp: false,
       landing: true,
-      loggedIn: localStorage.loggedIn ? true : false,
+      loggedIn: this.props.loggedIn,
       openMenu: false,
     }
+    console.log('this is the props in the constructor', this.props, props)
     this.logout = this.logout.bind(this)
     this.showLock = this.showLock.bind(this)
     this.handleOpenMenu = this.handleOpenMenu.bind(this)
@@ -69,6 +67,9 @@ class LandingContainer extends React.Component {
 
   componentWillMount() {
     console.log(this.props.history)
+    if (localStorage.poller_token){
+      this.props.profileFetch()
+    }
 
     const options = {
       sso: true,
@@ -91,37 +92,16 @@ class LandingContainer extends React.Component {
       options
     )
 
-    this.lock.on('signup submit', () => {
-      this.setState({ signUp: true })
-    })
-
     this.lock.on('authenticated', authResult => {
-      // this.lock.getUserInfo(authResult.accessToken, (err, profile) => {
-      //   if (err) return new Error('failed to authenticate');
-      //   console.log('this IS THE PROFILE RESPONES',profile)
-      //   // this.props.setAuth0Profile(profile);
-      //   this.props.setAuthToken(authResult.accessToken); //sets token
-      //   console.log('this.props',this.props);
-      //   this.props.profileFetch()
-      //   .then(profile=>{
-      //     this.props.storeUserProfile(profile);
-
-      //   })
-      // })
       if (!authResult) return new Error('failed to authenticate');
         console.log('this IS THE accesstoken',authResult.accessToken)
         this.props.setAuthToken(authResult.accessToken)
         this.props.profileFetch()
         .then((profile)=>{
-          console.log('THIS IS THE PROFILE', profile)
-          this.props.storeUserProfile(profile);
-          this.props.login();
           this.props.history.push('/settings');
         })
-        .catch(err=>console.log('ERROR',err))
+        .catch(err=>console.log('ERROR, failure to create or retrieve profile...',err))
     })
-
-
   }
 
   showLock() {
@@ -146,7 +126,6 @@ class LandingContainer extends React.Component {
   }
 
   handleOnRequestChange(value){
-
     this.setState({
       openMenu: value,
     });
@@ -167,14 +146,14 @@ class LandingContainer extends React.Component {
               fontWeight: '800',
             }}
             iconElementRight={
-              this.state.loggedIn ?
+              this.props.loggedIn ?
               <LoggedInMenu logout={this.logout}/> :
               <p> not logged in </p>
             }
           />
         </MuiThemeProvider>
         <MuiThemeProvider>
-          {!this.state.loggedIn ?
+          {!this.props.loggedIn ?
            <RaisedButton
             onClick={this.showLock}
             label={'Login'}
@@ -189,7 +168,8 @@ class LandingContainer extends React.Component {
 }
 
 export const mapStateToProps = state => ({
-  auth0Profile: state.auth0Profile
+  userProfile: state.userProfile,
+  loggedIn: state.loggedIn
 })
 
 export const mapDispatchToProps = dispatch => ({

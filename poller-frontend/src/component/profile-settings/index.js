@@ -5,6 +5,10 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 import FontAwesome from 'react-fontawesome' 
 
+import {
+  profileUpdate,
+  profileFetch
+} from '../../action/profile-actions.js'
 
 import Pets from 'material-ui/svg-icons/action/pets'
 import TextField from 'material-ui/TextField'
@@ -22,25 +26,15 @@ import FlatButton from 'material-ui/FlatButton'
 class ProfileSettings extends React.Component {
   constructor(props) {
     super(props)
-    this.state = props.profile
-      ? { ...props.profile, openProfileAlert:false }
-      : {
-        openProfileAlert: false,
-        username: '',
-        age:'',
-        profession: '',
-        ethnicity: '',
-        state: '',
-        religious: '',
-        gender: '',
-      }
+    console.log('this is hte props on profile settings', props)
+    this.state = {...this.props.userProfile, openProfileAlert:false}
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleOpenCreateProfileAlert = this.handleOpenCreateProfileAlert.bind(this)
   }
 
   componentWillMount() {
-
+    console.log('this.props', this.props.userProfile)
   }
   handleOpenCreateProfileAlert(){
     this.setState({openProfileAlert: !this.state.openProfileAlert});
@@ -70,7 +64,7 @@ class ProfileSettings extends React.Component {
     console.log('profile SETINGS',this.state, this.props)
     return (
       <div className="profile-form">
-        <LandingContainer avatar={this.state.preview} />
+        <LandingContainer/>
         <MuiThemeProvider>
           <Dialog
               title="Welcome to Poller!"
@@ -85,27 +79,11 @@ class ProfileSettings extends React.Component {
             >
               Welcome to Poller! We didn't find a profile for you... Before you get started you have to fill out a profile!
           </Dialog>
-          <Paper zDepth={2}>
+
+          <Paper style={{margin:'0 auto', width: 'flex', display:'center'}} zDepth={2}>
             <form onSubmit={this.handleSubmit}>
-              <Avatar
-                style={{ marginTop: '25px', marginLeft: '10px' }}
-                src={this.state.preview}
-              />
-              <RaisedButton
-                containerElement="label"
-                label="Upload Photo"
-                style={{ margin: 20 }}
-              >
-                <div className="previewComponent">
-                  <input
-                    type="file"
-                    name="avatar"
-                    value={this.state.avatar}
-                    onChange={this.handleChange}
-                    style={{ display: 'none' }}
-                  />
-                </div>
-              </RaisedButton>
+
+
               <TextField
                 type="username"
                 name="username"
@@ -174,9 +152,12 @@ class ProfileSettings extends React.Component {
 }
 
 export const mapStateToProps = state => ({
+  userProfile: state.userProfile
 })
 
 export const mapDispatchToProps = dispatch => ({
+  profileUpdate: (profileToUpdate)=> dispatch(profileUpdate(profileToUpdate)),
+  profileFetch: ()=> dispatch(profileFetch())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileSettings)

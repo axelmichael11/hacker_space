@@ -53,7 +53,7 @@ class LoggedInMenu extends React.Component{
       }
       handleOnItemChange(value){
         // if (value = 2) this.props.history.push('/explore')
-        // if (value = 3) this.props.history.push('/settings')
+        if (value = 3) this.props.history.push('/settings')
         if (value = 4) this.props.logout()
       }
     
@@ -83,7 +83,9 @@ class LoggedInMenu extends React.Component{
     }
 }
 
-export const mapStateToProps = state => ({})
+export const mapStateToProps = state => ({
+  history: state.history
+})
 
 export const mapDispatchToProps = dispatch => ({
 })

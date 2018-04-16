@@ -5,7 +5,7 @@ import App from './component/app'
 import { Provider } from 'react-redux'
 import storeCreate from './lib/store-create'
 import { persistStore } from 'redux-persist'
-import * as authActions from './action/auth-actions.js'
+import {profileFetch} from './action/profile-actions.js'
 
 const store = storeCreate()
 persistStore(store)
@@ -18,7 +18,7 @@ class Main extends React.Component {
   componentWillMount() {
     // load the token
     if (localStorage.poller_token) {
-      store.dispatch(authActions.login(localStorage.poller_token))
+      store.dispatch(profileFetch(localStorage.poller_token))
     }
   }
 

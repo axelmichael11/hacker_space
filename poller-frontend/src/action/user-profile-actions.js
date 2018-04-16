@@ -1,5 +1,6 @@
-export const storeUserProfile = (userProfile) => {
+import {login} from './auth-actions'
 
-  // localStorage.setItem('userInfo', JSON.stringify(userProfile))
+export const storeUserProfile = (userProfile) => (dispatch)=> {
+  localStorage.setItem('userInfo', JSON.stringify(userProfile))
     return { type: 'user_profile', payload: userProfile }
   }
