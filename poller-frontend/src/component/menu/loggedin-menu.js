@@ -5,6 +5,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
+import LoginPage from '../login'
+
+
 import { login, logout } from '../../action/auth-actions.js'
 import * as util from '../../lib/util.js'
 
@@ -34,17 +37,6 @@ class LoggedInMenu extends React.Component{
         // this.logout = this.logout.bind(this)
         this.handleOnItemChange = this.handleOnItemChange.bind(this)
       }
-
-    //   logout() {
-    //     localStorage.removeItem('loggedIn')
-    //     localStorage.removeItem('poller_token')
-    //     localStorage.removeItem('reduxPersist:auth')
-    //     //might need these later... need to research redux persist
-    //     localStorage.removeItem('reduxPersist:userId')
-    //     localStorage.removeItem('reduxPersist:profile')
-    //     localStorage.removeItem('reduxPersist:userInfo')
-    //     this.props.logout()
-    //   }
 
       handleOpenMenu(){
         this.setState({
@@ -76,7 +68,7 @@ class LoggedInMenu extends React.Component{
                 <MenuItem value="1" primaryText="Home" />
                 <MenuItem value="2" primaryText="Explore" />
                 <MenuItem value="3" primaryText="Settings" />
-                <MenuItem value="4" primaryText="Logout" />
+                <AuthLockButton value="4" />
               </IconMenu>
               </div>
         )

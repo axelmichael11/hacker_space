@@ -17,17 +17,15 @@ import {login} from './auth-actions.js'
       .get(`${__API_URL__}/api/user`)
       .set('Authorization', `Bearer ${auth0Token}`)
       .then(res => {
-        try {
-          let parsed = JSON.parse(res.text)
+        let parsed = JSON.parse(res.text)
         console.log('got the user...',parsed)
         dispatch(storeUserProfile(parsed))
         dispatch(login())
         return parsed
-        } catch (err) {
-          console.log(err)
-        }
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        console.log(err)
+      })
   }
 
 
@@ -41,7 +39,7 @@ export const profileUpdate = (profile) => (dispatch, getState) => {
         try {
           let parsed = JSON.parse(res.text)
         console.log('successfully created user in DB',parsed)
-        return parsed
+        if(parsed) return parsed
         } catch (err) {
           console.log(err)
         }
