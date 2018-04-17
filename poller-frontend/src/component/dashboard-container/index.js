@@ -11,7 +11,7 @@ class DashboardContainer extends React.Component {
   render() {
     return (
       <div>
-        <LandingContainer/>
+       <p> DashboardContainer</p>
       </div>
     )
   }

@@ -31,6 +31,7 @@ class AuthLockButton extends React.Component {
       oidcConformant: true, //this determines METADATA is returned in scope...
       rememberLastLogin: true,
       auth: {
+        // redirectUrl: 'http://localhost:8080',
         audience: __AUTH0_AUDIENCE__,
         params: {
           scope: 'openid profile userId update:users_app_metadata openid email profile read:clients write:clients update:users_app_metadata update:users update:current_user_metadata', //need to research the scope parameter...
@@ -50,10 +51,6 @@ class AuthLockButton extends React.Component {
         console.log('this IS THE accesstoken',authResult.accessToken)
         this.props.setAuthToken(authResult.accessToken)
         this.props.profileFetch()
-        .then((profile)=>{
-          this.props.history.push('/');
-        })
-        .catch(err=>console.log('ERROR, failure to create or retrieve profile...',err))
     })
 
     // this.checkStorageLogin()

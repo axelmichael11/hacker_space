@@ -1,4 +1,4 @@
-export default (state = null, { type, payload }) => {
+export default (state = false, { type, payload }) => {
     switch (type) {
     case 'STORAGELOGINATTEMPT':
       return payload

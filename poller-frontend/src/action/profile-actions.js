@@ -9,9 +9,26 @@ import {login} from './auth-actions.js'
 
   export const profileFetch = () => (dispatch, getState) => {
     let { auth0Token } = getState()
-    if (!auth0Token) {
-      auth0Token = localStorage.poller_token
-    }
+    console.log('this is the api url AND TOKEN', __API_URL__, auth0Token)
+    return superagent
+      .get(`${__API_URL__}/api/user`)
+      .set('Authorization', `Bearer ${auth0Token}`)
+      .then(res => {
+        let parsed = JSON.parse(res.text)
+        console.log('got the user...',parsed)
+        localStorage.setItem('poller_token', auth0Token)
+        dispatch(storeUserProfile(parsed))
+        dispatch(login())
+        return parsed
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+
+  export const localStorageProfileFetch = () => (dispatch, getState) => {
+    let auth0Token = localStorage.poller_token
     console.log('this is the api url AND TOKEN', __API_URL__, auth0Token)
     return superagent
       .get(`${__API_URL__}/api/user`)

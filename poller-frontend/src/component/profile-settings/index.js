@@ -7,7 +7,6 @@ import FontAwesome from 'react-fontawesome'
 
 import {
   profileUpdate,
-  profileFetch
 } from '../../action/profile-actions.js'
 
 import Pets from 'material-ui/svg-icons/action/pets'
@@ -23,6 +22,7 @@ import uuid from 'uuid/v1'
 import Avatar from 'material-ui/Avatar'
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton'
+
 class ProfileSettings extends React.Component {
   constructor(props) {
     super(props)
@@ -157,7 +157,6 @@ export const mapStateToProps = state => ({
 
 export const mapDispatchToProps = dispatch => ({
   profileUpdate: (profileToUpdate)=> dispatch(profileUpdate(profileToUpdate)),
-  profileFetch: ()=> dispatch(profileFetch())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileSettings)

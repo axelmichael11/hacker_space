@@ -17,8 +17,5 @@ export const login = () => {
     localStorage.removeItem('reduxPersist:userId')
     localStorage.removeItem('reduxPersist:profile')
     localStorage.removeItem('reduxPersist:userInfo')
-
-    localStorage.setItem('userInfo', null)
-    localStorage.setItem('poller_token', null)
     return { type: 'LOGOUT' }
   }

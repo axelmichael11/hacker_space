@@ -7,10 +7,10 @@ import LandingContainer from '../landing-container'
 import DashboardContainer from '../dashboard-container'
 import ProfileSettings from '../profile-settings'
 import LoginPage from '../login'
-
+import LoginRoute from './loginroute'
 
 import {
-  profileFetch,
+  localStorageProfileFetch,
 } from '../../action/profile-actions.js'
 
 import {storageLogin} from '../../action/storage-login-attempt'
@@ -23,52 +23,20 @@ class App extends React.Component {
       loggedIn: this.props.loggedIn
     }
     this.checkAuthorization = this.checkAuthorization.bind(this)
-    this.showLock = this.showLock.bind(this)
   }
 
   componentWillMount(){
-    // this.checkAuthorization();
-    const options = {
-      sso: true,
-      oidcConformant: true, //this determines METADATA is returned in scope...
-      rememberLastLogin: true,
-      auth: {
-        audience: __AUTH0_AUDIENCE__,
-        params: {
-          scope: 'openid profile userId update:users_app_metadata openid email profile read:clients write:clients update:users_app_metadata update:users update:current_user_metadata', //need to research the scope parameter...
-        },
-      },
-      languageDictionary: {
-        title: 'Poller',
-      },
-    }
-
-    this.lock = new Auth0Lock(
-        __AUTH0_CLIENT_ID__,
-        __AUTH0_CLIENT_DOMAIN__,
-      options
-    )
-
-    this.lock.on('authenticated', authResult => {
-      if (!authResult) return new Error('failed to authenticate');
-        console.log('this IS THE accesstoken',authResult.accessToken)
-        this.props.setAuthToken(authResult.accessToken)
-        this.props.profileFetch()
-        .then((profile)=>{
-          this.props.history.push('/settings');
-        })
-        .catch(err=>console.log('ERROR, failure to create or retrieve profile...',err))
-    })
+    this.checkAuthorization();
+    
   }
 
-  showLock() {
-    this.lock.show()
-  }
+
 
 
   checkAuthorization(){
     if (localStorage.poller_token && !this.props.loggedIn && !this.props.storageLoginAttempt){
-      this.props.profileFetch().then(()=>this.props.storageLogin())
+      console.log('HITTING THE CHECK LOCAL STORAGE FETCH')
+      this.props.localStorageProfileFetch().then(()=>this.props.storageLogin())
     }
   }
 
@@ -78,9 +46,9 @@ class App extends React.Component {
       <div className="app">
         <BrowserRouter>
           <div>
-            <Route exact path="/login" component={LoginPage} hello={this.lock}/>
-            <PrivateRoute loggedIn={this.props.loggedIn} props={this.showlock} lock={this.lock} path="/" component={LandingContainer} />
-            <PrivateRoute loggedIn={this.props.loggedIn} props={this.showlock} lock={this.lock} path="/dashboard" component={DashboardContainer} />
+            <Route exact path="/login" component={LoginPage}/>
+            <PrivateRoute loggedIn={this.props.loggedIn} path="/" redirectTo="/login"component={LandingContainer} />
+            <PrivateRoute loggedIn={this.props.loggedIn} path="/dashboard" redirectTo='/login' component={DashboardContainer} />
           </div>
         </BrowserRouter>
       </div>
@@ -94,7 +62,7 @@ export const mapStateToProps = state => ({
 })
 
 export const mapDispatchToProps = dispatch => ({
-  profileFetch: ()=>dispatch(profileFetch()),
+  localStorageProfileFetch: ()=>dispatch(localStorageProfileFetch()),
   storageLogin:()=>dispatch(storageLogin())
 })
 

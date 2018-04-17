@@ -11,7 +11,7 @@ class LoginPage extends React.Component {
     return (
       <div>
           <p> You need to log in first! </p>
-        <AuthLock/>
+        <AuthLockButton/>
       </div>
     )
   }
