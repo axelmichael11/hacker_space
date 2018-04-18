@@ -4,7 +4,7 @@ import Auth0Lock from 'auth0-lock'
 
 import { Route, BrowserRouter, Switch } from 'react-router-dom'
 import LandingContainer from '../landing-container'
-import DashboardContainer from '../dashboard-container'
+import HomePage from '../dashboard-container'
 import ProfileSettings from '../profile-settings'
 import LoginPage from '../login'
 import LoginRoute from './loginroute'

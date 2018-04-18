@@ -61,7 +61,7 @@ class NavBar extends React.Component {
   }
 
   componentWillMount() {
-    console.log(this.props.history)
+    console.log('this.props.history on the NAVBAR',this.props.history)
   }
 
 
