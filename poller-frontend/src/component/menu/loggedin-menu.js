@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 
 import LoginPage from '../login'
 
-
+import AuthLockButton from '../auth0-lock'
 import { login, logout } from '../../action/auth-actions.js'
 import * as util from '../../lib/util.js'
 

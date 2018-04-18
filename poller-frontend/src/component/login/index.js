@@ -8,10 +8,11 @@ class LoginPage extends React.Component {
   }
 
   render() {
+    console.log('THIS>PROPS ON LOGIN PAGE', this.props)
     return (
       <div>
           <p> You need to log in first! </p>
-        <AuthLock/>
+        <AuthLockButton history={this.props.history}/>
       </div>
     )
   }

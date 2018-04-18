@@ -17,9 +17,7 @@ class Main extends React.Component {
 
   componentWillMount() {
     // load the token
-    if (localStorage.poller_token) {
-      store.dispatch(profileFetch(localStorage.poller_token))
-    }
+  
   }
 
   render() {

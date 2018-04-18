@@ -1,8 +1,9 @@
 
 import React from 'react'
 import LandingContainer from '../landing-container'
+import NavBar from '../nav-bar'
 
-class DashboardContainer extends React.Component {
+class HomePage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {}
@@ -11,10 +12,11 @@ class DashboardContainer extends React.Component {
   render() {
     return (
       <div>
-        <LandingContainer/>
+        <NavBar/>
+       <p> Welcome to Poller! </p>
       </div>
     )
   }
 }
 
-export default DashboardContainer
+export default HomePage

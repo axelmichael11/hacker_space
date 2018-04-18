@@ -12,9 +12,8 @@ import { login, logout } from '../../action/auth-actions.js'
 
 import * as util from '../../lib/util.js'
 //These will be used, to store id of the user in the database...
-import {
-    profileFetch,
-} from '../../action/profile-actions.js'
+
+
 
 
 import LoggedInMenu from '../menu/loggedin-menu'
@@ -62,7 +61,7 @@ class NavBar extends React.Component {
   }
 
   componentWillMount() {
-    console.log(this.props.history)
+    console.log('this.props.history on the NAVBAR',this.props.history)
   }
 
 
@@ -94,7 +93,7 @@ class NavBar extends React.Component {
             }}
             iconElementRight={
               this.props.loggedIn ?
-              <LoggedInMenu logout={this.logout}/> :
+              <LoggedInMenu/> :
               <p> not logged in </p>
             }
           />
@@ -114,7 +113,6 @@ export const mapDispatchToProps = dispatch => ({
   setAuthToken: (token) => dispatch(setAuthToken(token)),
   login: () => dispatch(login()),
   logout: () => dispatch(logout()),
-  profileFetch: () => dispatch(profileFetch()),
 //   profileUpdate: profile => dispatch(profileUpdate(profile)),
 })
 

@@ -25,12 +25,13 @@ class AuthLockButton extends React.Component {
   }
 
   componentWillMount() {
-    console.log(this.props.history)
+    console.log('this.props ON BUTTON',this.props)
     const options = {
       sso: true,
       oidcConformant: true, //this determines METADATA is returned in scope...
       rememberLastLogin: true,
       auth: {
+        // redirectUrl: 'http://localhost:8080',
         audience: __AUTH0_AUDIENCE__,
         params: {
           scope: 'openid profile userId update:users_app_metadata openid email profile read:clients write:clients update:users_app_metadata update:users update:current_user_metadata', //need to research the scope parameter...
@@ -50,10 +51,14 @@ class AuthLockButton extends React.Component {
         console.log('this IS THE accesstoken',authResult.accessToken)
         this.props.setAuthToken(authResult.accessToken)
         this.props.profileFetch()
-        .then((profile)=>{
-          this.props.history.push('/');
+        .then(profile=>{
+            if (this.props.loggedIn && this.props.userProfile){
+            console.log('THIS>PROPS:LOGINNNNN')
+            this.props.history.push('/')
+          } else {
+            this.props.history.push('login')
+          }
         })
-        .catch(err=>console.log('ERROR, failure to create or retrieve profile...',err))
     })
 
     // this.checkStorageLogin()
@@ -91,7 +96,8 @@ class AuthLockButton extends React.Component {
   }
 }
 export const mapStateToProps = state => ({
-    loggedIn: state.loggedIn
+    loggedIn: state.loggedIn,
+    userProfile: state.userProfile,
   })
   
   export const mapDispatchToProps = dispatch => ({

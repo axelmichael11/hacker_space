@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Redirect, Route } from 'react-router-dom'
 
-const PrivateRoute = ({ component: Component, ...rest, loggedIn, redirectTo, checkAuthorization }) => {
+const LoginRoute = ({ component: Component, ...rest, loggedIn, redirectTo }) => {
   // Add your own authentication on the below line.
 //   const {loggedIn} = this.props.loggedIn
 
@@ -10,7 +10,7 @@ const PrivateRoute = ({ component: Component, ...rest, loggedIn, redirectTo, che
     <Route
       {...rest}
       render={(props) =>
-        loggedIn ? (
+        !loggedIn ? (
           <Component {...props} />
         ) : (
           <Redirect to={{ pathname: redirectTo, state: { from: props.location } }} />
@@ -26,4 +26,4 @@ export const mapStateToProps = state => ({
   export const mapDispatchToProps = dispatch => ({
   })
   
-  export default connect(mapStateToProps, mapDispatchToProps)(PrivateRoute)
+  export default connect(mapStateToProps, mapDispatchToProps)(LoginRoute)
