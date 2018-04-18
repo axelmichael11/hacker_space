@@ -61,7 +61,7 @@ class NavBar extends React.Component {
   }
 
   componentWillMount() {
-    console.log('this.props.history on the NAVBAR',this.props.history)
+    console.log('this.props.history on the NAVBAR', this.props.history)
   }
 
 
@@ -93,7 +93,7 @@ class NavBar extends React.Component {
             }}
             iconElementRight={
               this.props.loggedIn ?
-              <LoggedInMenu/> :
+              <LoggedInMenu history={this.props.history}/> :
               <p> not logged in </p>
             }
           />

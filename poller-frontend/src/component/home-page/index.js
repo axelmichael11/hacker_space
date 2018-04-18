@@ -10,9 +10,10 @@ class HomePage extends React.Component {
   }
 
   render() {
+    console.log('this.props on HOMEPAGE', this.props.history)
     return (
       <div>
-        <NavBar/>
+        <NavBar history={this.props.history}/>
        <p> Welcome to Poller! </p>
       </div>
     )

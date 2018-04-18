@@ -4,7 +4,7 @@ import Auth0Lock from 'auth0-lock'
 
 import { Route, BrowserRouter, Switch } from 'react-router-dom'
 import LandingContainer from '../landing-container'
-import HomePage from '../dashboard-container'
+import HomePage from '../home-page'
 import ProfileSettings from '../profile-settings'
 import LoginPage from '../login'
 import LoginRoute from './loginroute'
@@ -49,6 +49,7 @@ class App extends React.Component {
             <Route path="/login" component={LoginPage}/>
               <PrivateRoute  loggedIn={this.props.loggedIn} path="/" redirectTo="/login"component={LandingContainer} />
               <PrivateRoute loggedIn={this.props.loggedIn} path="/settings" redirectTo='/login' component={ProfileSettings} />
+              <PrivateRoute loggedIn={this.props.loggedIn} path="/home" redirectTo='/home' component={HomePage} />
           </Switch>
           </div>
         </BrowserRouter>

@@ -44,9 +44,9 @@ class LoggedInMenu extends React.Component{
         });
       }
       handleOnItemChange(value){
-        // if (value = 2) this.props.history.push('/explore')
+        if (value = 1) this.props.history.push('/home')
         if (value = 3) this.props.history.push('/settings')
-        if (value = 4) this.props.logout()
+        // if (value = 4) this.props.logout()
       }
     
       handleOnRequestChange(value){
@@ -56,7 +56,7 @@ class LoggedInMenu extends React.Component{
       }
 
     render(){
-        console.log('this.PROPS on the MENu', this.props)
+        console.log('this.PROPS on the MENu', this.props, this.context, this.context.history)
         return (
             <div>
               <IconMenu

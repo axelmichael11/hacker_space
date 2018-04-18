@@ -54,7 +54,7 @@ class AuthLockButton extends React.Component {
         .then(profile=>{
             if (this.props.loggedIn && this.props.userProfile){
             console.log('THIS>PROPS:LOGINNNNN')
-            this.props.history.push('/')
+            this.props.history.push('/home')
           } else {
             this.props.history.push('login')
           }
