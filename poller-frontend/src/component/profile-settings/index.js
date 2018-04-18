@@ -36,6 +36,8 @@ class ProfileSettings extends React.Component {
   componentWillMount() {
     console.log('this.props', this.props.userProfile)
   }
+
+  
   handleOpenCreateProfileAlert(){
     this.setState({openProfileAlert: !this.state.openProfileAlert});
   };

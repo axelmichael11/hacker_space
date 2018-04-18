@@ -47,8 +47,8 @@ class App extends React.Component {
           <div>
           <Switch>
             <Route path="/login" component={LoginPage}/>
-              <PrivateRoute checkAuthorization={this.checkAuthorization} loggedIn={this.props.loggedIn} path="/" redirectTo="/login"component={LandingContainer} />
-            <PrivateRoute loggedIn={this.props.loggedIn} path="/dashboard" redirectTo='/login' component={DashboardContainer} />
+              <PrivateRoute  loggedIn={this.props.loggedIn} path="/" redirectTo="/login"component={LandingContainer} />
+              <PrivateRoute loggedIn={this.props.loggedIn} path="/settings" redirectTo='/login' component={ProfileSettings} />
           </Switch>
           </div>
         </BrowserRouter>
