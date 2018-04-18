@@ -25,7 +25,7 @@ class AuthLockButton extends React.Component {
   }
 
   componentWillMount() {
-    console.log(this.props.history)
+    console.log('this.props ON BUTTON',this.props)
     const options = {
       sso: true,
       oidcConformant: true, //this determines METADATA is returned in scope...
@@ -51,6 +51,14 @@ class AuthLockButton extends React.Component {
         console.log('this IS THE accesstoken',authResult.accessToken)
         this.props.setAuthToken(authResult.accessToken)
         this.props.profileFetch()
+        .then(profile=>{
+            if (this.props.loggedIn && this.props.userProfile){
+            console.log('THIS>PROPS:LOGINNNNN')
+            this.props.history.push('/')
+          } else {
+            this.props.history.push('login')
+          }
+        })
     })
 
     // this.checkStorageLogin()
@@ -88,7 +96,8 @@ class AuthLockButton extends React.Component {
   }
 }
 export const mapStateToProps = state => ({
-    loggedIn: state.loggedIn
+    loggedIn: state.loggedIn,
+    userProfile: state.userProfile,
   })
   
   export const mapDispatchToProps = dispatch => ({

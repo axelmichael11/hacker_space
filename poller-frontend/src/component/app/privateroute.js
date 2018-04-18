@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Redirect, Route } from 'react-router-dom'
 
-const PrivateRoute = ({ component: Component, ...rest, loggedIn, redirectTo }) => {
+const PrivateRoute = ({ component: Component, ...rest, loggedIn, redirectTo, checkAuthorization }) => {
   // Add your own authentication on the below line.
 //   const {loggedIn} = this.props.loggedIn
 

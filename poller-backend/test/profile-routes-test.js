@@ -31,7 +31,7 @@ describe('testing profile queries...', () => {
           })
           .catch(err => next(err))
   })
-  it.only('this is the profile create method, should return a user', () => {
+  it('this is the profile create method, should return a user', () => {
       console.log('API_TOKEN', API_TOKEN)
     return superagent.post(`${API_URL}/api/user`)
     .set('Authorization',`Bearer ${API_TOKEN}`)

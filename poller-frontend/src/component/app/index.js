@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import Auth0Lock from 'auth0-lock'
 
-import { Route, BrowserRouter } from 'react-router-dom'
+import { Route, BrowserRouter, Switch } from 'react-router-dom'
 import LandingContainer from '../landing-container'
 import DashboardContainer from '../dashboard-container'
 import ProfileSettings from '../profile-settings'
@@ -27,7 +27,6 @@ class App extends React.Component {
 
   componentWillMount(){
     this.checkAuthorization();
-    
   }
 
 
@@ -46,9 +45,11 @@ class App extends React.Component {
       <div className="app">
         <BrowserRouter>
           <div>
-            <Route exact path="/login" component={LoginPage}/>
-            <PrivateRoute loggedIn={this.props.loggedIn} path="/" redirectTo="/login"component={LandingContainer} />
+          <Switch>
+            <Route path="/login" component={LoginPage}/>
+              <PrivateRoute checkAuthorization={this.checkAuthorization} loggedIn={this.props.loggedIn} path="/" redirectTo="/login"component={LandingContainer} />
             <PrivateRoute loggedIn={this.props.loggedIn} path="/dashboard" redirectTo='/login' component={DashboardContainer} />
+          </Switch>
           </div>
         </BrowserRouter>
       </div>
