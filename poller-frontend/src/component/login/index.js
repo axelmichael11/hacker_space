@@ -1,5 +1,8 @@
 import React from 'react'
 
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import Paper from 'material-ui/Paper'
+
 
 import AuthLockButton from  '../auth0-lock'
 class LoginPage extends React.Component {

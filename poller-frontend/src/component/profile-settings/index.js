@@ -22,14 +22,21 @@ import Avatar from 'material-ui/Avatar'
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton'
 
+
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
+import country_list from './countries.js'
+
 class ProfileSettings extends React.Component {
   constructor(props) {
     super(props)
     console.log('this is hte props on profile settings', props)
-    this.state = {...this.props.userProfile, openProfileAlert:false}
+    this.state = {...this.props.userProfile, openProfileAlert:false, religious:false}
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleOpenCreateProfileAlert = this.handleOpenCreateProfileAlert.bind(this)
+    this.handleCountryChange = this.handleCountryChange.bind(this)
   }
 
   componentWillMount() {
@@ -54,15 +61,36 @@ class ProfileSettings extends React.Component {
     // this.props.history.push('/dashboard')
   }
 
+  handleCountryChange(event, index, value){
+    this.setState({value});
+  }
+
+  updateGender() {
+    this.setState((oldState) => {
+      return {
+        gender: !oldState.checked,
+      };
+    });
+  }
+
+  updateReligious() {
+    this.setState((oldState) => {
+      return {
+        religious: !oldState.checked,
+      };
+    });
+  }
+
+
   render() {
     const underlineFocus = {
       borderBottomColor: '#3AB08F',
     }
 
     const formStyle = {
-      marginLeft: 20,
+      marginLeft: 3,
     }
-    console.log('profile SETINGS',this.state, this.props)
+    console.log('profile SETINGS',this.state)
     return (
       <div className="profile-form">
         <MuiThemeProvider>
@@ -80,41 +108,37 @@ class ProfileSettings extends React.Component {
               Welcome to Poller! We didn't find a profile for you... Before you get started you have to fill out a profile!
           </Dialog>
 
-          <Paper style={{margin:'0 auto', width: 'flex', display:'center'}} zDepth={2}>
+          <Card>
+          <CardHeader
+              title={this.props.userProfile.username}
+              subtitle={this.props.userProfile.email}
+              avatar={this.props.userProfile.picture}
+            />
+            <CardMedia>
             <form onSubmit={this.handleSubmit}>
-
-
-              <TextField
-                type="username"
-                name="username"
-                hintText={this.state.username}
-                value={this.state.username}
-                onChange={this.handleChange}
-                underlineShow={false}
-                style={formStyle}
-              />
               <Divider />
               <TextField
                 type="text"
-                name="bio"
-                value={this.state.bio}
+                name="Age"
+                value={this.state.age}
                 onChange={this.handleChange}
                 underlineShow={false}
-                multiLine={true}
-                rows={4}
+                rows={1}
                 style={formStyle}
-                hintText="Enter a Bio"
+                hintText="Age"
               />
               <Divider />
-              <TextField
-                type="text"
-                name="phone"
-                value={this.state.phone}
-                onChange={this.handleChange}
-                underlineShow={false}
-                style={formStyle}
-                hintText="Phone Number"
-              />
+              <SelectField
+                floatingLabelText="Country"
+                value={this.state.value}
+                onChange={this.handleCountryChange}
+              >
+               {
+                country_list.map((country, i)=>{
+                  return <MenuItem value={i} primaryText={country} />
+                })
+              }
+              </SelectField>
               <Divider />
               <TextField
                 type="text"
@@ -144,7 +168,8 @@ class ProfileSettings extends React.Component {
                 type="submit"
               />
             </form>
-          </Paper>
+            </CardMedia>
+          </Card>
         </MuiThemeProvider>
       </div>
     )
