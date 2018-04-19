@@ -27,16 +27,42 @@ import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'mat
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import country_list from './countries.js'
+import occupation_list from './occupations.js'
+import AppBar from 'material-ui/AppBar'
+
+
+
+const styles = {
+  block: {
+    maxWidth: 250,
+  },
+  checkbox: {
+    marginBottom: 16,
+  },
+  selectFieldWidth: {
+    width: 150,
+    display:'inline-block',
+    margin:'auto'
+  },
+};
+
 
 class ProfileSettings extends React.Component {
   constructor(props) {
     super(props)
     console.log('this is hte props on profile settings', props)
-    this.state = {...this.props.userProfile, openProfileAlert:false, religious:false}
+    this.state = {...this.props.userProfile, openProfileAlert:false, country: this.props.userProfile.country}
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleOpenCreateProfileAlert = this.handleOpenCreateProfileAlert.bind(this)
     this.handleCountryChange = this.handleCountryChange.bind(this)
+    this.handleEthnicityChange = this.handleEthnicityChange.bind(this)
+    this.updateGenderMale = this.updateGenderMale.bind(this)
+    this.updateGenderFemale = this.updateGenderFemale.bind(this)
+    this.handleOccupationChange = this.handleOccupationChange.bind(this)
+    this.updateReligionNoCheckBox = this.updateReligionNoCheckBox.bind(this)
+    this.updateReligionYesCheckBox = this.updateReligionYesCheckBox.bind(this)
+    this.profileUpdateSubmit = this.profileUpdateSubmit.bind(this)
   }
 
   componentWillMount() {
@@ -62,23 +88,50 @@ class ProfileSettings extends React.Component {
   }
 
   handleCountryChange(event, index, value){
-    this.setState({value});
+    console.log('this is the country change event', value, index)
+    this.setState({country: value});
   }
 
-  updateGender() {
+  handleEthnicityChange(event, index, value){
+    this.setState({ethnicity: value})
+  }
+
+  handleOccupationChange(event,index,value){
+    this.setState({occupation: value})
+  }
+
+  updateGenderMale() {
     this.setState((oldState) => {
       return {
-        gender: !oldState.checked,
+        gender: !oldState.gender,
+      };
+    });
+  }
+  updateGenderFemale() {
+    this.setState((oldState) => {
+      return {
+        gender: !oldState.gender,
       };
     });
   }
 
-  updateReligious() {
+  updateReligionYesCheckBox() {
     this.setState((oldState) => {
       return {
-        religious: !oldState.checked,
+        religion: !oldState.checked,
       };
     });
+  }
+  updateReligionNoCheckBox(){
+    this.setState((oldState) => {
+      return {
+        religion: !oldState.checked,
+      };
+    });
+  }
+  profileUpdateSubmit(){
+    let {age, ethnicity, occupation, gender, country, religion} = this.state;
+    this.profileToUpdate({age, ethnicity, occupation, gender, country, religion})
   }
 
 
@@ -90,10 +143,11 @@ class ProfileSettings extends React.Component {
     const formStyle = {
       marginLeft: 3,
     }
-    console.log('profile SETINGS',this.state)
+    console.log('profile SETINGS STATE',occupation_list, this.state, 'pROPS',this.props.userProfile)
     return (
-      <div className="profile-form">
+      <div className="profile-form" style={{maxWidth: 450, margin: 'auto'}}>
         <MuiThemeProvider>
+          <div>
           <Dialog
               title="Welcome to Poller!"
               actions={<FlatButton
@@ -107,10 +161,14 @@ class ProfileSettings extends React.Component {
             >
               Welcome to Poller! We didn't find a profile for you... Before you get started you have to fill out a profile!
           </Dialog>
-
+          </div>
           <Card>
           <CardHeader
-              title={this.props.userProfile.username}
+              title="Edit Profile"
+              style={{margin:'auto'}}
+            />
+          <CardHeader
+              title={this.props.userProfile.nickname}
               subtitle={this.props.userProfile.email}
               avatar={this.props.userProfile.picture}
             />
@@ -120,7 +178,7 @@ class ProfileSettings extends React.Component {
               <TextField
                 type="text"
                 name="Age"
-                value={this.state.age}
+                value={this.age}
                 onChange={this.handleChange}
                 underlineShow={false}
                 rows={1}
@@ -130,42 +188,83 @@ class ProfileSettings extends React.Component {
               <Divider />
               <SelectField
                 floatingLabelText="Country"
-                value={this.state.value}
+                value={this.state.country}
                 onChange={this.handleCountryChange}
+                style={styles.selectFieldWidth}
               >
+               <MenuItem value={null} primaryText="" />
                {
                 country_list.map((country, i)=>{
                   return <MenuItem value={i} primaryText={country} />
                 })
               }
               </SelectField>
-              <Divider />
-              <TextField
-                type="text"
-                name="budget"
-                value={this.state.budget}
-                onChange={this.handleChange}
-                underlineShow={false}
-                style={formStyle}
-                hintText="Budget"
+              <SelectField
+                floatingLabelText="Ethnicity"
+                value={this.state.ethnicity}
+                onChange={this.handleEthnicityChange}
+                style={styles.selectFieldWidth}
+              >
+                <MenuItem value={null} primaryText="" />
+                <MenuItem value={1} primaryText="Asian" />
+                <MenuItem value={2} primaryText="Native Hawaiian or Other Pacific Islander" />
+                <MenuItem value={3} primaryText="Black, Afro-Caribbean, or African American" />
+                <MenuItem value={4} primaryText="Latino"/>
+                <MenuItem value={5} primaryText="Native American or Alaskan Native" />
+                <MenuItem value={6} primaryText="White/Causasian"/>
+                <MenuItem value={7} primaryText="Middle Eastern or Arab American"/>
+              </SelectField>
+
+              <SelectField
+                floatingLabelText="Occupation"
+                value={this.state.occupation}
+                onChange={this.handleOccupationChange}
+                style={styles.selectFieldWidth}
+              >
+               <MenuItem value={null} primaryText="" />
+              {
+              occupation_list.map((item, index) => {
+                <MenuItem value={index} primaryText={item}/>
+              })  
+               }
+              </SelectField>
+              
+              <Checkbox
+              checked={this.state.gender ? true: false}
+              onCheck={this.updateGenderMale}
+                label="Male"
+                style={styles.checkbox}
+              />
+              <Checkbox
+              checked={this.state.gender ? false: true}
+              onCheck={this.updateGenderFemale}
+                label="Female"
+                style={styles.checkbox}
               />
               <Divider />
-              <TextField
-                type="text"
-                name="ocupation"
-                value={this.state.ocupation}
-                onChange={this.handleChange}
-                underlineShow={false}
-                style={formStyle}
-                hintText="Occupation"
+              <CardHeader
+              title="Are you religious?"
+              style={{margin:'auto'}}
               />
-              <Divider />
-      
+              <Checkbox
+                checked={this.state.religion ? true: false}
+                onCheck={this.updateReligionYesCheckBox}
+                  label="Yes"
+                  style={styles.checkbox}
+                />
+              <Checkbox
+                checked={this.state.religion ? false: true}
+                onCheck={this.updateReligionNoCheckBox}
+                  label="No"
+                  style={styles.checkbox}
+                />
+                <Divider/>
 
               <RaisedButton
                 style={{ margin: 20 }}
-                label="Submit"
+                label="Update Profile"
                 type="submit"
+                onClick={this.profileUpdateSubmit}
               />
             </form>
             </CardMedia>

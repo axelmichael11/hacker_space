@@ -59,11 +59,19 @@ class NavBar extends React.Component {
       loggedIn: this.props.loggedIn,
       openMenu: false,
     }
-    console.log('this is the props in the constructor', this.props, props)
+    this.titleRender = this.titleRender.bind(this)
   }
 
   componentWillMount() {
-    console.log('this.props.history on the NAVBAR', this.props.history)
+    console.log('this.props.history on the NAVBAR', this.props)
+  }
+
+  titleRender(){
+    let {pathname} = this.props.location;
+    if (pathname == "/settings"){
+      return "Edit Profile"
+    }
+    return "Poller"
   }
 
 
@@ -85,7 +93,7 @@ class NavBar extends React.Component {
       <div className="login-box">
         <MuiThemeProvider>
           <AppBar
-            title="Poller"
+            title={"Poller"}
             style={{
               backgroundColor: '#E8660C',
             }}
@@ -93,6 +101,7 @@ class NavBar extends React.Component {
               letterSpacing: '.2em',
               fontWeight: '800',
             }}
+            showMenuIconButton={false}
             iconElementRight={<NavMenu/>}
           />
         </MuiThemeProvider>

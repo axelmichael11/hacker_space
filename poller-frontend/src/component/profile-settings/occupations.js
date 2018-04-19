@@ -1,0 +1,1 @@
+module.exports = ["Agriculture","IT","Medical/Research","Finance/Accounting","Construction","Sales/Marketing/Business","Law","Retail","Restaurant/Food Services"]

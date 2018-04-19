@@ -10,8 +10,6 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import Paper from 'material-ui/Paper'
 
 
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-
 
 import {
     Step,
@@ -86,7 +84,7 @@ class HomePage extends React.Component {
     return (
         <div style={{maxWidth: 450, maxHeight: 600, margin: 'auto'}}>
         <MuiThemeProvider>
-            <Paper zDepth={2}>
+            <Paper style={{margin:'auto'}} zDepth={2}>
         <Stepper
           activeStep={stepIndex}
           linear={false}
