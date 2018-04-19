@@ -1,10 +1,10 @@
 
 
 import React from 'react'
-
+import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-
+import { NavLink } from 'react-router-dom'
 import LoginPage from '../login'
 
 import AuthLockButton from '../auth0-lock'
@@ -44,8 +44,8 @@ class LoggedInMenu extends React.Component{
         });
       }
       handleOnItemChange(value){
-        if (value = 1) this.props.history.push('/home')
-        if (value = 3) this.props.history.push('/settings')
+        // if (value = 1) this.props.push('/home')
+        // if (value = 3) this.props.push('/settings')
         // if (value = 4) this.props.logout()
       }
     
@@ -56,7 +56,7 @@ class LoggedInMenu extends React.Component{
       }
 
     render(){
-        console.log('this.PROPS on the MENu', this.props, this.context, this.context.history)
+        console.log('this.PROPS on the MENu', this.props, this.props.history)
         return (
             <div>
               <IconMenu
@@ -65,10 +65,10 @@ class LoggedInMenu extends React.Component{
                 onRequestChange={this.handleOnRequestChange}
                 onChange={this.handleOnItemChange}
               >
-                <MenuItem value="1" primaryText="Home" />
+                <MenuItem value="1" primaryText={"Home"} />
                 <MenuItem value="2" primaryText="Explore" />
                 <MenuItem value="3" primaryText="Settings" />
-                <AuthLockButton value="4" />
+                <AuthLockButton />
               </IconMenu>
               </div>
         )
@@ -83,4 +83,4 @@ export const mapDispatchToProps = dispatch => ({
 })
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoggedInMenu)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LoggedInMenu))

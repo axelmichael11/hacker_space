@@ -38,7 +38,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import ContentFilter from 'material-ui/svg-icons/content/filter-list';
 import FileFileDownload from 'material-ui/svg-icons/file/file-download';
-
+import {withRouter} from 'react-router-dom'
 
 import {
   Card,
@@ -78,7 +78,7 @@ class NavBar extends React.Component {
   }
 
   render() {
-    console.log('NAVBAR', this.state, this.props)
+    console.log('NAVBAR', this.state, this.props, this.props.history)
     return (
       <div className="login-box">
         <MuiThemeProvider>
@@ -93,7 +93,7 @@ class NavBar extends React.Component {
             }}
             iconElementRight={
               this.props.loggedIn ?
-              <LoggedInMenu history={this.props.history}/> :
+              <LoggedInMenu history={this.props.history} /> :
               <p> not logged in </p>
             }
           />
@@ -104,7 +104,6 @@ class NavBar extends React.Component {
 }
 
 export const mapStateToProps = state => ({
-  userProfile: state.userProfile,
   loggedIn: state.loggedIn
 })
 

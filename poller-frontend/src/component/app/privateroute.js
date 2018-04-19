@@ -1,29 +1,41 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Redirect, Route } from 'react-router-dom'
-
-const PrivateRoute = ({ component: Component, ...rest, loggedIn, redirectTo, checkAuthorization }) => {
-  // Add your own authentication on the below line.
-//   const {loggedIn} = this.props.loggedIn
-
+import HomePage from '../home-page'
+import ProfileSettings from '../profile-settings'
+import LandingContainer from '../landing-container'
+const PrivateRoute = ({ component: Component, loggedIn, redirectTo, ...rest }) => {
   return (
     <Route
-      {...rest}
-      render={(props) =>
-        loggedIn ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to={{ pathname: redirectTo, state: { from: props.location } }} />
-        )
-      }
-    />
-  )
+    {...rest}
+    render={(props) =>
+      loggedIn ? (
+        <Component {...props} />
+      ) : (
+        <Redirect to={{ pathname: redirectTo, state: { from: props.location } }} />
+      )
+    }
+  >
+    {/* <Route path="home" component={HomePage} />
+    <Route path="settings" component={ProfileSettings} /> */}
+  </Route> 
+  );
+};
+
+
+const renderMergedProps = (component, ...rest) => {
+  const finalProps = Object.assign({}, ...rest);
+  return (
+    React.createElement(component, finalProps)
+  );
 }
-export const mapStateToProps = state => ({
-    loggedIn: state.loggedIn
-  })
-  
-  export const mapDispatchToProps = dispatch => ({
-  })
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(PrivateRoute)
+
+const PropsRoute = ({ component, ...rest }) => {
+  return (
+    <Route {...rest} render={routeProps => {
+      return renderMergedProps(component, routeProps, rest);
+    }}/>
+  );
+}
+
+export default PrivateRoute

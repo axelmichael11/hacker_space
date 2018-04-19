@@ -1,13 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Auth0Lock from 'auth0-lock'
+import { createBrowserHistory } from 'history'
 
-import { Route, BrowserRouter, Switch } from 'react-router-dom'
+
+import { Route, BrowserRouter, Switch, Router } from 'react-router-dom'
 import LandingContainer from '../landing-container'
-import HomePage from '../home-page'
-import ProfileSettings from '../profile-settings'
+
 import LoginPage from '../login'
-import LoginRoute from './loginroute'
 
 import {
   localStorageProfileFetch,
@@ -16,6 +16,8 @@ import {
 import {storageLogin} from '../../action/storage-login-attempt'
 
 import PrivateRoute from './privateroute.js'
+
+
 class App extends React.Component {
   constructor(props){
     super(props)
@@ -26,7 +28,7 @@ class App extends React.Component {
   }
 
   componentWillMount(){
-    this.checkAuthorization();
+    // this.checkAuthorization();
   }
 
 
@@ -41,16 +43,17 @@ class App extends React.Component {
 
   render() {
     console.log('this.props on the app',this.props)
+    const history = createBrowserHistory()
     return (
       <div className="app">
         <BrowserRouter>
           <div>
-          <Switch>
-            <Route path="/login" component={LoginPage}/>
-              <PrivateRoute  loggedIn={this.props.loggedIn} path="/" redirectTo="/login"component={LandingContainer} />
-              <PrivateRoute loggedIn={this.props.loggedIn} path="/settings" redirectTo='/login' component={ProfileSettings} />
-              <PrivateRoute loggedIn={this.props.loggedIn} path="/home" redirectTo='/home' component={HomePage} />
-          </Switch>
+              <Switch>
+              <Route path="/login" render={()=> <LoginPage/>}/>
+              <PrivateRoute  loggedIn={this.props.loggedIn} path="/" redirectTo="/login" component={LandingContainer} />
+              {/* <PrivateRoute loggedIn={this.props.loggedIn} path="/settings" redirectTo='/login' component={ProfileSettings} />
+              <PrivateRoute loggedIn={this.props.loggedIn} path="/home" redirectTo='/login' component={HomePage} /> */}
+              </Switch>
           </div>
         </BrowserRouter>
       </div>

@@ -2,7 +2,7 @@
 import React from 'react'
 import Auth0Lock from 'auth0-lock'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 
 import {
     profileFetch,
@@ -80,7 +80,7 @@ class AuthLockButton extends React.Component {
       }
 
   render() {
-      console.log('LOGIN PAGE', this.state, this.props)
+      console.log('AUTH LOCK PAGE', this.state, this.props)
     return (
       <div>
         <MuiThemeProvider>
@@ -106,4 +106,4 @@ export const mapStateToProps = state => ({
     profileFetch: () => dispatch(profileFetch()),
   })
   
-  export default connect(mapStateToProps, mapDispatchToProps)(AuthLockButton)
+  export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AuthLockButton))

@@ -1,23 +1,46 @@
 
 import React from 'react'
-import LandingContainer from '../landing-container'
 import NavBar from '../nav-bar'
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+import Auth0Lock from 'auth0-lock'
+
+
+
+
+
+import LoginPage from '../login'
+
 
 class HomePage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {}
+   
   }
 
+  componentWillMount() {
+    console.log(this.props.history)
+  }
+  
+
   render() {
-    console.log('this.props on HOMEPAGE', this.props.history)
+    console.log('this is the state and props on HomePage', this.state, this.props, this.context)
     return (
       <div>
-        <NavBar history={this.props.history}/>
-       <p> Welcome to Poller! </p>
+        <div>Home Page!</div>
       </div>
     )
   }
 }
 
-export default HomePage
+export const mapStateToProps = state => ({
+    loggedIn: state.loggedIn
+  })
+  
+  export const mapDispatchToProps = dispatch => ({
+
+    
+  })
+  
+  export default connect(mapStateToProps, mapDispatchToProps)(HomePage)

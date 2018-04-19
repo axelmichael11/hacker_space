@@ -4,9 +4,10 @@ import NavBar from '../nav-bar'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Auth0Lock from 'auth0-lock'
+import {Route, Switch} from 'react-router-dom'
 
-
-
+import HomePage from '../home-page'
+import ProfileSettings from '../profile-settings'
 
 
 import LoginPage from '../login'
@@ -25,10 +26,14 @@ class LandingContainer extends React.Component {
   
 
   render() {
-    console.log('this is the state and props on LANDINGCONTAINER', this.state, this.props)
+    console.log('this is the state and props on HomePage', this.state, this.props, this.context)
     return (
       <div>
-      <NavBar/>
+        <NavBar />
+        <Switch>
+          <Route exactly pattern="home" component={HomePage} />
+          <Route exactly pattern="settings" component={ProfileSettings} />
+        </Switch>
       </div>
     )
   }

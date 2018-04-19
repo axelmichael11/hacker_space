@@ -1,5 +1,6 @@
 import React from 'react'
-import LandingContainer from '../landing-container'
+
+
 import AuthLockButton from  '../auth0-lock'
 class LoginPage extends React.Component {
   constructor(props) {
@@ -12,7 +13,7 @@ class LoginPage extends React.Component {
     return (
       <div>
           <p> You need to log in first! </p>
-        <AuthLockButton history={this.props.history}/>
+        <AuthLockButton/>
       </div>
     )
   }
