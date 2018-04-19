@@ -65,7 +65,6 @@ class ProfileSettings extends React.Component {
     console.log('profile SETINGS',this.state, this.props)
     return (
       <div className="profile-form">
-        <LandingContainer/>
         <MuiThemeProvider>
           <Dialog
               title="Welcome to Poller!"

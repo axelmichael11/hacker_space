@@ -10,6 +10,7 @@ import Auth0Lock from 'auth0-lock'
 
 
 import LoginPage from '../login'
+import SettingsButton from '../menu/settings-button.js'
 
 
 class HomePage extends React.Component {

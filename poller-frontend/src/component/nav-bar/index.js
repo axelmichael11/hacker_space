@@ -2,7 +2,7 @@
 import React from 'react'
 import Auth0Lock from 'auth0-lock'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, Route } from 'react-router-dom'
 
 
 //Methods
@@ -16,7 +16,7 @@ import * as util from '../../lib/util.js'
 
 
 
-import LoggedInMenu from '../menu/loggedin-menu'
+import NavMenu from '../menu/loggedin-menu'
 
 
 //Style
@@ -49,6 +49,8 @@ import {
   CardText,
 } from 'material-ui/Card'
 
+
+import SettingsButton from '../menu/settings-button.js'
 class NavBar extends React.Component {
   constructor(props) {
     super(props)
@@ -78,7 +80,7 @@ class NavBar extends React.Component {
   }
 
   render() {
-    console.log('NAVBAR', this.state, this.props, this.props.history)
+    console.log('NAVBAR', this.props)
     return (
       <div className="login-box">
         <MuiThemeProvider>
@@ -91,11 +93,7 @@ class NavBar extends React.Component {
               letterSpacing: '.2em',
               fontWeight: '800',
             }}
-            iconElementRight={
-              this.props.loggedIn ?
-              <LoggedInMenu history={this.props.history} /> :
-              <p> not logged in </p>
-            }
+            iconElementRight={<NavMenu/>}
           />
         </MuiThemeProvider>
       </div>
@@ -115,4 +113,4 @@ export const mapDispatchToProps = dispatch => ({
 //   profileUpdate: profile => dispatch(profileUpdate(profile)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavBar)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NavBar))

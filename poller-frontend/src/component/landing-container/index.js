@@ -26,14 +26,14 @@ class LandingContainer extends React.Component {
   
 
   render() {
-    console.log('this is the state and props on HomePage', this.state, this.props, this.context)
+    console.log('this is the state and props on LANDING CONTAINER', this.state, this.props, this.context)
     return (
       <div>
-        <NavBar />
-        <Switch>
-          <Route exactly pattern="home" component={HomePage} />
-          <Route exactly pattern="settings" component={ProfileSettings} />
-        </Switch>
+        <NavBar/>
+         <Switch>
+          <Route  path="/settings" component={ProfileSettings} />
+          <Route  path="/home" component={HomePage} />
+          </Switch>
       </div>
     )
   }
