@@ -1,10 +1,10 @@
 
 
 import React from 'react'
-
+import { withRouter, Route } from 'react-router'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-
+import { NavLink } from 'react-router-dom'
 import LoginPage from '../login'
 
 import AuthLockButton from '../auth0-lock'
@@ -24,11 +24,13 @@ import ContentFilter from 'material-ui/svg-icons/content/filter-list';
 import FileFileDownload from 'material-ui/svg-icons/file/file-download';
 
 
+import HomeButton from './home-button.js'
+import SettingsButton from './settings-button.js'
 
-class LoggedInMenu extends React.Component{
 
-    constructor(props) {
-        super(props)
+class NavMenu extends React.Component{
+    constructor(props, context) {
+        super(props, context)
         this.state = {
           openMenu: false,
         }
@@ -44,9 +46,8 @@ class LoggedInMenu extends React.Component{
         });
       }
       handleOnItemChange(value){
-        // if (value = 2) this.props.history.push('/explore')
-        if (value = 3) this.props.history.push('/settings')
-        if (value = 4) this.props.logout()
+        if (value = 3) this.props.history.push('settings')
+        // if (value = 4) this.props.logout()
       }
     
       handleOnRequestChange(value){
@@ -56,31 +57,31 @@ class LoggedInMenu extends React.Component{
       }
 
     render(){
-        console.log('this.PROPS on the MENu', this.props)
+        console.log('this.PROPS on the MENu', this.context, this.props.history)
         return (
             <div>
-              <IconMenu
-                iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-                open={this.state.openMenu}
-                onRequestChange={this.handleOnRequestChange}
-                onChange={this.handleOnItemChange}
-              >
-                <MenuItem value="1" primaryText="Home" />
-                <MenuItem value="2" primaryText="Explore" />
-                <MenuItem value="3" primaryText="Settings" />
-                <AuthLockButton value="4" />
-              </IconMenu>
-              </div>
+                  <IconMenu
+                  iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+                  open={this.state.openMenu}
+                  onRequestChange={this.handleOnRequestChange}
+                  onChange={this.handleOnItemChange}
+                >
+                  <HomeButton />
+                  <SettingsButton />
+                  <AuthLockButton />
+                </IconMenu>
+           </div>
         )
     }
 }
 
 export const mapStateToProps = state => ({
-  history: state.history
+  loggedIn: state.loggedIn,
+    userProfile: state.userProfile,
 })
 
 export const mapDispatchToProps = dispatch => ({
 })
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoggedInMenu)
+export default connect(mapStateToProps, mapDispatchToProps)(NavMenu)
