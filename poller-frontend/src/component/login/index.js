@@ -4,10 +4,25 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import Paper from 'material-ui/Paper'
 import Face from 'material-ui/svg-icons/action/face'
 import AuthLockButton from  '../auth0-lock'
+require('./style.scss')
 
 const styles = {
+  intro_container:{
+    maxWidth: 450, 
+    margin: 'auto',
+    marginBottom:20
+  },
+  login_container:{
+    maxWidth: 450, 
+    margin: 'auto'
+  },
   middle_icon: {
-    margin:'auto'
+    display:'center',
+    margin:'auto',
+    width: 50,
+    height: 50,
+    textAlign: 'center',
+    position: 'center'
   }
 }
 class LoginPage extends React.Component {
@@ -21,10 +36,14 @@ class LoginPage extends React.Component {
     return (
       <div>
         <MuiThemeProvider>
-          <Paper zdepth={2}>
-            <Face style={styles.middle_icon}/>
+          <Paper zdepth={2} style={styles.intro_container}>
+            <div id="parent" >
+              <div id="child" style={styles.middle_icon}>
+                <Face style={styles.middle_icon}/>
+              </div>
+            </div>
           </Paper>
-          <Paper zdepth={2}>
+          <Paper zdepth={2} style={styles.login_container}>
             <AuthLockButton/>
           </Paper>
           </MuiThemeProvider>

@@ -30,7 +30,7 @@ if (production)
 
 
   
-// console.log('this is the debug!!!!', __DEBUG__)
+console.log('this is the production!!!!', production)
 
 module.exports = {
   mode:'production',
@@ -55,14 +55,16 @@ module.exports = {
         test: /\.scss$/,
         loader: ExtractPlugin.extract({
           use: [
+            'sass-loader',
               'style-loader',
             'css-loader',
             'resolve-url-loader',
             {
               loader: 'sass-loader',
               options: {
-                sourceMap: true,
-                includePaths: [`${__dirname}/src/style`],
+                fallbackLoader: "style-loader",
+                // sourceMap: true,
+                includePaths: [`${__dirname}/style`],
               },
             },
           ],
