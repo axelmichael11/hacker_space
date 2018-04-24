@@ -80,14 +80,14 @@ class AuthLockButton extends React.Component {
       }
 
   render() {
-      console.log('AUTH LOCK PAGE', this.state, this.props)
+      console.log('AUTH LOCK BUTTON', this.state, this.props)
     return (
       <div>
         <MuiThemeProvider>
            <RaisedButton
             onClick={this.props.loggedIn ? this.logout : this.showLock}
-            label={this.props.loggedIn ? 'LOGOUT' : 'LOGIN'}
-            style={{ marginTop: '4px', marginRight: '10px' }}
+            label={this.props.loggedIn ? 'LOGOUT' : 'SIGNUP / LOGIN'}
+            style={{ marginTop: '4px', marginRight: '10px', backgroundColor:'#9C27B0' }}
           /> 
         </MuiThemeProvider>
 

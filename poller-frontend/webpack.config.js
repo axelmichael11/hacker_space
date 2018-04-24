@@ -51,25 +51,41 @@ module.exports = {
         exclude: /node_module/,
         loader: 'babel-loader',
       },
+      // {
+      //   test: /\.scss$/,
+      //   loader: ExtractPlugin.extract({
+      //     use: [
+      //       'sass-loader',
+      //         'style-loader',
+      //       'css-loader',
+      //       'resolve-url-loader',
+      //       {
+      //         loader: 'sass-loader',
+      //         options: {
+      //           fallbackLoader: "style-loader",
+      //           // sourceMap: true,
+      //           includePaths: [`${__dirname}/style`],
+      //         },
+      //       },
+      //     ],
+      //   }),
+      // },
+      //experiment...
       {
-        test: /\.scss$/,
-        loader: ExtractPlugin.extract({
-          use: [
-            'sass-loader',
-              'style-loader',
-            'css-loader',
-            'resolve-url-loader',
-            {
-              loader: 'sass-loader',
-              options: {
-                fallbackLoader: "style-loader",
-                // sourceMap: true,
-                includePaths: [`${__dirname}/style`],
-              },
-            },
-          ],
-        }),
+        test: /\.s?css$/,
+        use: ['style-loader', 'css-loader',
+        {
+                  loader: 'sass-loader',
+                  options: {
+                    fallbackLoader: "style-loader",
+                    sourceMap: true,
+                    includePaths: [`${__dirname}/src/style`],
+                  },
+                },
+      ]          
       },
+
+      
       {
         test: /\.icon.svg$/,
         loader: 'raw-loader',

@@ -33,11 +33,22 @@ import AppBar from 'material-ui/AppBar'
 
 
 const styles = {
+  title:{
+    fontSize: 12,
+    fontFamily: "Play",
+    margin:'auto'
+  },
+  text :{
+    fontSize: 8,
+    fontFamily: "Play",
+    margin:'auto'
+  },
   block: {
     maxWidth: 250,
   },
   checkbox: {
     marginBottom: 16,
+    marginLeft: 10,
   },
   selectFieldWidth: {
     width: 150,
@@ -165,7 +176,7 @@ class ProfileSettings extends React.Component {
           <Card>
           <CardHeader
               title="Edit Profile"
-              style={{margin:'auto'}}
+              style={styles.text}
             />
           <CardHeader
               title={this.props.userProfile.nickname}

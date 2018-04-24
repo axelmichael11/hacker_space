@@ -17,6 +17,9 @@ import {storageLogin} from '../../action/storage-login-attempt'
 
 import PrivateRoute from './privateroute.js'
 
+import GettingStartedPage from '../getting-started'
+
+
 
 class App extends React.Component {
   constructor(props){
@@ -49,6 +52,7 @@ class App extends React.Component {
         <BrowserRouter>
           <div>
               <Switch>
+              <Route path="/gettingstarted" render={()=> <GettingStartedPage/>}/>
               <Route path="/login" render={()=> <LoginPage/>}/>
               <PrivateRoute  loggedIn={this.props.loggedIn} path="/" redirectTo="/login" component={LandingContainer} />
               {/* <PrivateRoute loggedIn={this.props.loggedIn} path="/settings" redirectTo='/login' component={ProfileSettings} />
