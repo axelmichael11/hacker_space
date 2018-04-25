@@ -22,7 +22,8 @@ import Avatar from 'material-ui/Avatar'
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton'
 
-
+import ChatIcon from 'material-ui/svg-icons/communication/chat'
+import ClearIcon from 'material-ui/svg-icons/content/clear'
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -30,7 +31,8 @@ import country_list from './countries.js'
 import occupation_list from './occupations.js'
 import AppBar from 'material-ui/AppBar'
 
-
+import MaterialStyles from '../../style/material-ui-style'
+import Snackbar from 'material-ui/Snackbar';
 
 const styles = {
   title:{
@@ -51,7 +53,7 @@ const styles = {
     marginLeft: 10,
   },
   selectFieldWidth: {
-    width: 150,
+    width: 250,
     display:'inline-block',
     margin:'auto'
   },
@@ -62,18 +64,30 @@ class ProfileSettings extends React.Component {
   constructor(props) {
     super(props)
     console.log('this is hte props on profile settings', props)
-    this.state = {...this.props.userProfile, openProfileAlert:false, country: this.props.userProfile.country}
-    this.handleChange = this.handleChange.bind(this)
+    this.state = {...this.props.userProfile, 
+      profileUpdateAlert:false,
+      maleCheckBox: this.props.userProfile.gender=="M" ? true : false,
+      femaleCheckBox: this.props.userProfile.gender=="F" ? true : false,
+      religionYesCheckBox: this.props.religion ? true : false,
+      religionNoCheckBox: (this.props.religion==false) ? true : false,
+      ageErrorText:'',
+      updatedAutoHideDuration: 4000,
+      updatedMessage: 'Profile Successfully Updated',
+      updatedOpen: false,
+    }
     this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleOpenCreateProfileAlert = this.handleOpenCreateProfileAlert.bind(this)
+    this.handleUpdateAlert = this.handleUpdateAlert.bind(this)
     this.handleCountryChange = this.handleCountryChange.bind(this)
     this.handleEthnicityChange = this.handleEthnicityChange.bind(this)
-    this.updateGenderMale = this.updateGenderMale.bind(this)
-    this.updateGenderFemale = this.updateGenderFemale.bind(this)
+    this.updateMaleCheckBox = this.updateMaleCheckBox.bind(this)
+    this.updateFemaleCheckBox = this.updateFemaleCheckBox.bind(this)
     this.handleOccupationChange = this.handleOccupationChange.bind(this)
     this.updateReligionNoCheckBox = this.updateReligionNoCheckBox.bind(this)
     this.updateReligionYesCheckBox = this.updateReligionYesCheckBox.bind(this)
-    this.profileUpdateSubmit = this.profileUpdateSubmit.bind(this)
+    this.profileUpdateSubmit = this.profileUpdateSubmit.bind(this);
+    this.handleAgeChange = this.handleAgeChange.bind(this)
+    this.renderAges = this.renderAges.bind(this)
+    this.handleUpdatedSnackBarRequest = this.handleUpdatedSnackBarRequest.bind(this)
   }
 
   componentWillMount() {
@@ -81,15 +95,13 @@ class ProfileSettings extends React.Component {
   }
 
   
-  handleOpenCreateProfileAlert(){
-    this.setState({openProfileAlert: !this.state.openProfileAlert});
+  handleUpdateAlert(){
+    this.setState({profileUpdateAlert: !this.state.profileUpdateAlert});
   };
 
-
-  handleChange(e) {
-    let { value, name, files } = e.target
-    this.setState({ [name]: value })
-    
+  handleAgeChange(event, index, value) {
+    console.log('this should be the value now!', value)
+    this.setState({ age: value })
   }
 
   handleSubmit(e) {
@@ -108,45 +120,145 @@ class ProfileSettings extends React.Component {
   }
 
   handleOccupationChange(event,index,value){
-    this.setState({occupation: value})
+    this.setState({profession: value})
   }
 
-  updateGenderMale() {
+  updateMaleCheckBox() {
     this.setState((oldState) => {
-      return {
-        gender: !oldState.gender,
-      };
-    });
-  }
-  updateGenderFemale() {
-    this.setState((oldState) => {
-      return {
-        gender: !oldState.gender,
-      };
+      if (oldState.femaleCheckBox) {
+        return {
+          femaleCheckBox: !oldState.femaleCheckBox,
+          maleCheckBox: !oldState.maleCheckBox,
+          gender: "M",
+        };
+      }
+      if (oldState.maleCheckBox) {
+        return {
+        maleCheckBox: !oldState.maleCheckBox,
+          gender: null,
+        }
+      }
+      if (!oldState.maleCheckBox) {
+        return {
+          maleCheckBox: !oldState.maleCheckBox,
+          gender: "M",
+        }
+      }
     });
   }
 
-  updateReligionYesCheckBox() {
+
+  updateFemaleCheckBox() {
     this.setState((oldState) => {
-      return {
-        religion: !oldState.checked,
-      };
+      if (oldState.maleCheckBox) {
+        return {
+          femaleCheckBox: !oldState.femaleCheckBox,
+          maleCheckBox: !oldState.maleCheckBox,
+          gender: "F",
+        };
+      }
+      if (oldState.femaleCheckBox) {
+        return {
+        femaleCheckBox: !oldState.femaleCheckBox,
+          gender: null,
+        }
+      }
+      if (!oldState.femaleCheckBox) {
+        return {
+          femaleCheckBox: !oldState.femaleCheckBox,
+          gender: "F",
+        }
+      }
     });
   }
+
+  updateReligionYesCheckBox(){
+    this.setState((oldState) => {
+      if (oldState.religionNoCheckBox) {
+        return {
+          religionYesCheckBox: !oldState.religionYesCheckBox,
+          religionNoCheckBox: !oldState.religionNoCheckBox,
+          religion: true,
+        };
+      }
+      if (oldState.religionYesCheckBox) {
+        return {
+          religionYesCheckBox: !oldState.religionYesCheckBox,
+          religion: null,
+        }
+      }
+      if (!oldState.religionYesCheckBox) {
+        return {
+          religionYesCheckBox: !oldState.religionYesCheckBox,
+          religion: true,
+        }
+      }
+    });
+  }
+
   updateReligionNoCheckBox(){
     this.setState((oldState) => {
-      return {
-        religion: !oldState.checked,
-      };
+      if (oldState.religionYesCheckBox) {
+        return {
+          religionYesCheckBox: !oldState.religionYesCheckBox,
+          religionNoCheckBox: !oldState.religionNoCheckBox,
+          religion: false,
+        };
+      }
+      if (oldState.religionNoCheckBox) {
+        return {
+          religionNoCheckBox: !oldState.religionNoCheckBox,
+          religion: null,
+        }
+      }
+      if (!oldState.religionNoCheckBox) {
+        return {
+          religionNoCheckBox: !oldState.religionNoCheckBox,
+          religion: false,
+        }
+      }
     });
   }
   profileUpdateSubmit(){
-    let {age, ethnicity, occupation, gender, country, religion} = this.state;
-    this.profileToUpdate({age, ethnicity, occupation, gender, country, religion})
+    let {age, ethnicity, profession, gender, country, religion} = this.state;
+    this.props.profileToUpdate({age, ethnicity, profession, gender, country, religion})
+    .then((profile)=>{
+      this.handleUpdatedSnackBarRequest()
+      this.handleUpdateAlert()
+    })
+  }
+
+  renderAges(){
+    let ages = Array.from({length: 100}, (v, k) => k+1);
+    return ages.map((age)=>{
+      return (
+      <MenuItem value={age} primaryText={age} />
+      )
+    })
+  }
+
+  handleUpdatedSnackBarRequest(){
+    this.setState((oldState)=>{
+      return {
+        updatedOpen: !oldState.updatedOpen,
+      }
+    });
   }
 
 
   render() {
+    const actions = [<FlatButton
+      label="Cancel"
+      primary={true}
+      onClick={this.handleUpdateAlert}
+    />,
+    <FlatButton
+      label="Update Information"
+      primary={true}
+      onClick={this.profileUpdateSubmit}
+    />]
+
+
     const underlineFocus = {
       borderBottomColor: '#3AB08F',
     }
@@ -160,42 +272,48 @@ class ProfileSettings extends React.Component {
         <MuiThemeProvider>
           <div>
           <Dialog
-              title="Welcome to Poller!"
-              actions={<FlatButton
-                label="OK"
-                primary={true}
-                onClick={this.handleOpenCreateProfileAlert}
-              />}
+              title="Are You Sure?"
+              actions={actions}
               modal={false}
-              open={this.state.openProfileAlert}
-              onRequestClose={this.handleOpenCreateProfileAlert}
+              open={this.state.profileUpdateAlert}
             >
-              Welcome to Poller! We didn't find a profile for you... Before you get started you have to fill out a profile!
+              This information can be updated or deleted at anytime. Do you still want to update your information?
           </Dialog>
           </div>
           <Card>
           <CardHeader
               title="Edit Profile"
               style={styles.text}
+             
             />
+            <CardText>
+            Update your profile information here! None of these fields are required,
+            and no demographic information specific to you is shown in the results of a poll.
+            These can be updated as often as necessary. Why not make this app a little more interesting?
+
+          </CardText>
           <CardHeader
               title={this.props.userProfile.nickname}
               subtitle={this.props.userProfile.email}
               avatar={this.props.userProfile.picture}
             />
-            <CardMedia>
+            <CardMedia style={{margin:10}}>
             <form onSubmit={this.handleSubmit}>
               <Divider />
-              <TextField
-                type="text"
-                name="Age"
-                value={this.age}
-                onChange={this.handleChange}
-                underlineShow={false}
-                rows={1}
-                style={formStyle}
-                hintText="Age"
-              />
+              <SelectField
+                floatingLabelText="Age"
+                value={this.state.age}
+                onChange={this.handleAgeChange}
+                style={styles.selectFieldWidth}
+              >
+               <MenuItem value={null} primaryText="" />
+               {
+                this.renderAges()
+              }
+
+              </SelectField>
+
+
               <Divider />
               <SelectField
                 floatingLabelText="Country"
@@ -228,27 +346,27 @@ class ProfileSettings extends React.Component {
 
               <SelectField
                 floatingLabelText="Occupation"
-                value={this.state.occupation}
+                value={this.state.profession}
                 onChange={this.handleOccupationChange}
                 style={styles.selectFieldWidth}
               >
                <MenuItem value={null} primaryText="" />
               {
-              occupation_list.map((item, index) => {
-                <MenuItem value={index} primaryText={item}/>
+              occupation_list.map((item, i) => {
+                return <MenuItem value={i} primaryText={item}/>
               })  
                }
               </SelectField>
               
               <Checkbox
-              checked={this.state.gender ? true: false}
-              onCheck={this.updateGenderMale}
+              checked={this.state.maleCheckBox}
+              onCheck={this.updateMaleCheckBox}
                 label="Male"
                 style={styles.checkbox}
               />
               <Checkbox
-              checked={this.state.gender ? false: true}
-              onCheck={this.updateGenderFemale}
+              checked={this.state.femaleCheckBox}
+              onCheck={this.updateFemaleCheckBox}
                 label="Female"
                 style={styles.checkbox}
               />
@@ -258,13 +376,13 @@ class ProfileSettings extends React.Component {
               style={{margin:'auto'}}
               />
               <Checkbox
-                checked={this.state.religion ? true: false}
+                checked={this.state.religionYesCheckBox}
                 onCheck={this.updateReligionYesCheckBox}
                   label="Yes"
                   style={styles.checkbox}
                 />
               <Checkbox
-                checked={this.state.religion ? false: true}
+                checked={this.state.religionNoCheckBox}
                 onCheck={this.updateReligionNoCheckBox}
                   label="No"
                   style={styles.checkbox}
@@ -275,11 +393,19 @@ class ProfileSettings extends React.Component {
                 style={{ margin: 20 }}
                 label="Update Profile"
                 type="submit"
-                onClick={this.profileUpdateSubmit}
+                onClick={this.handleUpdateAlert}
               />
             </form>
             </CardMedia>
           </Card>
+          <Snackbar
+          open={this.state.updatedOpen}
+          message={this.state.updatedMessage}
+          action={null}
+          autoHideDuration={this.state.updatedAutoHideDuration}
+          onActionClick={this.handleUpdatedSnackBarRequest}
+          onRequestClose={this.handleUpdatedSnackBarRequest}
+        />
         </MuiThemeProvider>
       </div>
     )
@@ -291,7 +417,7 @@ export const mapStateToProps = state => ({
 })
 
 export const mapDispatchToProps = dispatch => ({
-  profileUpdate: (profileToUpdate)=> dispatch(profileUpdate(profileToUpdate)),
+  profileToUpdate: (profile)=> dispatch(profileUpdate(profile)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileSettings)
