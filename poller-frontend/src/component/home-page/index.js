@@ -84,49 +84,8 @@ class HomePage extends React.Component {
     return (
         <div style={{maxWidth: 450, maxHeight: 600, margin: 'auto'}}>
         <MuiThemeProvider>
-            <Paper style={{margin:'auto'}} zDepth={2}>
-        <Stepper
-          activeStep={stepIndex}
-          linear={false}
-          orientation="vertical"
-        >
-          <Step>
-            <StepButton onClick={() => this.setState({stepIndex: 0})}>
-              Submit your Profile Information
-            </StepButton>
-            <StepContent>
-              <p>
-                For each ad campaign that you create, you can control how much
-                you're willing to spend on clicks and conversions, which networks
-                and geographical locations you want your ads to show on, and more.
-              </p>
-              {this.renderStepActions(0)}
-            </StepContent>
-          </Step>
-          <Step>
-            <StepButton onClick={() => this.setState({stepIndex: 1})}>
-              Create an ad group
-            </StepButton>
-            <StepContent>
-              <p>An ad group contains one or more ads which target a shared set of keywords.</p>
-              {this.renderStepActions(1)}
-            </StepContent>
-          </Step>
-          <Step>
-            <StepButton onClick={() => this.setState({stepIndex: 2})}>
-              Create an ad
-            </StepButton>
-            <StepContent>
-              <p>
-                Try out different ad text to see what brings in the most customers,
-                and learn how to enhance your ads using features like ad extensions.
-                If you run into any problems with your ads, find out how to tell if
-                they're running and how to resolve approval issues.
-              </p>
-              {this.renderStepActions(2)}
-            </StepContent>
-          </Step>
-        </Stepper>
+          <Paper style={{margin:'auto'}} zDepth={2}>
+        
         </Paper>
         </MuiThemeProvider>
       </div>

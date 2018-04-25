@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { connect } from 'react-redux'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import Paper from 'material-ui/Paper'
 
@@ -98,7 +98,12 @@ class GettingStartedPage extends React.Component {
       return (
           <div style={{maxWidth: 450, maxHeight: 600, margin: 'auto'}}>
           <MuiThemeProvider>
-          <p id="sub-title">Welcome to Poller!</p>
+          <Paper style={{margin:'auto', textAlign:'center', marginBottom: 15}} zDepth={2}>
+          <div id="parent">
+            <p id="sub-title">Welcome to Poller!</p>
+          </div>
+            <AuthLockButton style={{margin: 15}}/>
+          </Paper>
               <Paper style={{margin:'auto'}} zDepth={2}>
           <Stepper
             activeStep={stepIndex}
@@ -148,8 +153,8 @@ class GettingStartedPage extends React.Component {
                   or post your own questions to see what other users are thinking!
                   For storage purposes, you are only allowed up to three questions for one account.
                   Sign up Here!
-                  <AuthLockButton/>
                 </p>
+                
                 {this.renderStepActions(2)}
               </StepContent>
             </Step>
@@ -161,4 +166,15 @@ class GettingStartedPage extends React.Component {
     }
   }
 
-export default GettingStartedPage
+
+  
+export const mapStateToProps = state => ({
+    loggedIn: state.loggedIn
+  })
+  
+  export const mapDispatchToProps = dispatch => ({
+
+    
+  })
+  
+  export default connect(mapStateToProps, mapDispatchToProps)(GettingStartedPage)
