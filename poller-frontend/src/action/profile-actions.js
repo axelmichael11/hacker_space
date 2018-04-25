@@ -55,10 +55,11 @@ export const profileUpdate = (profile) => (dispatch, getState) => {
       .then(res => {
         try {
           let parsed = JSON.parse(res.text)
-        console.log('successfully created user in DB',parsed)
-        if(parsed) return parsed
+        console.log('successfully updated user in DB',parsed)
+        dispatch(storeUserProfile(parsed))
+        return parsed
         } catch (err) {
-          console.log(err)
+          console.log('THIS IS THE ERROR from update repsonse',err)
         }
       })
       .catch(err => console.log(err))
