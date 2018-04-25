@@ -59,13 +59,13 @@ class LoginPage extends React.Component {
                 <SwapVert style={styles.middle_icon}/>
             </div>
 
-            
+
             <NavigateGettingStartedButton/>
 
 
           </Paper>
           <Paper zdepth={2} style={styles.login_container}>
-            <AuthLockButton/>
+            <AuthLockButton style={{margin: 15}}/>
           </Paper>
           </MuiThemeProvider>
 
