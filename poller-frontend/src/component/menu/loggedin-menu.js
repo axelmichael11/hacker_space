@@ -26,7 +26,7 @@ import FileFileDownload from 'material-ui/svg-icons/file/file-download';
 
 import HomeButton from './home-button.js'
 import SettingsButton from './settings-button.js'
-
+import PollCreateButton from './poll-create-button.js'
 
 class NavMenu extends React.Component{
     constructor(props, context) {
@@ -46,7 +46,7 @@ class NavMenu extends React.Component{
         });
       }
       handleOnItemChange(value){
-        if (value = 3) this.props.history.push('settings')
+        // if (value = 3) this.props.history.push('settings')
         // if (value = 4) this.props.logout()
       }
     
@@ -67,6 +67,7 @@ class NavMenu extends React.Component{
                   onChange={this.handleOnItemChange}
                 >
                   <HomeButton />
+                  <PollCreateButton/>
                   <SettingsButton />
                   <AuthLockButton />
                 </IconMenu>

@@ -8,7 +8,7 @@ import {Route, Switch} from 'react-router-dom'
 
 import HomePage from '../home-page'
 import ProfileSettings from '../profile-settings'
-
+import PollCreatePage from '../poll-create'
 
 import LoginPage from '../login'
 
@@ -33,6 +33,7 @@ class LandingContainer extends React.Component {
          <Switch>
           <Route  path="/settings" component={ProfileSettings} />
           <Route  path="/home" component={HomePage} />
+          <Route path="/pollcreate" component={PollCreatePage}/>
           </Switch>
       </div>
     )
