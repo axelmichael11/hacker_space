@@ -1,6 +1,6 @@
-export const MaterialStyles = {
+module.exports = {
     title: {
-        fontSize: 12,
+        fontSize: 40,
         fontFamily: "Play",
         margin:'auto'
     },
@@ -8,8 +8,25 @@ export const MaterialStyles = {
 
     },
     text: {
-        fontSize: 10,
+        fontSize: 20,
         fontFamily: "Play",
         margin:'auto'
-    }
+    },
+      block: {
+        maxWidth: 250,
+      },
+      checkbox: {
+        marginBottom: 16,
+        marginLeft: 10,
+        fontFamily: 'Play',
+        fontSize: 20,
+      },
+      selectFieldWidth: {
+        width: 250,
+        display:'inline-block',
+        margin:'auto',
+        fontFamily: 'Play',
+        fontSize: 20,
+      },
+
 }
