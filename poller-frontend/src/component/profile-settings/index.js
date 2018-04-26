@@ -36,7 +36,7 @@ import Snackbar from 'material-ui/Snackbar';
 
 const styles = {
   title:{
-    fontSize: 12,
+    fontSize: 20,
     fontFamily: "Play",
     margin:'auto'
   },
@@ -68,8 +68,8 @@ class ProfileSettings extends React.Component {
       profileUpdateAlert:false,
       maleCheckBox: this.props.userProfile.gender=="M" ? true : false,
       femaleCheckBox: this.props.userProfile.gender=="F" ? true : false,
-      religionYesCheckBox: this.props.religion ? true : false,
-      religionNoCheckBox: (this.props.religion==false) ? true : false,
+      religionYesCheckBox: this.props.userProfile.religion ? true : false,
+      religionNoCheckBox: this.props.userProfile.religion==false ? true : false,
       ageErrorText:'',
       updatedAutoHideDuration: 4000,
       updatedMessage: 'Profile Successfully Updated',
@@ -266,7 +266,7 @@ class ProfileSettings extends React.Component {
     const formStyle = {
       marginLeft: 3,
     }
-    console.log('profile SETINGS STATE',occupation_list, this.state, 'pROPS',this.props.userProfile)
+    console.log('profile SETINGS ',MaterialStyles)
     return (
       <div className="profile-form" style={{maxWidth: 450, margin: 'auto'}}>
         <MuiThemeProvider>
@@ -280,22 +280,23 @@ class ProfileSettings extends React.Component {
               This information can be updated or deleted at anytime. Do you still want to update your information?
           </Dialog>
           </div>
-          <Card>
+          <Card style={MaterialStyles.title}>
           <CardHeader
               title="Edit Profile"
-              style={styles.text}
+              style={MaterialStyles.title}
              
             />
-            <CardText>
-            Update your profile information here! None of these fields are required,
+            <CardText style={MaterialStyles.text}>
+            Update your profile information if you want this information to be anonomysously submitted when
+            answering questions! None of these fields are required,
             and no demographic information specific to you is shown in the results of a poll.
             These can be updated as often as necessary. Why not make this app a little more interesting?
-
           </CardText>
           <CardHeader
               title={this.props.userProfile.nickname}
               subtitle={this.props.userProfile.email}
               avatar={this.props.userProfile.picture}
+              style={MaterialStyles.title}
             />
             <CardMedia style={{margin:10}}>
             <form onSubmit={this.handleSubmit}>
@@ -304,7 +305,7 @@ class ProfileSettings extends React.Component {
                 floatingLabelText="Age"
                 value={this.state.age}
                 onChange={this.handleAgeChange}
-                style={styles.selectFieldWidth}
+                style={MaterialStyles.selectFieldWidth}
               >
                <MenuItem value={null} primaryText="" />
                {
@@ -319,7 +320,7 @@ class ProfileSettings extends React.Component {
                 floatingLabelText="Country"
                 value={this.state.country}
                 onChange={this.handleCountryChange}
-                style={styles.selectFieldWidth}
+                style={MaterialStyles.selectFieldWidth}
               >
                <MenuItem value={null} primaryText="" />
                {
@@ -332,7 +333,7 @@ class ProfileSettings extends React.Component {
                 floatingLabelText="Ethnicity"
                 value={this.state.ethnicity}
                 onChange={this.handleEthnicityChange}
-                style={styles.selectFieldWidth}
+                style={MaterialStyles.selectFieldWidth}
               >
                 <MenuItem value={null} primaryText="" />
                 <MenuItem value={1} primaryText="Asian" />
@@ -348,7 +349,7 @@ class ProfileSettings extends React.Component {
                 floatingLabelText="Occupation"
                 value={this.state.profession}
                 onChange={this.handleOccupationChange}
-                style={styles.selectFieldWidth}
+                style={MaterialStyles.selectFieldWidth}
               >
                <MenuItem value={null} primaryText="" />
               {
@@ -362,30 +363,30 @@ class ProfileSettings extends React.Component {
               checked={this.state.maleCheckBox}
               onCheck={this.updateMaleCheckBox}
                 label="Male"
-                style={styles.checkbox}
+                style={MaterialStyles.checkbox}
               />
               <Checkbox
               checked={this.state.femaleCheckBox}
               onCheck={this.updateFemaleCheckBox}
                 label="Female"
-                style={styles.checkbox}
+                style={MaterialStyles.checkbox}
               />
               <Divider />
               <CardHeader
               title="Are you religious?"
-              style={{margin:'auto'}}
+              style={MaterialStyles.title}
               />
               <Checkbox
                 checked={this.state.religionYesCheckBox}
                 onCheck={this.updateReligionYesCheckBox}
                   label="Yes"
-                  style={styles.checkbox}
+                  style={MaterialStyles.checkbox}
                 />
               <Checkbox
                 checked={this.state.religionNoCheckBox}
                 onCheck={this.updateReligionNoCheckBox}
                   label="No"
-                  style={styles.checkbox}
+                  style={MaterialStyles.checkbox}
                 />
                 <Divider/>
 
@@ -394,6 +395,7 @@ class ProfileSettings extends React.Component {
                 label="Update Profile"
                 type="submit"
                 onClick={this.handleUpdateAlert}
+                style={MaterialStyles.text}
               />
             </form>
             </CardMedia>
