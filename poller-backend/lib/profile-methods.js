@@ -4,8 +4,8 @@ const superagent = require('superagent');
 const profile = {};
 
 profile.userProfileValidate = function(incomingProfile){
-    let {userName, gender, age, ethnicity, profession, country, religous} = incomingProfile;
-    let profile = Object.assign({},{userName, gender, age, profession, country, religous});
+    let {gender, age, ethnicity, profession, country, religion} = incomingProfile;
+    let profile = Object.assign({},{ethnicity,gender, age, profession, country, religion});
     for(var i in profile){
         if (profile[i] === undefined){
             profile[i] = null;
@@ -17,9 +17,9 @@ profile.userProfileValidate = function(incomingProfile){
 
 profile.formatSendProfile = function(rows,authProfile){
   console.log('ROWS', rows)
-  let {gender, age, ethnicity, profession, country, religous} = rows;
-  let {username, picture, email} = authProfile;
-  let returnedProfile = Object.assign({},{gender, age, profession, country, religous, username, email, picture});
+  let {gender, age, ethnicity, profession, country, religion} = rows;
+  let {nickname, picture, email} = authProfile;
+  let returnedProfile = Object.assign({},{gender, age, profession, country, ethnicity, religion, nickname, email, picture});
   return returnedProfile
 }
 
@@ -30,7 +30,7 @@ profile.getInfo = function(token){
         .then((response)=>{
           return response.body
         })
-        .catch(err=> console.log('ERROEOOWEFER',err))
+        .catch(err=> console.log('error',err))
 }
 
 
