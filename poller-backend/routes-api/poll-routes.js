@@ -10,7 +10,7 @@ const env = {
       AUTH0_SIGNUP_CALLBACK_URL: process.env.AUTH0_SIGNUP_CALLBACK_URL,
       AUTH0_CLIENT_SECRET: process.env.AUTH0_CLIENT_SECRET,
       uid: process.env.uid,
-      questions_table: process.env.questions_table
+      questions_table: process.env.questions_table,
   };
 
 
@@ -26,43 +26,49 @@ const queries = require('../queries/auth');
 
 
   app.post('/api/poll', checkJwt, (req,res) => {
-    if (!req.headers.authorization ||!req.body) {
+    if (!req.headers.authorization || !req.body) {
       res.json({message:'no authorization token  or body found!'})
     } else {
-      console.log('this is the body',req.body)
-      poll.userPollValidate(req.body)
-      .then((poll)=>{
-      let validatedPoll = poll
+      
+      let validatedPoll = poll.userPollValidate(req.body)
       let token = req.headers.authorization
       profile.getInfo(token)
       .then(user => {
+        console.log('this is the user!', user,'this is the poll data', validatedPoll)
         if (!user[`${env.uid}`]) {
           res.json({error:'there was an error identifying you'})
         } else {
-          client.query(`INSERT INTO ${env.questions_table} (author_id, question, subject) VALUES($1, $2, $3) RETURNING id`, 
+          client.query(`
+          WITH poll AS (INSERT INTO polls (author_id, author_username, subject, question)
+          VALUES ($1, $2, $3, $4) RETURNING id, author_id)
+          UPDATE poller_data SET polls_id = array_append(polls_id, poll.id) 
+          FROM poll WHERE poller_data.id=poll.author_id;
+          `,
           [user[`${env.uid}`],
+          user.nickname,
+          validatedPoll.pollSubject,
           validatedPoll.pollQuestion,
-          validatedPoll.pollSubject
           ],
           function(err, success) {
-            if (err) res.status(500).json({message:"unsuccessful in putting in data..."})
-            if (success) {
-            console.log('DB query success', success.rows[0]);
-              let sendProfile = profile.formatSendProfile(success.rows[0], user)
-              res.json(sendProfile)
+            if (success && success.command==='UPDATE' && success.rowCount== 1) {
+              res.status(200).json('Success')
             } else {
-              res.status(500).json({message:"unsuccessful in putting in data..."})
+              if (err.name =='error' && err.constraint=='poller_data_polls_id_check') {
+                console.log('err.name', err.name)
+                res.status(550).send(err)
+              } else {
+                res.status(500).send({message: err.name})
+              }
             }
           })
         }
       })
-      .catch(err=>res.json({error:err}))
-
-
-      // console.log('this is the validated poll', validatedPoll)
-
-
+      .catch(err=>{
+        console.log('no user found sdfsdfsdfsdfsd', err )
+        res.json({error:err})
       })
+      // console.log('this is the validated poll', validatedPoll)
+   
     }
   })
 

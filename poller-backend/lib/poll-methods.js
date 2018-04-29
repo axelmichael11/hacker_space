@@ -16,6 +16,7 @@ poll.userPollValidate = function(incomingPoll){
     if (!poll.pollQuestion || poll.pollQuestion.length < 10 || typeof poll.pollQuestion !== 'string'){
         throw new Error('invalid question type or length, or nonexistant property');
     }
+    console.log('successfully validated pool,', poll)
     return poll
 }
 
