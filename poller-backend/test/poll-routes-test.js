@@ -13,8 +13,6 @@ const AUTH0_ID = process.env.AUTH0_ID;
 
 const __AUTH0_AUDIENCE__ = process.env.AUTH0_AUDIENCE
 
-const DB_UID = process.env.DB_UID;
-
 describe('testing poll validation...', () => {
   before(server.start)
   after(server.stop)
@@ -30,12 +28,11 @@ describe('testing poll validation...', () => {
         .then(res => {
           try {
             let parsed = JSON.parse(res.text)
-          console.log('here is the parsed',parsed);
+          
           expect(res.status).toEqual(500)
           expect(parsed).toEqual('Error: invalid nickname type or length, or nonexistant property')
           return parsed
           } catch (err) {
-            console.log('THIS IS THE ERROR from posting a poll',err)
           }
         })
         .catch(err => console.log(err))
@@ -43,7 +40,6 @@ describe('testing poll validation...', () => {
 
   it('this should have errors for having incorrect subject lenght', ()=>{
     let poll = {nickname:'helloo', pollSubject:'11', pollQuestion:'alsdfsdfsdlfsdfalskdjfasd'}
-    console.log('this is the APIR TOKEN', API_TOKEN)
     return superagent.post(`${API_URL}/api/poll`)
         .set('Authorization',`Bearer ${API_TOKEN}`)
         .set('accept', 'application/json')
@@ -52,11 +48,9 @@ describe('testing poll validation...', () => {
         .then(res => {
           try {
             let parsed = JSON.parse(res.text)
-          console.log('here is the parsed',parsed);
           expect(res.status).toEqual(500)
           expect(parsed).toEqual('Error: invalid subject type or length, or nonexistant property')
           } catch (err) {
-            console.log('THIS IS THE ERROR from posting a poll',err)
           }
         })
         .catch(err => console.log(err))
@@ -64,7 +58,6 @@ describe('testing poll validation...', () => {
 
   it('this should have errors for having incorrect question data type', ()=>{
     let poll = {nickname:'helloo', pollSubject:'11', pollQuestion:{sup:'helloooo'}}
-    console.log('this is the APIR TOKEN', API_TOKEN)
     return superagent.post(`${API_URL}/api/poll`)
         .set('Authorization',`Bearer ${API_TOKEN}`)
         .set('accept', 'application/json')
@@ -84,7 +77,7 @@ describe('testing poll validation...', () => {
         .catch(err => console.log(err))
   })
 
-  it('this should successfully insert the poll...', ()=>{
+  it.only('this should successfully insert the poll...', ()=>{
     let poll = {nickname:'helloo', pollSubject:'what is the meaning of life??', pollQuestion:'what is the meaning of life? I must knowwwww'}
     console.log('this is the APIR TOKEN', API_TOKEN)
     return superagent.post(`${API_URL}/api/poll`)
@@ -95,9 +88,8 @@ describe('testing poll validation...', () => {
         .then(res => {
           try {
             let parsed = JSON.parse(res.text)
-          console.log('here is the parsed response poll insert!!',parsed);
           expect(res.status).toEqual(200)
-          // expect(parsed).toEqual('Error: invalid question type or length, or nonexistant property')
+          
           } catch (err) {
             let parsedError = JSON.parse(err.text)
             console.log('THIS IS THE ERROR from posting a poll',parsedError)
@@ -134,7 +126,7 @@ describe('testing poll validation...', () => {
   })
 
 
-  it.only('this should throw error for having question length requirements for the querry.... , denoting with 500 error', ()=>{
+  it('this should throw error for having question length requirements for the querry.... , denoting with 500 error', ()=>{
     let poll = {nickname:'helloo', pollSubject:'what is the meaning of life??', pollQuestion:'kaljshhhhhhhhhhhhhhhhhhhhhhdfasdl;kfl;kasjdfl;ksjdf;lkasdlf;kjasld;fkjasdfksdfsdfsdfsssssssssssssssssssssdfsdfsdf'}
     console.log('this is the APIR TOKEN', API_TOKEN)
     return superagent.post(`${API_URL}/api/poll`)
