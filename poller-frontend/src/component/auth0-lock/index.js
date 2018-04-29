@@ -59,7 +59,14 @@ class AuthLockButton extends React.Component {
             this.props.history.push('login')
           }
         })
+      
     })
+
+    this.lock.on('authorization_error', (error)=>{
+      console.log('this is the AUTH0 lock ERROR', error)
+    })
+
+
 
     // this.checkStorageLogin()
   }

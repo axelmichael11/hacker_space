@@ -78,6 +78,8 @@ app.get('/api/private-scoped', checkJwt, checkScopes, function(req, res) {
 
 //ROUTES
 require('../routes-api/profile-routes.js')(app, client, checkJwt);
+require('../routes-api/poll-routes.js')(app, client, checkJwt);
+
 
 app.use(function(err, req, res, next){
   console.error(err.stack);

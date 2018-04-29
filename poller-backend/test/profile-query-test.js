@@ -17,7 +17,7 @@ const DB_UID = process.env.DB_UID;
 describe('testing profile queries...', () => {
     before(server.start)
     after(server.stop)
-    it.only('this is the profile id create method.. ', () => {
+    it('this is the profile id create method.. ', () => {
         client.query(`INSERT INTO ${env.users} DEFAULT VALUES RETURNING *;`,
             function(err, success) {
               if (err) console.log(err)
