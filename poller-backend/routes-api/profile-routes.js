@@ -21,6 +21,39 @@ const queries = require('../queries/auth');
 
   module.exports = (app, client, checkJwt) => {
 
+    app.post('/api/user',checkJwt, (req,res) => {
+      if (!req.headers.authorization) {
+        res.json({message:'no authorization token found!'})
+      } else {
+        let token = req.headers.authorization
+        profile.getInfo(token)
+        .then(user => {
+          console.log('this is the user!', user)
+          if (user[`${env.uid}`]) {
+            client.query(`INSERT INTO ${env.users}(id) VALUES($1) RETURNING *;`,
+            [
+              user[`${env.uid}`]
+            ],
+            function(err, success) {
+              if (err) res.json({response: err})
+              if (success) {
+                  console.log('this is the db success', success)
+                  let sendProfile = profile.formatSendProfile(success.rows[0], user)
+                  console.log('this is the final profile to send back', sendProfile)
+                  res.json(sendProfile)
+              } else {
+                res.status(500).json({message:"unsuccessful storing user in the database"})
+              }
+            })
+          } else {
+            res.json({error:'there is an error finding your id in auth0!'})
+          }
+        })
+        .catch(err=>console.log(err))
+      }
+    })
+
+
     app.get('/api/user',checkJwt, (req,res) => {
       if (!req.headers.authorization) {
         res.json({message:'no authorization token found!'})
@@ -28,23 +61,8 @@ const queries = require('../queries/auth');
         let token = req.headers.authorization
         profile.getInfo(token)
         .then(user => {
-          if (!user[`${env.uid}`]) {
-            client.query(`INSERT INTO ${env.users} DEFAULT VALUES RETURNING *;`,
-            function(err, success) {
-              if (err) res.json({response: err})
-              if (success) {
-                console.log('success', success.rows[0]);
-                profile.sendId(user.sub, token, {id: success.rows[0]['id']})
-                .then(user => {
-                  let sendProfile = profile.formatSendProfile(success.rows[0], user)
-                  res.json(sendProfile)
-                })
-                .catch(err => console.log(err))
-              } else {
-                res.status(500).json({message:"unsuccessful with DB query"})
-              }
-            })
-          } else {
+          console.log('this is the user!', user)
+          if (user[`${env.uid}`]) {
             client.query(`SELECT * FROM ${env.users} WHERE id=($1);`, 
             [user[`${env.uid}`]],
             function(err, success) {
@@ -54,14 +72,18 @@ const queries = require('../queries/auth');
                 let sendProfile = profile.formatSendProfile(success.rows[0], user)
                 res.json(sendProfile)
               } else {
-                res.status(500).json({message:"unsuccessful in putting in data..."})
+                res.status(500).json({message:"unsuccessful finding you in our records..."})
               }
             })
+          } else {
+            res.json({error:'there is an error finding your id in auth0!'})
           }
         })
         .catch(err=>console.log(err))
       }
     })
+
+
 
   app.put('/api/user', checkJwt, (req, res) => {
     console.log('UPDATE REQEUST@@@@@@@') 
@@ -73,6 +95,7 @@ const queries = require('../queries/auth');
       let token = req.headers.authorization
       profile.getInfo(token)
         .then(user => {
+          console.log('this is the USER FROM INFO', user)
           if (!user[`${env.uid}`]) {
             res.json({error:'there is an error finding your id! log out and create another account'})
           } else {

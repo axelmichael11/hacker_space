@@ -54,8 +54,8 @@ const queries = require('../queries/auth');
               res.status(200).json('Success')
             } else {
               if (err.name =='error' && err.constraint=='poller_data_polls_id_check') {
-                console.log('err.name', err.name)
-                res.status(550).send(err)
+                console.log('err.name', err)
+                res.status(550).send({error: err.name})
               } else {
                 res.status(500).send({message: err.name})
               }
@@ -73,112 +73,4 @@ const queries = require('../queries/auth');
   })
 
 
-  app.get('/api/poll',checkJwt, (req,res) => {
-    if (!req.headers.authorization) {
-      res.json({message:'no authorization token found!'})
-    } else {
-      let token = req.headers.authorization
-      profile.getInfo(token)
-      .then(user => {
-        if (!user[`${env.uid}`]) {
-          client.query(`INSERT INTO ${env.users} DEFAULT VALUES RETURNING *;`,
-          function(err, success) {
-            if (err) res.json({response: err})
-            if (success) {
-              console.log('success', success.rows[0]);
-              profile.sendId(user.sub, token, {id: success.rows[0]['id']})
-              .then(user => {
-                let sendProfile = profile.formatSendProfile(success.rows[0], user)
-                res.json(sendProfile)
-              })
-              .catch(err => console.log(err))
-            } else {
-              res.status(500).json({message:"unsuccessful with DB query"})
-            }
-          })
-        } else {
-          client.query(`SELECT * FROM ${env.users} WHERE id=($1);`, 
-          [user[`${env.uid}`]],
-          function(err, success) {
-            if (err) res.status(500).json({message:"unsuccessful in putting in data..."})
-            if (success) {
-            console.log('DB query success', success.rows[0]);
-              let sendProfile = profile.formatSendProfile(success.rows[0], user)
-              res.json(sendProfile)
-            } else {
-              res.status(500).json({message:"unsuccessful in putting in data..."})
-            }
-          })
-        }
-      })
-      .catch(err=>console.log(err))
-    }
-  })
-
-  app.put('/api/poll', checkJwt, (req, res) => {
-    console.log('UPDATE REQEUST@@@@@@@') 
-    if (!req.headers.authorization) {
-      res.json({message:'no authorization token found!'})
-    } else {
-      let incomingProfileInfo = req.body
-      let profileInfo = profile.userProfileValidate(incomingProfileInfo)
-      let token = req.headers.authorization
-      profile.getInfo(token)
-        .then(user => {
-          if (!user[`${env.uid}`]) {
-            res.json({error:'there is an error finding your id! log out and create another account'})
-          } else {
-            client.query(`UPDATE ${env.users}
-              SET age=($1),
-              ethnicity=($2),
-              profession=($3),
-              religion=($4),
-              gender=($5),
-              country=($6)
-              WHERE id=($7) 
-              RETURNING age, ethnicity, profession, religion, gender, country;`,
-              [profileInfo.age,
-              profileInfo.ethnicity,
-              profileInfo.profession,
-              profileInfo.religion,
-              profileInfo.gender,
-              profileInfo.country,
-              user[`${env.uid}`],
-              ],
-              function(err, success) {
-                if (err) res.json({response: err})
-                if (success) {
-                  let sendProfile = profile.formatSendProfile(success.rows[0], user)
-                  res.json(sendProfile)
-                } else {
-                  res.status(500).json({message:"unsuccessful updating user profile"})
-                }
-              }
-            )
-          }
-      }).catch(err=>res.json({error: err}))
-    }
-  })
-
-  app.delete('/api/poll', checkJwt, (req,res) => {
-    if (!req.headers.authorization) {
-      res.json({message:'no authorization token found!'})
-    } else {
-
-      client.query(`DELETE FROM ${env.users}
-        WHERE id=($1);`,
-        [uid],
-        function(err, success) {
-          if (err) res.json({response: err})
-          if (success) {
-            console.log('successfully deleted from the database in database... HERE IS THE SUCCESS', success);
-            res.json({data: 'USER DELETED FROM DB'})
-          } else {
-            console.log(err);
-            res.status(500).json({message:"unsuccessful in putting in data..."})
-          }
-        }
-      )
-    }
-  })
 }
