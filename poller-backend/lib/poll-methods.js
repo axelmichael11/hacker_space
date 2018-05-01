@@ -31,11 +31,10 @@ poll.deletePollValidate = function(incomingPoll){
 }
 
 
-poll.formatSendpoll = function(rows,authpoll){
+poll.formatPollSend = function(rows){
   console.log('ROWS', rows)
-  let {gender, age, ethnicity, profession, country, religion} = rows;
-  let {nickname, picture, email} = authpoll;
-  let returnedpoll = Object.assign({},{gender, age, profession, country, ethnicity, religion, nickname, email, picture});
+  let {question, subject, created_at} = rows;
+  let returnedpoll = Object.assign({},{question, subject, created_at});
   return returnedpoll
 }
 

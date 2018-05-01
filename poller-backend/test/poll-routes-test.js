@@ -151,7 +151,7 @@ describe('testing poll create route...', () => {
 
 
   
-it.only('this should delete a poll', ()=>{
+it('this should delete a poll', ()=>{
   console.log('this is the APIR TOKEN', API_TOKEN)
   let examplePoll= {timeStamp:'2018-05-01 04:48:48.634523'}
   return superagent.delete(`${API_URL}/api/poll`)
@@ -165,6 +165,26 @@ it.only('this should delete a poll', ()=>{
         console.log('THIS IS THE ERROR from posdfsdfsfsting a poll',err)
         expect(res.status).toEqual(200)
         let parsedError = JSON.parse(err.text)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+})
+
+  
+it.only('should grab all polls of a user', ()=>{
+  console.log('this is the APIR TOKEN', API_TOKEN)
+  return superagent.get(`${API_URL}/api/poll`)
+      .set('Authorization',`Bearer ${API_TOKEN}`)
+      .set('accept', 'application/json')
+      .set('content-type', 'application/json')
+      .then(res => {
+        let parsed = JSON.parse(res.text)
+        console.log('here is the parsed77777777777 response poll insert!!',parsed)
+        expect(res.status).toEqual(200)
+        expect(parsed.question).toBeTruthy();
+        expect(parsed.subject).toBeTruthy();
+        expect(parsed.created_at).toBeTruthy();
       })
       .catch(err => {
         console.log(err)

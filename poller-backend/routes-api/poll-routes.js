@@ -116,5 +116,44 @@ const queries = require('../queries/auth');
     }
   })
 
+  app.get('/api/poll', checkJwt, (req,res) => {
+    if (!req.headers.authorization || !req.body) {
+      res.json({message:'no authorization token  or body found!'})
+    } else {
+      let token = req.headers.authorization
+      profile.getInfo(token)
+      .then(user => {
+        if (user[`${env.uid}`]) {
+          client.query(`
+          SELECT question, subject, author_id, created_at from polls WHERE author_id=($1)
+           `,
+          [
+            user[`${env.uid}`],
+          ],
+          function(err, success) {
+            if (success) {
+              console.log('this is success from db', success)
+              let pollsResponse = poll.formatPollSend(success.rows[0])
+              res.status(200).json(pollsResponse)
+            } else {
+              if (err) {
+                console.log('err.name', err)
+                res.status(500).send({error: err})
+              }
+            }
+          })
+        } else {
+          res.json({error:'there was an error identifying you'})
+        }
+      })
+      .catch(err=>{
+        console.log('no user found sdfsdfsdfsdfsd', err )
+        res.json({error:err})
+      })
+      // console.log('this is the validated poll', validatedPoll)
+   
+    }
+  })
+
 
 }
