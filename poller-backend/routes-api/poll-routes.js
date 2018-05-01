@@ -72,4 +72,49 @@ const queries = require('../queries/auth');
   })
 
 
+
+  app.delete('/api/poll', checkJwt, (req,res) => {
+    if (!req.headers.authorization || !req.body) {
+      res.json({message:'no authorization token  or body found!'})
+    } else {
+      let validatedPoll = poll.deletePollValidate(req.body)
+      let token = req.headers.authorization
+      profile.getInfo(token)
+      .then(user => {
+        console.log('this is the user!', user,'this is the poll data', validatedPoll)
+        if (user[`${env.uid}`]) {
+          client.query(`
+          WITH poll AS (
+            DELETE FROM polls WHERE created_at=($2) AND author_id=($1)
+            RETURNING id, author_id
+          )
+          UPDATE poller_data SET polls_id = array_remove(polls_id, poll.id) from poll WHERE poller_data.id=poll.author_id;
+          `,
+          [user[`${env.uid}`],
+          validatedPoll.timeStamp,
+          ],
+          function(err, success) {
+            if (success) {
+              res.status(200).json('Success')
+            } else {
+              if (err.name =='error') {
+                console.log('err.name', err)
+                res.status(500).send({error: err.name})
+              }
+            }
+          })
+        } else {
+          res.json({error:'there was an error identifying you'})
+        }
+      })
+      .catch(err=>{
+        console.log('no user found sdfsdfsdfsdfsd', err )
+        res.json({error:err})
+      })
+      // console.log('this is the validated poll', validatedPoll)
+   
+    }
+  })
+
+
 }
