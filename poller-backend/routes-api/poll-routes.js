@@ -88,7 +88,7 @@ const queries = require('../queries/auth');
             DELETE FROM polls WHERE created_at=($2) AND author_id=($1)
             RETURNING id, author_id
           )
-          UPDATE poller_data SET polls_id = array_remove(polls_id, poll.id) WHERE poller_data.id=poll.author_id;
+          UPDATE poller_data SET polls_id = array_remove(polls_id, poll.id) from poll WHERE poller_data.id=poll.author_id;
           `,
           [user[`${env.uid}`],
           validatedPoll.timeStamp,

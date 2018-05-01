@@ -22,8 +22,11 @@ poll.userPollValidate = function(incomingPoll){
 
 poll.deletePollValidate = function(incomingPoll){
   let {timeStamp} = incomingPoll;
+  
   let poll = Object.assign({},{timeStamp});
-
+  if (!poll.timeStamp || typeof poll.pollQuestion !== 'string'){
+    throw new Error('invalid question type or length, or nonexistant property');
+  }
   return poll;
 }
 
