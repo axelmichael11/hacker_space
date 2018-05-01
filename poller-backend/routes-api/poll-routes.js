@@ -29,15 +29,12 @@ const queries = require('../queries/auth');
     if (!req.headers.authorization || !req.body) {
       res.json({message:'no authorization token  or body found!'})
     } else {
-      
       let validatedPoll = poll.userPollValidate(req.body)
       let token = req.headers.authorization
       profile.getInfo(token)
       .then(user => {
         console.log('this is the user!', user,'this is the poll data', validatedPoll)
-        if (!user[`${env.uid}`]) {
-          res.json({error:'there was an error identifying you'})
-        } else {
+        if (user[`${env.uid}`]) {
           client.query(`
           WITH poll AS (INSERT INTO polls (author_id, author_username, subject, question)
           VALUES ($1, $2, $3, $4) RETURNING id, author_id)
@@ -61,6 +58,8 @@ const queries = require('../queries/auth');
               }
             }
           })
+        } else {
+          res.json({error:'there was an error identifying you'})
         }
       })
       .catch(err=>{
