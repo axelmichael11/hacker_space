@@ -20,6 +20,14 @@ poll.userPollValidate = function(incomingPoll){
 }
 
 
+poll.deletePollValidate = function(incomingPoll){
+  let {timeStamp} = incomingPoll;
+  let poll = Object.assign({},{timeStamp});
+
+  return poll;
+}
+
+
 poll.formatSendpoll = function(rows,authpoll){
   console.log('ROWS', rows)
   let {gender, age, ethnicity, profession, country, religion} = rows;

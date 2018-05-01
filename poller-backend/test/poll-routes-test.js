@@ -13,7 +13,7 @@ const AUTH0_ID = process.env.AUTH0_ID;
 
 const __AUTH0_AUDIENCE__ = process.env.AUTH0_AUDIENCE
 
-describe('testing poll validation...', () => {
+describe('testing poll create route...', () => {
   before(server.start)
   after(server.stop)
   it('this is the poll create method, should return errors for missing right properties', () => {
@@ -148,6 +148,30 @@ describe('testing poll validation...', () => {
           expect(err.status).toEqual(500)
         })
   })
+
+
+  
+it.only('this should delete a poll', ()=>{
+  console.log('this is the APIR TOKEN', API_TOKEN)
+  let examplePoll= {timeStamp:'2018-05-01 04:48:48.634523'}
+  return superagent.delete(`${API_URL}/api/poll`)
+      .set('Authorization',`Bearer ${API_TOKEN}`)
+      .set('accept', 'application/json')
+      .set('content-type', 'application/json')
+      .send(examplePoll)
+      .then(res => {
+        let parsed = JSON.parse(res.text)
+        console.log('here is the parsed77777777777 response poll insert!!',parsed)
+        console.log('THIS IS THE ERROR from posdfsdfsfsting a poll',err)
+        expect(res.status).toEqual(200)
+        let parsedError = JSON.parse(err.text)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+})
+
+  
 
 
 })

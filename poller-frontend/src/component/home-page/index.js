@@ -9,7 +9,8 @@ import Auth0Lock from 'auth0-lock'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import Paper from 'material-ui/Paper'
 
-
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
 
 import {
     Step,
@@ -18,8 +19,6 @@ import {
     StepContent,
   } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
-
 
 import LoginPage from '../login'
 import SettingsButton from '../menu/settings-button.js'
@@ -29,54 +28,15 @@ class HomePage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-        stepIndex: 0,
+      
     }
-   this.handleNext = this.handleNext.bind(this)
-   this.handlePrev = this.handlePrev.bind(this)
-   this.renderStepActions = this.renderStepActions.bind(this)
   }
 
   componentWillMount() {
     console.log(this.props.history)
   }
-  
 
-  handleNext() {
-    const {stepIndex} = this.state;
-    if (stepIndex < 2) {
-      this.setState({stepIndex: stepIndex + 1});
-    }
-  };
-
-  handlePrev() {
-    const {stepIndex} = this.state;
-    if (stepIndex > 0) {
-      this.setState({stepIndex: stepIndex - 1});
-    }
-  };
-
-  renderStepActions(step) {
-    return (
-      <div style={{margin: '12px 0'}}>
-        <RaisedButton
-          label="Next"
-          disableTouchRipple={true}
-          disableFocusRipple={true}
-          primary={true}
-          onClick={this.handleNext}
-          style={{marginRight: 12}}
-        />
-        {step > 0 && (
-          <FlatButton
-            label="Back"
-            disableTouchRipple={true}
-            disableFocusRipple={true}
-            onClick={this.handlePrev}
-          />
-        )}
-      </div>
-    );
-  }
+ 
 
 
   render() {
@@ -86,7 +46,7 @@ class HomePage extends React.Component {
         <MuiThemeProvider>
           <Paper style={{margin:'auto'}} zDepth={2}>
         
-        </Paper>
+          </Paper>
         </MuiThemeProvider>
       </div>
     )
