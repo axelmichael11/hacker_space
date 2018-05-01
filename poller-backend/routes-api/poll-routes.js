@@ -49,7 +49,8 @@ const queries = require('../queries/auth');
           function(err, success) {
             if (success && success.command==='UPDATE' && success.rowCount== 1) {
               res.status(200).json('Success')
-            } else {
+            }
+            if (err){
               if (err.name =='error' && err.constraint=='poller_data_polls_id_check') {
                 console.log('err.name', err)
                 res.status(550).send({error: err.name})
@@ -67,7 +68,6 @@ const queries = require('../queries/auth');
         res.json({error:err})
       })
       // console.log('this is the validated poll', validatedPoll)
-   
     }
   })
 
