@@ -30,10 +30,10 @@ export const pollSend = (poll) => (dispatch, getState) => {
         .send(poll)
         .then(res => {
           console.log('this is the response', res.status, res)
-          if (res.status >=550){
+          if (res.status >=500){
             throw new Error(res.status)
           }
-          return parsed
+          return res
         })
         .catch(err => {
           if (err.status == 550){
