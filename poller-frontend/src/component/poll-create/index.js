@@ -56,7 +56,8 @@ class PollCreatePage extends React.Component {
         subjectValidationErrorMessage: 'Your Subject is too short!',
         openQuestionValidationError:false,
         questionValidationErrorMessage: 'That can\'t be a question, it is too short!',
-        snackBarDuration: 4000,
+        maxPollReachedMessage:'You already have three questions! That is the limit...',
+        snackBarDuration: 5000,
         openPollCreateSuccess:false,
         pollCreateSuccessMessage:'Poll has been created!',
     }
@@ -67,6 +68,7 @@ class PollCreatePage extends React.Component {
    this.handleQuestionValidationError = this.handleQuestionValidationError.bind(this)
    this.handlePollCreateSuccess = this.handlePollCreateSuccess.bind(this)
    this.handlePollClear = this.handlePollClear.bind(this)
+   this.handleMaxPollReached = this.handleMaxPollReached.bind(this)
   }
 
   componentWillMount() {
@@ -105,6 +107,14 @@ class PollCreatePage extends React.Component {
       });
   }
 
+  handleMaxPollReached(){
+    this.setState((oldState)=>{
+      return {
+        openMaxPollReached: !oldState.openMaxPollReached,
+      }
+    });
+  }
+
   handlePollClear(){
     this.setState({
           pollSubject: '',
@@ -127,14 +137,14 @@ class PollCreatePage extends React.Component {
           this.handleQuestionValidationError();
           return;
       } else {
-        this.handlePollCreateSuccess()
-        this.handlePollClear()
-        // this.props.pollSend(poll)
-        // .then((profile)=>{
-        //     this.handlePollCreateSuccess()
-        //     this.handlePollClear()
-        // })
-        // .catch(err=>console.log(error))
+        this.props.pollSend(poll)
+        .then((res)=>{
+            this.handlePollClear()
+            this.handlePollCreateSuccess()
+        })
+        .catch(err=>{
+            this.handleMaxPollReached();
+        })
       }
   }
 
@@ -151,7 +161,6 @@ class PollCreatePage extends React.Component {
             >
               This information can be updated or deleted at anytime. Do you still want to update your information?
           </Dialog> */}
-
 
         <Paper style={{margin:'auto'}} zDepth={2}>
 
@@ -219,6 +228,14 @@ class PollCreatePage extends React.Component {
           autoHideDuration={this.state.snackBarDuration}
           onActionClick={this.handlePollCreateSuccess}
           onRequestClose={this.handlePollCreateSuccess}
+        />
+        <Snackbar
+          open={this.state.openMaxPollReached}
+          message={this.state.maxPollReachedMessage}
+          action={null}
+          autoHideDuration={this.state.snackBarDuration}
+          onActionClick={this.handleMaxPollReached}
+          onRequestClose={this.handleMaxPollReached}
         />
         </MuiThemeProvider>
       </div>

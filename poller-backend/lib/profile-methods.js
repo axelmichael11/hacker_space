@@ -42,10 +42,10 @@ profile.sendId = function(sub, token, rows){
     .set('scope', 'openid email profile userId read:clients write:clients update:users_app_metadata update:users update:current_user_metadata')
     .send(JSON.stringify({ user_metadata: rows }))
     .then(res => {
-        try {
+        try { 
           let parsed2 = JSON.parse(res.text)
         //   expect(parsed2).toBeTruthy();
-        //   console.log('this is the response from the api, stored uid', parsed2,'THIS IS THE WHOLE RESPONSE',res);
+          console.log('this is the response from the api, stored uid', parsed2);
           return parsed2
         } catch (err) {
           console.log('THIS IS THE ERRORR FROM AUTH0 API METADATA!!!',err)

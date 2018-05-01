@@ -1,3 +1,6 @@
+const superagent = require('superagent');
+
+
 export const pollSend = (poll) => (dispatch, getState) => {
     let { auth0Token } = getState();
     return superagent
@@ -5,13 +8,15 @@ export const pollSend = (poll) => (dispatch, getState) => {
         .set('Authorization', `Bearer ${auth0Token}`)
         .send(poll)
         .then(res => {
-          try {
-            let parsed = JSON.parse(res.text)
-          console.log('successfully put poll in the database',parsed)
+          console.log('this is the status', res.status)
+          if (res.status >=550){
+            throw new Error(res.status)
+          }
           return parsed
-          } catch (err) {
-            console.log('THIS IS THE ERROR from posting a poll',err)
+        })
+        .catch(err => {
+          if (err.status == 550){
+            throw new Error(550)
           }
         })
-        .catch(err => console.log(err))
   }

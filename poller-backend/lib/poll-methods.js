@@ -6,7 +6,6 @@ const poll = {};
 poll.userPollValidate = function(incomingPoll){
     let {nickname, pollQuestion, pollSubject} = incomingPoll;
     let poll = Object.assign({},{nickname, pollQuestion, pollSubject});
-    console.log('this is the poll', poll)
     if (!poll.nickname || poll.nickname.length > 20 || typeof poll.pollSubject !== 'string'){
         throw new Error('invalid nickname type or length, or nonexistant property');
     }
