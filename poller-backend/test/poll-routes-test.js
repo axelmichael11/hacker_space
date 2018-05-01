@@ -77,7 +77,7 @@ describe('testing poll validation...', () => {
         .catch(err => console.log(err))
   })
 
-  it.only('this should successfully insert the poll...', ()=>{
+  it('this should successfully insert the poll...', ()=>{
     let poll = {nickname:'helloo', pollSubject:'what is the meaning of life??', pollQuestion:'what is the meaning of life? I must knowwwww'}
     console.log('this is the APIR TOKEN', API_TOKEN)
     return superagent.post(`${API_URL}/api/poll`)
