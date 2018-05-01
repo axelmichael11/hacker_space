@@ -7,8 +7,12 @@ import FontAwesome from 'react-fontawesome'
 
 
 import {
-    pollSend,
-  } from '../../action/poll-actions.js'
+  pollsFetch,
+  pollDelete,
+  pollSend,
+  } from '../../action/user-polls-actions.js'
+  
+  
 
 
 import Pets from 'material-ui/svg-icons/action/pets'
@@ -29,7 +33,7 @@ import ClearIcon from 'material-ui/svg-icons/content/clear'
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-
+import DeleteButton from 'material-ui/svg-icons/content/clear'
 
 import AppBar from 'material-ui/AppBar'
 
@@ -60,6 +64,8 @@ class PollCreatePage extends React.Component {
         snackBarDuration: 5000,
         openPollCreateSuccess:false,
         pollCreateSuccessMessage:'Poll has been created!',
+        openPollDeleteSuccess:false,
+        pollDeleteSuccessMessage:'Poll has been deleted!'
     }
    this.pollSubmit = this.pollSubmit.bind(this)
    this.handleSubjectChange = this.handleSubjectChange.bind(this)
@@ -69,9 +75,12 @@ class PollCreatePage extends React.Component {
    this.handlePollCreateSuccess = this.handlePollCreateSuccess.bind(this)
    this.handlePollClear = this.handlePollClear.bind(this)
    this.handleMaxPollReached = this.handleMaxPollReached.bind(this)
+   this.renderPoll = this.renderPoll.bind(this)
+   this.handlePollDeleteSuccess = this.handlePollDeleteSuccess.bind(this)
   }
 
   componentWillMount() {
+    this.props.pollsFetch();
     console.log(this.props.history)
   }
 
@@ -114,12 +123,37 @@ class PollCreatePage extends React.Component {
       }
     });
   }
+  handlePollDeleteSuccess(){
+    this.setState((oldState)=>{
+      return {
+        openPollDeleteSuccess: !oldState.openPollDeleteSuccess,
+      }
+    });
+  }
 
   handlePollClear(){
     this.setState({
           pollSubject: '',
           pollQuestion:'',
         });
+  }
+
+  renderPoll(poll){
+    return (
+    <Card style={{margin:15}}>
+      <CardHeader
+        title={poll.subject}
+        initiallyExpanded={false}
+        showExpandableButton={true}
+        openIcon={<DeleteButton 
+          onClick={()=>this.props.pollDelete(poll)}/>}
+          closeIcon={null}
+      />
+      <CardText>
+        {poll.question}
+      </CardText>
+    </Card>
+    )
   }
 
 
@@ -153,6 +187,18 @@ class PollCreatePage extends React.Component {
     return (
         <div style={{maxWidth: 450, maxHeight: 600, margin: 'auto'}}>
         <MuiThemeProvider>
+        <Paper style={{margin:'auto'}} zDepth={2}>
+
+        <Card style={MaterialStyles.title}>
+          <CardHeader
+              title="Polls"
+              style={MaterialStyles.title}
+            />
+          </Card>
+          {this.props.userPolls.map((poll)=>{
+            return this.renderPoll(poll)
+          })}
+        </Paper>
         {/* <Dialog
               title="Are You Sure?"
               actions={}
@@ -161,10 +207,6 @@ class PollCreatePage extends React.Component {
             >
               This information can be updated or deleted at anytime. Do you still want to update your information?
           </Dialog> */}
-
-        <Paper style={{margin:'auto'}} zDepth={2}>
-
-        </Paper>
 
         <Card style={MaterialStyles.title}>
           <CardHeader
@@ -237,6 +279,14 @@ class PollCreatePage extends React.Component {
           onActionClick={this.handleMaxPollReached}
           onRequestClose={this.handleMaxPollReached}
         />
+        <Snackbar
+          open={this.state.openPollDeleteSuccess}
+          message={this.state.pollDeleteSuccessMessage}
+          action={null}
+          autoHideDuration={this.state.snackBarDuration}
+          onActionClick={this.handlePollDeleteSuccess}
+          onRequestClose={this.handlePollDeleteSuccess}
+        />
         </MuiThemeProvider>
       </div>
     )
@@ -246,10 +296,13 @@ class PollCreatePage extends React.Component {
 export const mapStateToProps = state => ({
     loggedIn: state.loggedIn,
     userProfile: state.userProfile,
+    userPolls: state.userPolls
   })
   
   export const mapDispatchToProps = dispatch => ({
-    pollSend: (poll)=> dispatch(pollSend(poll))
+    pollSend: (poll)=> dispatch(pollSend(poll)),
+    pollsFetch: () => dispatch(pollsFetch()),
+    pollDelete: (poll)=> dispatch(pollDelete(poll))
   })
   
   export default connect(mapStateToProps, mapDispatchToProps)(PollCreatePage)

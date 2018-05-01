@@ -37,9 +37,10 @@ const queries = require('../queries/auth');
         if (user[`${env.uid}`]) {
           client.query(`
           WITH poll AS (INSERT INTO polls (author_id, author_username, subject, question)
-          VALUES ($1, $2, $3, $4) RETURNING id, author_id)
+          VALUES ($1, $2, $3, $4) RETURNING created_at, id, author_id, subject, question, author_username)
           UPDATE poller_data SET polls_id = array_append(polls_id, poll.id) 
-          FROM poll WHERE poller_data.id=poll.author_id;
+          FROM poll WHERE poller_data.id=poll.author_id
+          RETURNING poll.author_username, poll.created_at, poll.subject, poll.question;
           `,
           [user[`${env.uid}`],
           user.nickname,
@@ -48,12 +49,14 @@ const queries = require('../queries/auth');
           ],
           function(err, success) {
             if (success && success.command==='UPDATE' && success.rowCount== 1) {
-              res.status(200).json('Success')
+              console.log('SUCCESS, these are the rows', success.rows[0])
+              res.status(200).json(success.rows[0])
             } else {
               if (err.name =='error' && err.constraint=='poller_data_polls_id_check') {
                 console.log('err.name', err)
                 res.status(550).send({error: err.name})
               } else {
+                console.log('this is ther ror', err)
                 res.status(500).send({message: err.name})
               }
             }
@@ -86,17 +89,30 @@ const queries = require('../queries/auth');
           client.query(`
           WITH poll AS (
             DELETE FROM polls WHERE created_at=($2) AND author_id=($1)
-            RETURNING id, author_id
+            RETURNING id, author_id, created_at
           )
-          UPDATE poller_data SET polls_id = array_remove(polls_id, poll.id) from poll WHERE poller_data.id=poll.author_id;
-          `,
+          UPDATE poller_data SET polls_id = array_remove(polls_id, poll.id) from poll WHERE poller_data.id=poll.author_id
+          RETURNING poll.created_at;`,
           [user[`${env.uid}`],
-          validatedPoll.timeStamp,
+          validatedPoll.created_at,
           ],
           function(err, success) {
             if (success) {
-              res.status(200).json('Success')
-            } else {
+              if (success.rows[0]){
+                console.log('SUCCESS', success.rows[0])
+                let pollToDelete = poll.formatPollDeleteSend(success.rows[0])
+                res.status(200).json(pollToDelete)
+              }
+              if (success.rowCount==0){
+                console.log('success, not returning anything', success)
+                res.status(401).json({message:'poll was not found'})
+              } 
+              // else {
+              // console.log('success', success)
+              // res.status(500).json({error:'Internal server error'})
+              // }
+            } 
+            else {
               if (err.name =='error') {
                 console.log('err.name', err)
                 res.status(500).send({error: err.name})
@@ -125,7 +141,7 @@ const queries = require('../queries/auth');
       .then(user => {
         if (user[`${env.uid}`]) {
           client.query(`
-          SELECT question, subject, author_id, created_at from polls WHERE author_id=($1)
+          SELECT question, subject, author_username, created_at from polls WHERE author_id=($1)
            `,
           [
             user[`${env.uid}`],
@@ -133,8 +149,7 @@ const queries = require('../queries/auth');
           function(err, success) {
             if (success) {
               console.log('this is success from db', success)
-              let pollsResponse = poll.formatPollSend(success.rows[0])
-              res.status(200).json(pollsResponse)
+              res.status(200).send(success.rows)
             } else {
               if (err) {
                 console.log('err.name', err)
@@ -151,7 +166,6 @@ const queries = require('../queries/auth');
         res.json({error:err})
       })
       // console.log('this is the validated poll', validatedPoll)
-   
     }
   })
 
