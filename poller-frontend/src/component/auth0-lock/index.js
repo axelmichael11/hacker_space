@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 
 import {
-    profileFetch,
+  profileFetch,
 } from '../../action/profile-actions.js'
 import {
     storageLoginAttempt,
@@ -34,7 +34,7 @@ class AuthLockButton extends React.Component {
         // redirectUrl: 'http://localhost:8080',
         audience: __AUTH0_AUDIENCE__,
         params: {
-          scope: 'openid profile userId update:users_app_metadata openid email profile read:clients write:clients update:users_app_metadata update:users update:current_user_metadata', //need to research the scope parameter...
+          scope: 'openid profile userId user_metadata update:users_app_metadata openid email profile read:clients write:clients update:users_app_metadata update:users update:current_user_metadata', //need to research the scope parameter...
         },
       },
       languageDictionary: {
@@ -48,7 +48,7 @@ class AuthLockButton extends React.Component {
     )
     this.lock.on('authenticated', authResult => {
       if (!authResult) return new Error('failed to authenticate');
-        console.log('this IS THE accesstoken',authResult.accessToken)
+        console.log('this IS THE authresult',authResult)
         this.props.setAuthToken(authResult.accessToken)
         this.props.profileFetch()
         .then(profile=>{
