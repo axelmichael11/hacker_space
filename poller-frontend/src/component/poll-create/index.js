@@ -65,7 +65,9 @@ class PollCreatePage extends React.Component {
         openPollCreateSuccess:false,
         pollCreateSuccessMessage:'Poll has been created!',
         openPollDeleteSuccess:false,
-        pollDeleteSuccessMessage:'Poll has been deleted!'
+        pollDeleteSuccessMessage:'Poll has been deleted!',
+        pollDeleteAlert: false,
+        pollToDelete: null,
     }
    this.pollSubmit = this.pollSubmit.bind(this)
    this.handleSubjectChange = this.handleSubjectChange.bind(this)
@@ -77,6 +79,10 @@ class PollCreatePage extends React.Component {
    this.handleMaxPollReached = this.handleMaxPollReached.bind(this)
    this.renderPoll = this.renderPoll.bind(this)
    this.handlePollDeleteSuccess = this.handlePollDeleteSuccess.bind(this)
+   this.handlePollDeleteAlert = this.handlePollDeleteAlert.bind(this)
+   this.renderPollDeleteActions = this.renderPollDeleteActions.bind(this)
+   this.renderPollDeleteAlert = this.renderPollDeleteAlert.bind(this)
+   this.handleSubmitPollDelete = this.handleSubmitPollDelete.bind(this)
   }
 
   componentWillMount() {
@@ -138,21 +144,60 @@ class PollCreatePage extends React.Component {
         });
   }
 
+  handlePollDeleteAlert(poll){
+    this.setState({
+      pollDeleteAlert: !this.state.pollDeleteAlert,
+      pollToDelete: poll
+    });
+  };
+
   renderPoll(poll){
+    console.log('this.state on renderPoll', this.state, this.props)
     return (
     <Card style={{margin:15}}>
-      <CardHeader
+      <AppBar
         title={poll.subject}
-        initiallyExpanded={false}
-        showExpandableButton={true}
-        openIcon={<DeleteButton 
-          onClick={()=>this.props.pollDelete(poll)}/>}
-          closeIcon={null}
+        showMenuIconButton={false}
+        iconElementRight={<DeleteButton 
+        onClick={()=>this.handlePollDeleteAlert(poll)}
+      />}
       />
-      <CardText>
+      <CardText style={{whiteSpace: 'normal'}}>
         {poll.question}
+      
       </CardText>
     </Card>
+    )
+  }
+
+  handleSubmitPollDelete(){
+    this.props.pollDelete(this.state.pollToDelete)
+    this.setState({pollDeleteAlert:false})
+  }
+  
+  renderPollDeleteActions(){
+    return [<FlatButton
+      label="Cancel"
+      primary={true}
+      onClick={this.handlePollDeleteAlert}
+    />,
+    <FlatButton
+      label="Delete Poll"
+      primary={true}
+      onClick={this.handleSubmitPollDelete}
+    />]
+  }
+
+  renderPollDeleteAlert(){
+    return(
+      <Dialog
+              title="Are You Sure?"
+              actions={this.renderPollDeleteActions}
+              modal={false}
+              open={this.state.pollDeleteAlert}
+            >
+              Are you sure you want to delete this poll? You cannot undo this.
+          </Dialog>
     )
   }
 
@@ -183,68 +228,63 @@ class PollCreatePage extends React.Component {
   }
 
   render() {
+    const pollDeleteActions = [<FlatButton
+      label="Cancel"
+      primary={true}
+      onClick={this.handlePollDeleteAlert}
+    />,
+    <FlatButton
+      label="Delete Poll"
+      primary={true}
+      onClick={this.handleSubmitPollDelete}
+    />];
+
     console.log('this is the poll create page state', this.state, this.props)
     return (
         <div style={{maxWidth: 450, maxHeight: 600, margin: 'auto'}}>
         <MuiThemeProvider>
-        <Paper style={{margin:'auto'}} zDepth={2}>
-
-        <Card style={MaterialStyles.title}>
-          <CardHeader
-              title="Polls"
-              style={MaterialStyles.title}
-            />
-          </Card>
-          {this.props.userPolls.map((poll)=>{
-            return this.renderPoll(poll)
-          })}
-        </Paper>
-        {/* <Dialog
-              title="Are You Sure?"
-              actions={}
-              modal={false}
-              open={this.state.profileUpdateAlert}
-            >
-              This information can be updated or deleted at anytime. Do you still want to update your information?
-          </Dialog> */}
-
-        <Card style={MaterialStyles.title}>
-          <CardHeader
-              title="Poll Create"
-              style={MaterialStyles.title}
-             
-            />
+        <Card style={{marginBottom:15}}>
+            <CardText style={MaterialStyles.title}>Poll Create</CardText>
             <CardText style={MaterialStyles.text}>
             Post a question here! You can post up to three questions for people to vote on!
           </CardText>
-          <CardHeader
-              title={this.props.userProfile.nickname}
-              subtitle={this.props.userProfile.email}
-              avatar={this.props.userProfile.picture}
-              style={MaterialStyles.title}
-            />
             <CardMedia style={{margin:10}}>
-            <form onSubmit={this.handleSubmit}>
-
-            <CardText style={MaterialStyles.text}>Subject:</CardText>
-            <Paper zDepth={2} style={{marginBotton:10}}>
-                <TextField onChange={this.handleSubjectChange} value={this.state.pollSubject} hintText="Subject" fullWidth={true} style={MaterialStyles.text} underlineShow={false} multiLine={false} rows={1} rowsMax={1} maxLength="20" />
-            </Paper>
-            <CardText style={MaterialStyles.text}>Question:</CardText>
-            <Paper zDepth={2} style={{marginBotton:10}}>
-                <TextField onChange={this.handleQuestionChange} value={this.state.pollQuestion} hintText="Question" fullWidth={true} style={MaterialStyles.text} underlineShow={false} multiLine={true} rows={3} rowsMax={3} maxLength="100"/>
-            </Paper>
-            </form>
+              <CardText style={MaterialStyles.text}>Subject:</CardText>
+              <Paper zDepth={1} style={{marginBotton:10}}>
+                  <TextField onChange={this.handleSubjectChange} value={this.state.pollSubject} hintText="Subject" fullWidth={true} style={MaterialStyles.text} underlineShow={false} multiLine={false} rows={1} rowsMax={1} maxLength="20" />
+              </Paper>
+              <CardText style={MaterialStyles.text}>Question:</CardText>
+              <Paper zDepth={1} style={{marginBotton:10}}>
+                  <TextField onChange={this.handleQuestionChange} value={this.state.pollQuestion} hintText="Question" fullWidth={true} style={MaterialStyles.text} underlineShow={false} multiLine={true} rows={3} rowsMax={3} maxLength="100"/>
+              </Paper>
             </CardMedia>
             <RaisedButton
                 style={{ margin: 20 }}
                 label="Create Poll"
                 type="submit"
                 onClick={this.pollSubmit}
-                style={MaterialStyles.title}
             />
         </Card>
+        <Paper style={{margin:'auto'}} zDepth={1}>
+          <Dialog
+                title="Are You Sure?"
+                actions={pollDeleteActions}
+                modal={false}
+                open={this.state.pollDeleteAlert}
+              >
+                Are you sure you want to delete this poll? You cannot undo this.
+          </Dialog>
+        <Card>
+          <CardText style={MaterialStyles.title}> My Polls </CardText>
+          {this.props.userPolls!==[] ?
+          this.props.userPolls.map((poll)=>{
+            return this.renderPoll(poll)
+          }) :
+          <CardText> You don't have any polls... </CardText>
+          }
 
+          </Card>
+        </Paper>
          <Snackbar
           open={this.state.openSubjectValidationError}
           message={this.state.subjectValidationErrorMessage}
