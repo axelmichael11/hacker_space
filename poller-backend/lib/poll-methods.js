@@ -21,21 +21,33 @@ poll.userPollValidate = function(incomingPoll){
 
 
 poll.deletePollValidate = function(incomingPoll){
-  let {timeStamp} = incomingPoll;
+  console.log('this is the poll', incomingPoll)
+  let {created_at} = incomingPoll;
   
-  let poll = Object.assign({},{timeStamp});
-  if (!poll.timeStamp || typeof poll.pollQuestion !== 'string'){
-    throw new Error('invalid question type or length, or nonexistant property');
+  let poll = Object.assign({},{created_at});
+  if (!poll.created_at || typeof poll.created_at !== 'string'){
+    throw new Error('invalid incomingPoll type or length, or nonexistant property');
   }
+  console.log('this is the formated poll!', poll.created_at)
   return poll;
 }
 
+poll.formatPollDeleteSend = function(queryResult){
+  let {created_at} = queryResult;
+  console.log('this is the typeof!', typeof created_at)
+  let deletedPoll = Object.assign({},{created_at});
+  if (!deletedPoll.created_at || typeof deletedPoll.created_at !== 'string'){
+    throw new Error('invalid poll type or length, or nonexistant property');
+  }
+  
+  return deletedPoll;
+}
 
-poll.formatSendpoll = function(rows,authpoll){
-  console.log('ROWS', rows)
-  let {gender, age, ethnicity, profession, country, religion} = rows;
-  let {nickname, picture, email} = authpoll;
-  let returnedpoll = Object.assign({},{gender, age, profession, country, ethnicity, religion, nickname, email, picture});
+
+poll.formatPollSend = function(queryResult){
+  console.log('ROWS', queryResult)
+  let {question, subject, created_at} = queryResult;
+  let returnedpoll = Object.assign({},{question, subject, created_at});
   return returnedpoll
 }
 

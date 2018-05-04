@@ -151,9 +151,9 @@ describe('testing poll create route...', () => {
 
 
   
-it.only('this should delete a poll', ()=>{
+it('this should throw 500 error for having incorrect timestamp', ()=>{
   console.log('this is the APIR TOKEN', API_TOKEN)
-  let examplePoll= {timeStamp:'2018-05-01 04:48:48.634523'}
+  let examplePoll= {created_at:'2018-05-01 1asdfsfsdfsdf4sdfsdf'}
   return superagent.delete(`${API_URL}/api/poll`)
       .set('Authorization',`Bearer ${API_TOKEN}`)
       .set('accept', 'application/json')
@@ -161,10 +161,44 @@ it.only('this should delete a poll', ()=>{
       .send(examplePoll)
       .then(res => {
         let parsed = JSON.parse(res.text)
-        console.log('here is the parsed77777777777 response poll insert!!',parsed)
-        console.log('THIS IS THE ERROR from posdfsdfsfsting a poll',err)
+        console.log('here is the parsed77777777777 response poll delete!!',parsed)
+        expect(res.status).toEqual(500)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+})
+
+it('this should delete a poll, return the deleted timestamp', ()=>{
+  console.log('this is the APIR TOKEN', API_TOKEN)
+  let examplePoll= {created_at:'2018-05-01 18:13:31.00866'}
+  return superagent.delete(`${API_URL}/api/poll`)
+      .set('Authorization',`Bearer ${API_TOKEN}`)
+      .set('accept', 'application/json')
+      .set('content-type', 'application/json')
+      .send(examplePoll)
+      .then(res => {
+        let parsed = JSON.parse(res.text)
+        console.log('here is the parsed77777777777 response poll delete!!',parsed)
         expect(res.status).toEqual(200)
-        let parsedError = JSON.parse(err.text)
+        expect(parsed.created_at).toBeTruthy()
+      })
+      .catch(err => {
+        console.log(err)
+      })
+})
+
+  
+it.only('should grab all polls of a user', ()=>{
+  console.log('this is the APIR TOKEN', API_TOKEN)
+  return superagent.get(`${API_URL}/api/poll`)
+      .set('Authorization',`Bearer ${API_TOKEN}`)
+      .set('accept', 'application/json')
+      .set('content-type', 'application/json')
+      .then(res => {
+        let parsed = JSON.parse(res.text)
+        console.log('poll retrieve!!',parsed)
+        expect(res.status).toEqual(200)
       })
       .catch(err => {
         console.log(err)
