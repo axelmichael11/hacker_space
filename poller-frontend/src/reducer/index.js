@@ -6,4 +6,6 @@ import auth0Token from './auth0-token.js'
 import storageLoginAttempt from './storage-Login.js'
 import userPolls from './user-polls-reducer.js'
 import publicPolls from './public-polls-reducer.js'
-export default combineReducers({ publicPolls, userPolls, auth0Token, userProfile, loggedIn, storageLoginAttempt})
+
+import Loading from './loading-reducer.js'
+export default combineReducers({ publicPolls, userPolls, auth0Token, userProfile, loggedIn, storageLoginAttempt, Loading})

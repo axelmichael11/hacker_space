@@ -55,6 +55,7 @@ class App extends React.Component {
               <Route path="/gettingstarted" render={()=> <GettingStartedPage/>}/>
               <Route path="/login" render={()=> <LoginPage/>}/>
               <PrivateRoute  loggedIn={this.props.loggedIn} path="/" redirectTo="/login" component={LandingContainer} />
+              
               {/* <PrivateRoute loggedIn={this.props.loggedIn} path="/settings" redirectTo='/login' component={ProfileSettings} />
               <PrivateRoute loggedIn={this.props.loggedIn} path="/home" redirectTo='/login' component={HomePage} /> */}
               </Switch>

@@ -42,23 +42,26 @@ class HomePage extends React.Component {
     this.props.getPublicPolls()
   }
 
-  renderPoll(poll){
+  renderPoll(poll, i ){
     return (
-      <Card 
-        style={{margin:15}}
-        >
-        <AppBar
-          title={poll.author_id}
-          showMenuIconButton={false}
-          />}
-        />
-        <CardText style={{whiteSpace: 'normal'}}>
-          {poll.subject}
-        </CardText>
-        <CardText style={{whiteSpace: 'normal'}}>
-          {poll.question}
-        </CardText>
-    </Card>
+      <div key={i}>
+        <Card 
+          style={{margin:15}}
+          onClick={this.props.history.push('/')}
+          >
+          <AppBar
+            title={poll.author_username}
+            showMenuIconButton={false}
+            />}
+          />
+          <CardText style={{whiteSpace: 'normal'}}>
+            {poll.subject}
+          </CardText>
+          <CardText style={{whiteSpace: 'normal'}}>
+            {poll.question}
+          </CardText>
+        </Card>
+      </div>
     )
   }
 
@@ -74,8 +77,25 @@ class HomePage extends React.Component {
           <Card>
             <CardText style={MaterialStyles.title}> Explore </CardText>
           {
-            this.state.polls.map((poll)=>{
-            return this.renderPoll(poll)
+            this.props.publicPolls.map((poll, i)=>{
+              return (
+                <div key={i}>
+                <Link to={`/poll/${poll.author_username}/${poll.created_at}`}>
+                  <Card 
+                    style={{margin:15}}>
+                    <AppBar
+                      title={poll.author_username}
+                      showMenuIconButton={false}/>
+                    <CardText style={{whiteSpace: 'normal'}}>
+                      {poll.subject}
+                    </CardText>
+                    <CardText style={{whiteSpace: 'normal'}}>
+                      {poll.question}
+                    </CardText>
+                  </Card>
+                </Link>
+                </div>
+              )
             })
           }
           </Card>

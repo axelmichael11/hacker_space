@@ -38,8 +38,14 @@ const profile = require('../lib/profile-methods');
            `,
           function(err, success) {
             if (success){
-                console.log('this is the success', success.rows)
-                res.status(200).send(success.rows)
+                if (success.rows[0]){
+                  console.log('this is the success', success.rows)
+                 res.status(200).send(success.rows)
+                }
+                if (success.rows==[]){
+                  res.status(200).send(success.rows)
+                }
+                console.log('this is the success', success)
             }
             if (err) {
                 console.log('err.name', err)

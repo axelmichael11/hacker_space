@@ -277,7 +277,7 @@ class PollCreatePage extends React.Component {
         <Card>
           <CardText style={MaterialStyles.title}> My Polls </CardText>
           {this.props.userPolls!==[] ?
-          this.props.userPolls.map((poll)=>{
+          this.props.userPolls.map((poll, key)=>{
             return this.renderPoll(poll)
           }) :
           <CardText> You don't have any polls... </CardText>

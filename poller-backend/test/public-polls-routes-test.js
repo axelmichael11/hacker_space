@@ -32,7 +32,7 @@ describe('testing public polls routes...', () => {
     })
   })
 
-  it.only('this is the public poll fetch method, should return randomly picked polls... there should be an empty array for testing purposes', () => {
+  it('this is the public poll fetch method, should return randomly picked polls... there should be an empty array for testing purposes', () => {
     console.log('this is the APIR TOKEN', API_TOKEN)
     return superagent.get(`${API_URL}/api/explore`)
         .set('Authorization',`Bearer ${API_TOKEN}`)
