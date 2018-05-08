@@ -12,14 +12,27 @@ import * as util from '../../lib/util.js'
 
 
 //Style
+import MaterialStyles from '../../style/material-ui-style'
+
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 import AppBar from 'material-ui/AppBar'
 
+import SwapVert from 'material-ui/svg-icons/action/swap-vert'
+import Assessment from 'material-ui/svg-icons/action/assessment'
+import ThumbDown from 'material-ui/svg-icons/action/thumb-down'
+import ThumbUp from 'material-ui/svg-icons/action/thumb-up'
+// import Pencil from 'marterial-ui/svg-icons/editor/mode_edit'
+// import PieChart from 'marterial-ui/svg-icons/editor/pie_chart'
+// import PieChartOutlined from 'marterial-ui/svg-icons/editor/pie_chart_outlined'
 
+
+// import UpArrow from 'marterial-ui/svg-icons/navigation/arrow-upward'
+// import DownArrow from 'marterial-ui/svg-icons/navigation/arrow-downward'
 
 import FlatButton from 'material-ui/FlatButton'
 import FontAwesome from 'react-fontawesome' 
+import Dialog from 'material-ui/Dialog';
 
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
@@ -46,36 +59,96 @@ class PollVotePage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      
+      openVoteConfirm:false,
     }
+    this.renderVoteSubmitActions = this.renderVoteSubmitActions.bind(this)
+    this.handleSubmitVote = this.handleSubmitVote.bind(this)
   }
 
   componentWillMount() {
     console.log('this.props.history on the public poll page', this.props.match)
   }
-
-  renderPoll(){
-    console.log('this.props.history on the vote page',this.state, this.props)
-      return (
-          <MuiThemeProvider>
-              <p> vote page</p>
-            </MuiThemeProvider>
-      )
+  handleOpenVoteConfirm(){
+    this.setState((oldState)=>{
+      return {
+        openVoteConfirm: !oldState.openVoteConfirm,
+      }
+    })
   }
 
 
+  
+  renderVoteSubmitActions(){
+    return [<FlatButton
+      label="Cancel"
+      primary={true}
+      onClick={this.handleOpenVoteConfirm}
+    />,
+    <FlatButton
+      label="Delete Poll"
+      primary={true}
+      onClick={this.handleSubmitVote}
+    />]
+  }
 
-
-
+  handleSubmitVote(){
+    this.props.submitVote()
+  }
 
   render() {
-    console.log('NAVBAR', this.props)
+    console.log('poll vote page', this.props)
     return (
-      <div className="login-box">
-        {
-           this.renderPoll()
-        }
-      </div>
+      <MuiThemeProvider>
+        <Dialog
+          title="Confirming Your Vote"
+          actions={this.renderVoteSubmitActions}
+          modal={false}
+          open={this.state.openVoteConfirm}
+          onRequestClose={this.handleOpenVoteConfirm}
+        >
+          The actions in this window were passed in as an array of React objects.
+        </Dialog>
+          <Card>
+          <CardText style={{...MaterialStyles.title, margin:15}}> What Do You Think? </CardText>
+            <div id="parent" >
+              <Assessment style={MaterialStyles.middle_icon}/>
+              <SwapVert style={MaterialStyles.middle_icon}/>
+              <ThumbUp style={MaterialStyles.middle_icon}/>
+              <ThumbDown style={MaterialStyles.middle_icon}/>
+            </div>
+          </Card>
+          <Card>
+            <AppBar
+              showMenuIconButton={false}
+            />
+          <CardMedia>
+          </CardMedia>
+          <CardText style={MaterialStyles.text}>
+            Subject
+          </CardText>
+          <CardText style={MaterialStyles.title}>
+             {this.props.location.state.subject}
+          </CardText>
+          <CardText style={MaterialStyles.text}>
+            Question
+          </CardText>
+          <CardText style={MaterialStyles.title}>
+            {this.props.location.state.question}
+          </CardText>
+          </Card>
+          <Card>
+            <FlatButton
+              label="YES"
+              primary={true}
+              onClick={this.handleOpenVoteConfirm}
+            />
+            <FlatButton
+              label="NO"
+              primary={true}
+              onClick={this.handleSubmitVote}
+            />
+          </Card>
+        </MuiThemeProvider>
     )
   }
 }

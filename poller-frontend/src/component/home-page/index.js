@@ -81,7 +81,7 @@ class HomePage extends React.Component {
                 <div key={i}>
                 <Link to={{
                   pathname:`/poll/${poll.author_username}/${poll.created_at}`,
-                  state:{author_username: poll.author_username, created_at: poll.created_at}
+                  state: poll
               }}>
                   <Card 
                     style={{margin:15}}>
