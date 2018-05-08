@@ -12,7 +12,7 @@ export const fetchVoteHistory = (poll) => (dispatch, getState) => {
 
     dispatch(loadingOn())
     console.log('thiis the DATAAAAAA', poll)
-    return superagent.get(`${__API_URL__}/api/votes`)
+    return superagent.post(`${__API_URL__}/api/votes`)
     .set('Authorization', `Bearer ${auth0Token}`)
     .send(poll)
     .then(res => {

@@ -52,6 +52,7 @@ class PollLandingContainer extends React.Component {
     super(props)
     this.state = {
       loading: true,
+      alreadyVoted:false,
     }
     this.fetchPollInfo = this.fetchPollInfo.bind(this)
   }
@@ -70,11 +71,9 @@ class PollLandingContainer extends React.Component {
     })
     .catch(err=>{
       console.log('this si the errro', err)
-      if (err==401){
         this.setState({alreadyVoted:false,
           pollResults: null
           })
-      }
       this.props.loadingOff();
   })
   }

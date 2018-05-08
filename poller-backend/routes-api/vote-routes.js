@@ -23,7 +23,7 @@ const vote = require('../lib/votes-methods')
   module.exports = (app, client, checkJwt) => {
 
 
-    app.get('/api/votes', checkJwt, (req,res) => {
+    app.post('/api/votes', checkJwt, (req,res) => {
         if (!req.headers.authorization || !req.body) {
           res.json({message:'no authorization token  or body found!'})
         } else {
