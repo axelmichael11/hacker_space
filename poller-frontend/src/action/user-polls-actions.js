@@ -3,15 +3,15 @@ const superagent = require('superagent');
 
 
 const fetchUserPolls = (polls) => {
-      return { type: 'polls_fetch', payload: polls }
+      return { type: 'user_polls_fetch', payload: polls }
     }
 
 const deleteUserPoll = (poll) => {
-    return {type:'poll_delete', payload: poll}
+    return {type:'user_poll_delete', payload: poll}
 }
 
 const createPoll = (poll) => {
-    return {type:'poll_create', payload: poll}
+    return {type:'user_poll_create', payload: poll}
 }
 
 

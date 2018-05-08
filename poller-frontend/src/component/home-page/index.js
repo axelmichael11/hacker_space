@@ -19,7 +19,11 @@ import {
     StepContent,
   } from 'material-ui/Stepper';
 import RaisedButton from 'material-ui/RaisedButton';
+import MaterialStyles from '../../style/material-ui-style'
+import AppBar from 'material-ui/AppBar'
 
+
+import {getPublicPolls} from '../../action/public-poll-actions.js'
 import LoginPage from '../login'
 import SettingsButton from '../menu/settings-button.js'
 
@@ -28,34 +32,35 @@ class HomePage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-
+      polls: this.props.publicPolls
     }
+    this.renderPoll = this.renderPoll.bind(this)
   }
 
   componentWillMount() {
     console.log(this.props.history)
+    this.props.getPublicPolls()
   }
 
-  renderCard(){
+  renderPoll(poll, i ){
     return (
-      <Card>
-        <CardHeader
-          title="Without Avatar"
-          subtitle="Subtitle"
-          actAsExpander={true}
-          showExpandableButton={true}
-        />
-        <CardActions>
-          <FlatButton label="Action1" />
-          <FlatButton label="Action2" />
-        </CardActions>
-        <CardText expandable={true}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Donec mattis pretium massa. Aliquam erat volutpat. Nulla facilisi.
-          Donec vulputate interdum sollicitudin. Nunc lacinia auctor quam sed pellentesque.
-          Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio.
-        </CardText>
-      </Card>
+      <div key={i}>
+        <Card 
+          style={{margin:15}}
+          >
+          <AppBar
+            title={poll.author_username}
+            showMenuIconButton={false}
+            />}
+          />
+          <CardText style={{whiteSpace: 'normal'}}>
+            {poll.subject}
+          </CardText>
+          <CardText style={{whiteSpace: 'normal'}}>
+            {poll.question}
+          </CardText>
+        </Card>
+      </div>
     )
   }
 
@@ -68,7 +73,34 @@ class HomePage extends React.Component {
         <div style={{maxWidth: 450, maxHeight: 600, margin: 'auto'}}>
         <MuiThemeProvider>
           <Paper style={{margin:'auto'}} zDepth={2}>
-
+          <Card>
+            <CardText style={MaterialStyles.title}> Explore </CardText>
+          {
+            this.props.publicPolls.map((poll, i)=>{
+              return (
+                <div key={i}>
+                <Link to={{
+                  pathname:`/poll/${poll.author_username}/${poll.created_at}`,
+                  state:{author_username: poll.author_username, created_at: poll.created_at}
+              }}>
+                  <Card 
+                    style={{margin:15}}>
+                    <AppBar
+                      title={poll.author_username}
+                      showMenuIconButton={false}/>
+                    <CardText style={{whiteSpace: 'normal'}}>
+                      {poll.subject}
+                    </CardText>
+                    <CardText style={{whiteSpace: 'normal'}}>
+                      {poll.question}
+                    </CardText>
+                  </Card>
+                </Link>
+                </div>
+              )
+            })
+          }
+          </Card>
           </Paper>
         </MuiThemeProvider>
       </div>
@@ -77,11 +109,12 @@ class HomePage extends React.Component {
 }
 
 export const mapStateToProps = state => ({
-    loggedIn: state.loggedIn
+    loggedIn: state.loggedIn,
+    publicPolls: state.publicPolls
   })
   
   export const mapDispatchToProps = dispatch => ({
-
+    getPublicPolls:()=>dispatch(getPublicPolls())
     
   })
   

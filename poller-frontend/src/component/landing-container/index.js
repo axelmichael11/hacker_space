@@ -9,9 +9,10 @@ import {Route, Switch} from 'react-router-dom'
 import HomePage from '../home-page'
 import ProfileSettings from '../profile-settings'
 import PollCreatePage from '../poll-create'
-
+import PollLandingContainer from '../poll-landing-container'
 import LoginPage from '../login'
 
+import PrivateRoute from '../app/privateroute'
 
 class LandingContainer extends React.Component {
   constructor(props) {
@@ -34,7 +35,8 @@ class LandingContainer extends React.Component {
           <Route  path="/settings" component={ProfileSettings} />
           <Route  path="/home" component={HomePage} />
           <Route path="/pollcreate" component={PollCreatePage}/>
-          </Switch>
+          <Route path='/poll/:author_username/:created_at' component={PollLandingContainer}/>
+        </Switch>
       </div>
     )
   }

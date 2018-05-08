@@ -1,10 +1,10 @@
 export default (state= [], {type, payload}) => {
     switch(type){
-        case "poll_create":
+        case "user_poll_create":
             return [...state, payload]
-        case "polls_fetch":
+        case "user_polls_fetch":
             return payload
-        case "poll_delete":
+        case "user_poll_delete":
         console.log('this is the payload', payload)
             return state.filter(poll => poll.created_at !== payload);
         default:

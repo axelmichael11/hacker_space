@@ -189,7 +189,7 @@ it('this should delete a poll, return the deleted timestamp', ()=>{
 })
 
   
-it.only('should grab all polls of a user', ()=>{
+it('should grab all polls of a user', ()=>{
   console.log('this is the APIR TOKEN', API_TOKEN)
   return superagent.get(`${API_URL}/api/poll`)
       .set('Authorization',`Bearer ${API_TOKEN}`)
