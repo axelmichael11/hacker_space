@@ -47,7 +47,6 @@ class HomePage extends React.Component {
       <div key={i}>
         <Card 
           style={{margin:15}}
-          onClick={this.props.history.push('/')}
           >
           <AppBar
             title={poll.author_username}
@@ -80,7 +79,10 @@ class HomePage extends React.Component {
             this.props.publicPolls.map((poll, i)=>{
               return (
                 <div key={i}>
-                <Link to={`/poll/${poll.author_username}/${poll.created_at}`}>
+                <Link to={{
+                  pathname:`/poll/${poll.author_username}/${poll.created_at}`,
+                  state:{author_username: poll.author_username, created_at: poll.created_at}
+              }}>
                   <Card 
                     style={{margin:15}}>
                     <AppBar

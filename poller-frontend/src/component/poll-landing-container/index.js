@@ -5,7 +5,11 @@ import { connect } from 'react-redux'
 import { Link, Route } from 'react-router-dom'
 import Loading from '../loading'
 import PollResponseContainer from '../poll-response-container'
+
+import {loadingOff} from '../../action/loading-actions'
+
 //Methods
+
 
 import * as util from '../../lib/util.js'
 //These will be used, to store id of the user in the database...
@@ -53,24 +57,30 @@ class PollLandingContainer extends React.Component {
   }
 
   componentWillMount() {
-    console.log('this.props.history on the public poll page', this.props.match)
-    this.props.fetchVoteHistory(this.props.match.params)
-    // .then((result)=>{
-    //   if (result.status==200){
-    //     this.setState({alreadyVoted:true,
-    //     pollResults: result.rows[0]
-    //     })
-    //   }
-    //   if (result.status==401){
-    //     this.setState({alreadyVoted:true,
-    //       pollResults: result.rows[0]
-    //       })
-    //   }
-    // })
-    // .catch(err=>console.log(err))
+    console.log('POLL LANDING CONTAINER::::', this.props.location.state)
+    let {created_at, author_username} = this.props.location.state
+    let voteData = Object.assign({},{created_at, author_username})
+    this.props.fetchVoteHistory(voteData)
+    .then((result)=>{
+      if (result.status==200){
+        this.setState({alreadyVoted:true,
+        pollResults: result.rows[0]
+        })
+      }
+    })
+    .catch(err=>{
+      console.log('this si the errro', err)
+      if (err==401){
+        this.setState({alreadyVoted:false,
+          pollResults: null
+          })
+      }
+      this.props.loadingOff();
+  })
   }
 
   fetchPollInfo(){
+    console.log(this.props.location, 'props on the poll landing containter')
       return (
           this.props.Loading ? <Loading/> :
           <PollResponseContainer pollResults={this.state.pollResults} alreadyVoted={this.state.alreadyVoted}/>
@@ -100,7 +110,8 @@ export const mapStateToProps = state => ({
 })
 
 export const mapDispatchToProps = dispatch => ({
-    fetchVoteHistory: (poll) => dispatch(fetchVoteHistory(poll))
+    fetchVoteHistory: (poll) => dispatch(fetchVoteHistory(poll)),
+    loadingOff: () => dispatch(loadingOff())
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PollLandingContainer))

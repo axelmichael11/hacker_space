@@ -11,18 +11,20 @@ export const fetchVoteHistory = (poll) => (dispatch, getState) => {
     let { auth0Token } = getState();
 
     dispatch(loadingOn())
-
-    return superagent.get(`${__API_URL__}/api/explore`)
+    console.log('thiis the DATAAAAAA', poll)
+    return superagent.get(`${__API_URL__}/api/votes`)
     .set('Authorization', `Bearer ${auth0Token}`)
     .send(poll)
     .then(res => {
-        let parsed = JSON.parse(res.text)
-        console.log(parsed)
-        dispatch(fetchPublicPolls(parsed))
-    })
-    .catch(err => {
-        if (err.status == 550){
-        throw new Error(550)
-        } 
-    })
+        console.log('this is the status', res.status)
+        if (res.status = 401){
+          throw new Error(res.status)
+        }
+        return parsed
+      })
+      .catch(err => {
+        if (err.status == 401){
+          throw new Error(401)
+        }
+      })
 }

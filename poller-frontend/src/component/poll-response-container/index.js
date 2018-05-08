@@ -53,10 +53,10 @@ class PollResponseContainer extends React.Component {
 
   componentWillMount() {
     console.log('this.props.history on the public poll page', this.props.match)
-    this.props.fetchVoteHistory(this.props.match.params)
   }
 
   renderResponse(){
+    console.log('poll response container', this.state, this.props)
       return (
           this.state.alreadyVoted ? <PollVotePage/> :
           <PollResultsPage/>
