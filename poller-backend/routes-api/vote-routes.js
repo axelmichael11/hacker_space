@@ -16,7 +16,6 @@ const env = {
 
 const superagent = require('superagent');
 const publicPoll = require('../lib/public-poll-methods.js')
-const queries = require('../queries/auth');
 const profile = require('../lib/profile-methods');
 const vote = require('../lib/votes-methods')
 
@@ -75,7 +74,7 @@ const vote = require('../lib/votes-methods')
       })
 
 
-      app.post('/api/votes', checkJwt, (req,res) => {
+      app.post('/api/postvotes', checkJwt, (req,res) => {
         if (!req.headers.authorization || !req.body) {
           res.json({message:'no authorization token  or body found!'})
         } else {
@@ -87,7 +86,6 @@ const vote = require('../lib/votes-methods')
             if (user[`${env.uid}`]) {
               client.query(`
                 INSERT INTO polls
-
                 WHERE author_username=($2) 
                 AND created_at=($1) 
                 AND ($3) = ANY(yes) 

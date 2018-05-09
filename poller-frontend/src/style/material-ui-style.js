@@ -45,6 +45,13 @@ module.exports = {
         height: 50,
         textAlign: 'center',
         position: 'relative'
+      },
+      voteButtons:{
+        display:'center',
+        margin:'auto',
+        width: '50%',
+        fontSize: 20,
+        fontFamily: "Play"
       }
 
 }

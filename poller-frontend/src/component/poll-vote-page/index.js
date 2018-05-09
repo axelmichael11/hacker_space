@@ -59,94 +59,132 @@ class PollVotePage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      openVoteConfirm:false,
+      openVoteConfirmAlert:false,
     }
-    this.renderVoteSubmitActions = this.renderVoteSubmitActions.bind(this)
+    this.handleConfirmYesVoteAlert = this.handleConfirmYesVoteAlert.bind(this)
     this.handleSubmitVote = this.handleSubmitVote.bind(this)
+    this.handleCancelVote = this.handleCancelVote.bind(this)
+    this.handleConfirmNoVoteAlert = this.handleConfirmNoVoteAlert.bind(this)
   }
 
   componentWillMount() {
     console.log('this.props.history on the public poll page', this.props.match)
   }
-  handleOpenVoteConfirm(){
+
+
+  handleConfirmYesVoteAlert(){
     this.setState((oldState)=>{
       return {
-        openVoteConfirm: !oldState.openVoteConfirm,
+        openVoteConfirmAlert: !oldState.openVoteConfirmAlert,
+        vote:"yes",
       }
+    });
+  }
+
+  handleConfirmNoVoteAlert(){
+    this.setState((oldState)=>{
+      return {
+        openVoteConfirmAlert: !oldState.openVoteConfirmAlert,
+        vote:"no",
+      }
+    });
+  }
+
+  handleCancelVote(){
+    this.setState({
+      vote:null,
+      openVoteConfirmAlert: false,
     })
   }
 
 
-  
-  renderVoteSubmitActions(){
-    return [<FlatButton
-      label="Cancel"
-      primary={true}
-      onClick={this.handleOpenVoteConfirm}
-    />,
-    <FlatButton
-      label="Delete Poll"
-      primary={true}
-      onClick={this.handleSubmitVote}
-    />]
-  }
+
 
   handleSubmitVote(){
-    this.props.submitVote()
+    let {vote} = this.state
+    let voteInfo = Object.assign({}, {...this.props.userProfile, vote})
+    console.log('hitting the handleSubmitVote:::', voteInfo)
+  //   this.props.submitVote({...this.props.userProfile, ...this.state.vote})
+  //   .then((result)=>{
+  //     if (result.status==200){
+  //       this.setState({alreadyVoted:true,
+  //       pollResults: result.rows[0]
+  //       })
+  //     }
+  //   })
+  //   .catch(err=>{
+  //     console.log('this si the errro', err)
+  //       this.setState({alreadyVoted:false,
+  //         pollResults: null
+  //         })
+  //     this.props.loadingOff();
+  // })
   }
 
   render() {
-    console.log('poll vote page', this.props)
+    console.log('poll vote page', this.props, this.state)
+
+    const confirmVoteActions = [<FlatButton
+      label="Cancel"
+      primary={true}
+      onClick={this.handleCancelVote}
+    />,
+    <FlatButton
+      label="Submit Vote"
+      primary={true}
+      onClick={this.handleSubmitVote}
+    />]
+
     return (
       <MuiThemeProvider>
         <Dialog
           title="Confirming Your Vote"
-          actions={this.renderVoteSubmitActions}
+          actions={confirmVoteActions}
           modal={false}
-          open={this.state.openVoteConfirm}
-          onRequestClose={this.handleOpenVoteConfirm}
+          open={this.state.openVoteConfirmAlert}
+          onRequestClose={this.handleOpenVoteConfirmAlert}
         >
-          The actions in this window were passed in as an array of React objects.
+          Are you sure you want to submit your vote? Remember,
+          how your demographic information information is filled out now
+          will be submitted when answering the question...
         </Dialog>
-          <Card>
-          <CardText style={{...MaterialStyles.title, margin:15}}> What Do You Think? </CardText>
-            <div id="parent" >
-              <Assessment style={MaterialStyles.middle_icon}/>
-              <SwapVert style={MaterialStyles.middle_icon}/>
-              <ThumbUp style={MaterialStyles.middle_icon}/>
-              <ThumbDown style={MaterialStyles.middle_icon}/>
-            </div>
-          </Card>
-          <Card>
+        <Card  style={{maxWidth: 450, margin: 'auto'}}>
             <AppBar
+            style={{...MaterialStyles.title, margin:'auto' }}
+              title={'Question:'}
               showMenuIconButton={false}
             />
           <CardMedia>
+            <CardText style={{...MaterialStyles.title,display:'inline-block'}}
+            >
+              "<CardText style={{...MaterialStyles.title,display:'inline-block'}}>
+                  {this.props.location.state.question}
+                </CardText>
+              "
+            </CardText>
           </CardMedia>
-          <CardText style={MaterialStyles.text}>
-            Subject
-          </CardText>
-          <CardText style={MaterialStyles.title}>
-             {this.props.location.state.subject}
-          </CardText>
-          <CardText style={MaterialStyles.text}>
-            Question
-          </CardText>
-          <CardText style={MaterialStyles.title}>
-            {this.props.location.state.question}
-          </CardText>
-          </Card>
+            <CardHeader
+              title={this.props.location.state.subject}
+              subtitle={'Posted By: '+this.props.location.state.author_username}
+              style={MaterialStyles.title}
+            />
+         
           <Card>
             <FlatButton
               label="YES"
               primary={true}
-              onClick={this.handleOpenVoteConfirm}
+              value={'yes'}
+              onClick={this.handleConfirmYesVoteAlert}
+              style={{...MaterialStyles.voteButtons, color:'#4CAF50'}}
             />
             <FlatButton
               label="NO"
+              value={'no'}
               primary={true}
-              onClick={this.handleSubmitVote}
+              onClick={this.handleConfirmNoVoteAlert}
+              style={{...MaterialStyles.voteButtons, color:'#D32F2F'}}
             />
+          </Card>
           </Card>
         </MuiThemeProvider>
     )
@@ -155,7 +193,8 @@ class PollVotePage extends React.Component {
 
 export const mapStateToProps = state => ({
   loggedIn: state.loggedIn,
-  Loading: state.Loading
+  Loading: state.Loading,
+  userProfile: state.userProfile
 })
 
 export const mapDispatchToProps = dispatch => ({

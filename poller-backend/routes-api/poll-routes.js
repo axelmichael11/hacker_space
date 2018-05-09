@@ -18,7 +18,6 @@ const superagent = require('superagent');
 const bcrypt = require('bcrypt');
 const poll = require('../lib/poll-methods');
 const profile = require('../lib/profile-methods')
-const queries = require('../queries/auth');
 
 
   module.exports = (app, client, checkJwt) => {
