@@ -4,6 +4,9 @@ import Auth0Lock from 'auth0-lock'
 import { connect } from 'react-redux'
 import { Link, Route } from 'react-router-dom'
 import Loading from '../loading'
+import {
+  castVote
+} from '../../action/vote-actions'
 //Methods
 
 import * as util from '../../lib/util.js'
@@ -102,23 +105,23 @@ class PollVotePage extends React.Component {
 
   handleSubmitVote(){
     let {vote} = this.state
-    let voteInfo = Object.assign({}, {...this.props.userProfile, vote})
-    console.log('hitting the handleSubmitVote:::', voteInfo)
-  //   this.props.submitVote({...this.props.userProfile, ...this.state.vote})
-  //   .then((result)=>{
-  //     if (result.status==200){
-  //       this.setState({alreadyVoted:true,
-  //       pollResults: result.rows[0]
-  //       })
-  //     }
-  //   })
-  //   .catch(err=>{
-  //     console.log('this si the errro', err)
-  //       this.setState({alreadyVoted:false,
-  //         pollResults: null
-  //         })
-  //     this.props.loadingOff();
-  // })
+    let voteData = Object.assign({}, {...this.props.userProfile, ...this.props.location.state, vote})
+    console.log('hitting the handleSubmitVote:::', voteData)
+    this.props.castVote(voteData)
+    .then((result)=>{
+      if (result.status==200){
+        this.setState({alreadyVoted:true,
+        pollResults: result.rows[0]
+        })
+      }
+    })
+    .catch(err=>{
+      console.log('this si the errro', err)
+        this.setState({alreadyVoted:false,
+          pollResults: null
+          })
+      this.props.loadingOff();
+  })
   }
 
   render() {
@@ -198,7 +201,8 @@ export const mapStateToProps = state => ({
 })
 
 export const mapDispatchToProps = dispatch => ({
-    fetchVoteHistory: (poll) => dispatch(fetchVoteHistory(poll))
+    fetchVoteHistory: (poll) => dispatch(fetchVoteHistory(poll)),
+    castVote: (voteData) => dispatch(castVote(voteData))
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PollVotePage))

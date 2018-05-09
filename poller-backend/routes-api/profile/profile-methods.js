@@ -36,5 +36,7 @@ const profile = {};
       .catch(err=>console.log(err))
     }
 
+    profile.delete 
+
 module.exports = profile;
 

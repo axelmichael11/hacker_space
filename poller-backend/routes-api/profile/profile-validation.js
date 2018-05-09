@@ -17,4 +17,5 @@ module.exports = {
       let returnedProfile = Object.assign({},{gender, age, profession, country, ethnicity, religion, nickname, email, picture});
       return returnedProfile
     }
+    
 }

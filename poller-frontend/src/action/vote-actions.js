@@ -17,9 +17,7 @@ export const fetchVoteHistory = (poll) => (dispatch, getState) => {
     .send(poll)
     .then(res => {
         console.log('this is the status', res.status)
-        if (res.status = 401){
-          throw new Error(res.status)
-        }
+        
         return parsed
       })
       .catch(err => {
@@ -27,4 +25,25 @@ export const fetchVoteHistory = (poll) => (dispatch, getState) => {
           throw new Error(401)
         }
       })
+}
+
+
+export const castVote = (voteData) => (dispatch, getState) => {
+  let { auth0Token } = getState();
+
+  dispatch(loadingOn())
+  console.log('thiis the DATAAAAAA', voteData)
+  return superagent.post(`${__API_URL__}/api/castvote`)
+  .set('Authorization', `Bearer ${auth0Token}`)
+  .send(voteData)
+  .then(res => {
+      console.log('this is the status', res.status)
+      
+      return parsed
+    })
+    .catch(err => {
+      if (err.status == 401){
+        throw new Error(401)
+      }
+    })
 }
