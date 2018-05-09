@@ -1,8 +1,10 @@
 const Client = require('../../database/client')
 
+
 const profileValidate = require('./profile-validation')
 const env = {
-    uid: process.env.uid
+    uid: process.env.uid,
+    users: process.env.userTable
 };
 
 module.exports = {
@@ -37,5 +39,33 @@ module.exports = {
             res.json(sendProfile)
         }
         })
+    },
+    updateProfileQuery: (res,user,profileInfo) => {
+        Client.query(`UPDATE ${env.users}
+              SET age=($1),
+              ethnicity=($2),
+              profession=($3),
+              religion=($4),
+              gender=($5),
+              country=($6)
+              WHERE id=($7) 
+              RETURNING age, ethnicity, profession, religion, gender, country;`,
+              [profileInfo.age,
+              profileInfo.ethnicity,
+              profileInfo.profession,
+              profileInfo.religion,
+              profileInfo.gender,
+              profileInfo.country,
+              user[`${env.uid}`],
+              ],
+              function(err, success) {
+                if (success) {
+                  let sendProfile = profileValidate.formatSendProfile(success.rows[0], user)
+                  res.json(sendProfile)
+                } else {
+                    console.log('')
+                  res.status(500).json({message:"unsuccessful updating user profile"})
+                }
+              })
     }
 }

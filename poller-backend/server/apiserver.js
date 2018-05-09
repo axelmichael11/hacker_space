@@ -80,7 +80,7 @@ app.get('/api/private-scoped', checkJwt, checkScopes, function(req, res) {
 
 //ROUTES
 app.use(require('../routes-api/profile'));
-// require('../routes-api/profile-routes.js')(app, Client, checkJwt);
+app.use(require('../routes-api/poll'));
 // require('../routes-api/poll-routes.js')(app, Client, checkJwt);
 // require('../routes-api/public-poll-routes.js')(app, Client, checkJwt);
 // require('../routes-api/vote-routes.js')(app, Client, checkJwt);

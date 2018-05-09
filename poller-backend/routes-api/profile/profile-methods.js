@@ -4,6 +4,7 @@ const superagent = require('superagent');
 const validation = require('../../lib/validation-methods')
 const auth_0 = require('../../lib/authprofile-methods')
 const query =  require('./profile-queries')
+const profileValidate = require('./profile-validation')
 
 
 const profile = {};
@@ -19,6 +20,20 @@ const profile = {};
         .catch(err=>console.log(err))
       })
       .catch(err=>console.log('error extracting user from auth 0',err))
+    }
+
+    profile.updateProfile = (req,res) => {
+      let token = validation.checkForToken(req.headers.authorization)
+      let profileInfo = profileValidate.userProfileValidate(req.body)
+      auth_0.getAuthProfile(token)
+      .then(user=>{
+        validation.validateUid(user)
+        .then(user=>{
+          query.updateProfileQuery(res, user, profileInfo)
+        })
+        .catch(err=>console.log(err))
+      })
+      .catch(err=>console.log(err))
     }
 
 module.exports = profile;
