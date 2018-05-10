@@ -46,7 +46,8 @@ class PollResponseContainer extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      alreadyVoted: this.props.alreadyVoted
+      alreadyVoted: this.props.alreadyVoted,
+      data: this.props.pollResults
     }
     this.renderResponse = this.renderResponse.bind(this)
   }
@@ -58,7 +59,7 @@ class PollResponseContainer extends React.Component {
   renderResponse(){
     console.log('poll response container', this.state, this.props)
       return (
-          this.props.alreadyVoted ? <PollResultsPage/> :
+          this.props.alreadyVoted ? <PollResultsPage data={this.props.pollResults}/> :
           <PollVotePage/>
       )
   }

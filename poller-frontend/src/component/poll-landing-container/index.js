@@ -63,10 +63,12 @@ class PollLandingContainer extends React.Component {
     let voteData = Object.assign({},{created_at, author_username})
     this.props.fetchVoteHistory(voteData)
     .then((result)=>{
+      console.log('RESULT', result, result.status)
       if (result.status==200){
         this.setState({alreadyVoted:true,
-        pollResults: result.rows[0]
+        pollResults: result,
         })
+        this.props.loadingOff()
       }
     })
     .catch(err=>{
@@ -79,7 +81,7 @@ class PollLandingContainer extends React.Component {
   }
 
   fetchPollInfo(){
-    console.log(this.props.location, 'props on the poll landing containter')
+    console.log(this.state, 'state on the poll landing containter')
       return (
           this.props.Loading ? <Loading/> :
           <PollResponseContainer pollResults={this.state.pollResults} alreadyVoted={this.state.alreadyVoted}/>

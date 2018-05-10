@@ -1,6 +1,6 @@
 const Client = require('../../database/client')
 
-const pollValidate = require('./vote-validation')
+const vollValidate = require('./vote-validation')
 
 const env = {
     uid: process.env.uid,
@@ -15,11 +15,12 @@ module.exports = {
         console.log('this is the user',user[`${env.uid}`])
 
         Client.query(`
-                SELECT *
+                SELECT count(votes), array_yes_data, array_no_data
                 FROM polls
                 WHERE author_username=($2) 
                 AND created_at=($1) 
-                AND ($3) = ANY(votes);
+                AND ($3) = ANY(votes)
+                GROUP BY array_yes_data, array_no_data;
               `,
               [
                 voteData.created_at,
@@ -28,13 +29,14 @@ module.exports = {
               ],
               function(err, success) {
                 if (success) {
-                  console.log('this is success from db', success, success.rows, success.rowCount)
+                //   console.log('this is success from db', success, success.rows, success.rowCount)
                   if (success.rows[0]) {
-                    res.status(200).send(success.rows[0])
+                      console.log('this is the success ROWS DATA', success.rows[0],'this is the array yes data',success.rows[0].array_yes_data);
+                      let data = {}
+                      data.yes_data = vollValidate.formatVoteData(success.rows[0].array_yes_data)
+                    res.status(200).send(data)
                   }
-                  if (success.rows ==[]){
                     res.status(401).send()
-                  }
                 } else {
                   if (err) {
                     console.log('err.name', err)
@@ -57,9 +59,9 @@ module.exports = {
               [
                 voteData.age,
                 voteData.country,
-                voteData.gender,
                 voteData.ethnicity,
                 voteData.profession,
+                voteData.gender,
                 voteData.religion,
                 user[`${env.uid}`],
                 voteData.author_username,
@@ -67,13 +69,16 @@ module.exports = {
               ],
               function(err, success) {
                 if (success) {
-                  console.log('this is success from db', success, success.rows, success.rowCount)
-                  if (success.rows[0]) {
+                  console.log('this is success from db', (success.rows.length> 0), success.rowCount)
+                  if (success.rows.length >0) {
                       console.log('array yes data,')
-                    res.status(200).send(success.rows[0])
+                      let data = {}
+                      data.yes_data = vollValidate.formatVoteData(success.rows[0].array_yes_data)
+                    res.status(200).send(data)
                   }
-                  console.log('hitting the 401 here...')
-                  res.status(401).send()
+                  if (success.rows.length = 0){
+                    res.status(401).send(success.rows[0])
+                  }
                 } else {
                   if (err) {
                     console.log('err.name', err)

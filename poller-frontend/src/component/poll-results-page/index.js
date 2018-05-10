@@ -46,7 +46,7 @@ class PollResultsPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      pollResults: this.props.pollResults
+      pollResults: this.props.data
     }
     
   }

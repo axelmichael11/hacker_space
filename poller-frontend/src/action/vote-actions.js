@@ -16,11 +16,14 @@ export const fetchVoteHistory = (poll) => (dispatch, getState) => {
     .set('Authorization', `Bearer ${auth0Token}`)
     .send(poll)
     .then(res => {
-        console.log('this is the response', res.text)
+        console.log('this is the response', res.status)
         let parsed = JSON.parse(res.text)
+        parsed.status=res.status
+
         return parsed
       })
       .catch(err => {
+        console.log('this is the error', err)
         if (err.status == 401){
           throw new Error(401)
         }
@@ -37,9 +40,11 @@ export const castVote = (voteData) => (dispatch, getState) => {
   .set('Authorization', `Bearer ${auth0Token}`)
   .send(voteData)
   .then(res => {
-      console.log('this is the status', res.status)
-      let parsed = JSON.parse(res.text)
-      return parsed
+      console.log('this is the response', res.status)
+        let parsed = JSON.parse(res.text)
+        parsed.status=res.status
+        
+        return parsed
     })
     .catch(err => {
       if (err.status == 401){
