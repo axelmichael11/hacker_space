@@ -109,6 +109,7 @@ class PollVotePage extends React.Component {
     console.log('hitting the handleSubmitVote:::', voteData)
     this.props.castVote(voteData)
     .then((result)=>{
+      console.log('this is the result')
       if (result.status==200){
         this.setState({alreadyVoted:true,
         pollResults: result.rows[0]
