@@ -7,6 +7,8 @@ import Loading from '../loading'
 import {
   castVote
 } from '../../action/vote-actions'
+import {loadingOff} from '../../action/loading-actions'
+
 //Methods
 
 import * as util from '../../lib/util.js'
@@ -63,6 +65,8 @@ class PollVotePage extends React.Component {
     super(props)
     this.state = {
       openVoteConfirmAlert:false,
+      alreadyVoted: this.props.alreadyVoted
+
     }
     this.handleConfirmYesVoteAlert = this.handleConfirmYesVoteAlert.bind(this)
     this.handleSubmitVote = this.handleSubmitVote.bind(this)
@@ -109,11 +113,14 @@ class PollVotePage extends React.Component {
     console.log('hitting the handleSubmitVote:::', voteData)
     this.props.castVote(voteData)
     .then((result)=>{
-      console.log('this is the result')
+      console.log('this is the result', result)
       if (result.status==200){
         this.setState({alreadyVoted:true,
-        pollResults: result.rows[0]
+        pollResults: result
         })
+        this.props.setDataAfterVote(result)
+        this.props.castAlreadyVoted()
+        this.props.loadingOff()
       }
     })
     .catch(err=>{
@@ -203,7 +210,8 @@ export const mapStateToProps = state => ({
 
 export const mapDispatchToProps = dispatch => ({
     fetchVoteHistory: (poll) => dispatch(fetchVoteHistory(poll)),
-    castVote: (voteData) => dispatch(castVote(voteData))
+    castVote: (voteData) => dispatch(castVote(voteData)),
+    loadingOff: ()=>dispatch(loadingOff())
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PollVotePage))

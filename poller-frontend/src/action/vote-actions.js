@@ -40,10 +40,9 @@ export const castVote = (voteData) => (dispatch, getState) => {
   .set('Authorization', `Bearer ${auth0Token}`)
   .send(voteData)
   .then(res => {
-      console.log('this is the response', res.status)
+      console.log('this is the vote data', res.text)
         let parsed = JSON.parse(res.text)
         parsed.status=res.status
-        
         return parsed
     })
     .catch(err => {
