@@ -42,11 +42,13 @@ import {
   CardText,
 } from 'material-ui/Card'
 
+import ReligionPie from '../charts/religion/index'
+
 class PollResultsPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      pollResults: this.props.pollResults
+      pollData: this.props.pollData
     }
     
   }
@@ -54,20 +56,12 @@ class PollResultsPage extends React.Component {
   componentWillMount() {
     console.log('this.props.history on the public poll page', this.props.match)
   }
-
   
-
-
-
-
-
-
   render() {
     console.log('pollResultsPage',this.state, this.props)
     return (
-      <MuiThemeProvider>
-          <p> results page, already voted </p>
-        </MuiThemeProvider>
+      <ReligionPie/>
+
     )
   }
 }

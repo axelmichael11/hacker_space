@@ -81,19 +81,30 @@ class HomePage extends React.Component {
                 <div key={i}>
                 <Link to={{
                   pathname:`/poll/${poll.author_username}/${poll.created_at}`,
-                  state:{author_username: poll.author_username, created_at: poll.created_at}
-              }}>
-                  <Card 
-                    style={{margin:15}}>
+                  state: poll
+                  }}>
+                  <Card  style={{maxWidth: 450, margin: 'auto', marginBottom: 15 }}>
                     <AppBar
-                      title={poll.author_username}
-                      showMenuIconButton={false}/>
-                    <CardText style={{whiteSpace: 'normal'}}>
-                      {poll.subject}
+                      style={{...MaterialStyles.title, margin:'auto' }}
+                      title={'Poll'}
+                      showMenuIconButton={false}
+                    />
+                  <CardMedia>
+                    <CardText style={{...MaterialStyles.title,display:'inline-block'}}
+                    >
+                      "<CardText style={{...MaterialStyles.title,display:'inline-block'}}>
+                          {poll.question}
+                        </CardText>
+                      "
                     </CardText>
-                    <CardText style={{whiteSpace: 'normal'}}>
-                      {poll.question}
-                    </CardText>
+                  </CardMedia>
+                  <Card>
+                    <CardHeader
+                      title={poll.subject}
+                      subtitle={'Posted By: '+poll.author_username}
+                      style={MaterialStyles.title}
+                    />
+                    </Card>
                   </Card>
                 </Link>
                 </div>

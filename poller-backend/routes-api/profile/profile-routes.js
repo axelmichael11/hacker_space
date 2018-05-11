@@ -15,22 +15,21 @@ const env = {
 const superagent = require('superagent');
 const bcrypt = require('bcrypt');
 const profile = require('../lib/profile-methods');
+const Client = require('../database/client')
+const ProfileRouter = require('express').Router();
+const checkJwt = require('../../server/checkjwt')
 
-const queries = require('../queries/auth');
 
-
-  module.exports = (app, client, checkJwt) => {
-
-    app.get('/api/user',checkJwt, (req,res) => {
-      if (!req.headers.authorization) {
+    ProfileRouter.get('/api/user',checkJwt, (req,res) => {
         res.json({message:'no authorization token found!'})
-      } else {
+        console.log('this is the authorization header', req.headers.authorization)
+        
         let token = req.headers.authorization
         profile.getInfo(token)
         .then(user => {
           console.log('this is the user!', user)
           if (user[`${env.uid}`]) {
-            client.query(`
+            Client.query(`
             with existing as (
               select *
               from poller_data
@@ -65,42 +64,11 @@ const queries = require('../queries/auth');
           }
         })
         .catch(err=>console.log(err))
-      }
     })
 
 
-    // app.get('/api/user',checkJwt, (req,res) => {
-    //   if (!req.headers.authorization) {
-    //     res.json({message:'no authorization token found!'})
-    //   } else {
-    //     let token = req.headers.authorization
-    //     profile.getInfo(token)
-    //     .then(user => {
-    //       console.log('this is the user!', user)
-    //       if (user[`${env.uid}`]) {
-    //         client.query(`SELECT * FROM ${env.users} WHERE id=($1);`, 
-    //         [user[`${env.uid}`]],
-    //         function(err, success) {
-    //           if (err) res.status(500).json({message:"unsuccessful in putting in data..."})
-    //           if (success) {
-    //           console.log('DB query success', success.rows[0]);
-    //             let sendProfile = profile.formatSendProfile(success.rows[0], user)
-    //             res.json(sendProfile)
-    //           } else {
-    //             res.status(500).json({message:"unsuccessful finding you in our records..."})
-    //           }
-    //         })
-    //       } else {
-    //         res.json({error:'there is an error finding your id in auth0!'})
-    //       }
-    //     })
-    //     .catch(err=>console.log(err))
-    //   }
-    // })
 
-
-
-  app.put('/api/user', checkJwt, (req, res) => {
+    ProfileRouter.put('/api/user', checkJwt, (req, res) => {
     console.log('UPDATE REQEUST@@@@@@@') 
     if (!req.headers.authorization) {
       res.json({message:'no authorization token found!'})
@@ -114,7 +82,7 @@ const queries = require('../queries/auth');
           if (!user[`${env.uid}`]) {
             res.json({error:'there is an error finding your id! log out and create another account'})
           } else {
-            client.query(`UPDATE ${env.users}
+            Client.query(`UPDATE ${env.users}
               SET age=($1),
               ethnicity=($2),
               profession=($3),
@@ -146,12 +114,12 @@ const queries = require('../queries/auth');
     }
   })
 
-  app.delete('/api/user', checkJwt, (req,res) => {
+  ProfileRouter.delete('/api/user', checkJwt, (req,res) => {
     if (!req.headers.authorization) {
       res.json({message:'no authorization token found!'})
     } else {
 
-      client.query(`DELETE FROM ${env.users}
+      Client.query(`DELETE FROM ${env.users}
         WHERE id=($1);`,
         [uid],
         function(err, success) {
@@ -167,4 +135,7 @@ const queries = require('../queries/auth');
       )
     }
   })
-}
+
+
+
+module.exports = ProfileRouter;

@@ -16,7 +16,6 @@ const env = {
 
 const superagent = require('superagent');
 const publicPoll = require('../lib/public-poll-methods.js')
-const queries = require('../queries/auth');
 const profile = require('../lib/profile-methods');
 
 

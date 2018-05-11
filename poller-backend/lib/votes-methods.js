@@ -62,7 +62,7 @@ vote.validatePostVoteData = function(incomingPostVoteData){
         author_username, } = incomingGetVoteData;
 
 
-    let voteData = Object.assign({},{created_at,age, country, ethnicity, gender, profession, religion, vote, author_username,});
+    let voteData = Object.assign({},{created_at,age, country, ethnicity, gender, profession, religion, vote, author_username});
 
     if (!voteData.created_at  || typeof voteData.created_at !== 'string'){
         throw new Error('invalid created_at type or length, or nonexistant property');

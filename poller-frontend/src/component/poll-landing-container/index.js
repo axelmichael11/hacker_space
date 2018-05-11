@@ -53,8 +53,11 @@ class PollLandingContainer extends React.Component {
     this.state = {
       loading: true,
       alreadyVoted:false,
+      pollData:null
     }
     this.fetchPollInfo = this.fetchPollInfo.bind(this)
+    this.castAlreadyVoted = this.castAlreadyVoted.bind(this)
+    this.setDataAfterVote = this.setDataAfterVote.bind(this)
   }
 
   componentWillMount() {
@@ -63,26 +66,42 @@ class PollLandingContainer extends React.Component {
     let voteData = Object.assign({},{created_at, author_username})
     this.props.fetchVoteHistory(voteData)
     .then((result)=>{
+      console.log('RESULT', result, result.status)
       if (result.status==200){
         this.setState({alreadyVoted:true,
-        pollResults: result.rows[0]
+        pollData: result,
         })
+        this.props.loadingOff()
       }
     })
     .catch(err=>{
       console.log('this si the errro', err)
         this.setState({alreadyVoted:false,
-          pollResults: null
+          pollData: null
           })
       this.props.loadingOff();
   })
   }
 
+  setDataAfterVote(results){
+    this.setState({
+      pollData: results
+    })
+  }
+
+  castAlreadyVoted(){
+    this.setState({alreadyVoted:true})
+  }
+
   fetchPollInfo(){
-    console.log(this.props.location, 'props on the poll landing containter')
+    console.log(this.state, 'state on the poll landing containter')
       return (
           this.props.Loading ? <Loading/> :
-          <PollResponseContainer pollResults={this.state.pollResults} alreadyVoted={this.state.alreadyVoted}/>
+          <PollResponseContainer 
+          setDataAfterVote={this.setDataAfterVote} 
+          castAlreadyVoted={this.castAlreadyVoted} 
+          pollData={this.state.pollData} 
+          alreadyVoted={this.state.alreadyVoted}/>
       )
   }
 

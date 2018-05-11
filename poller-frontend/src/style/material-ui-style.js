@@ -28,5 +28,30 @@ module.exports = {
         fontFamily: 'Play',
         fontSize: 20,
       },
+      intro_container:{
+        maxWidth: 450, 
+        height:300,
+        margin: 'auto',
+        marginBottom:20
+      },
+      login_container:{
+        maxWidth: 450, 
+        margin: 'auto'
+      },
+      middle_icon: {
+        display:'center',
+        margin:'auto',
+        width: 50,
+        height: 50,
+        textAlign: 'center',
+        position: 'relative'
+      },
+      voteButtons:{
+        display:'center',
+        margin:'auto',
+        width: '50%',
+        fontSize: 20,
+        fontFamily: "Play"
+      }
 
 }

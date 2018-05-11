@@ -39,14 +39,16 @@ const checkJwt = jwt({
 const checkScopes = jwtAuthz(['read:messages']);
 
 //initiate Postgres DB
-const client = new pg.Client({
-    user: process.env.DBUSER,
-    password: process.env.DBPASSWORD,
-    database: process.env.DB,
-    port: process.env.DBPORT,
-    host: process.env.DBHOST,
-    ssl: true
-  });
+// const client = new pg.Client({
+//     user: process.env.DBUSER,
+//     password: process.env.DBPASSWORD,
+//     database: process.env.DB,
+//     port: process.env.DBPORT,
+//     host: process.env.DBHOST,
+//     ssl: true
+//   });
+
+const Client = require('../database/client.js')
 
 
 
@@ -77,10 +79,11 @@ app.get('/api/private-scoped', checkJwt, checkScopes, function(req, res) {
 
 
 //ROUTES
-require('../routes-api/profile-routes.js')(app, client, checkJwt);
-require('../routes-api/poll-routes.js')(app, client, checkJwt);
-require('../routes-api/public-poll-routes.js')(app, client, checkJwt);
-require('../routes-api/vote-routes.js')(app, client, checkJwt);
+app.use(require('../routes-api/profile'));
+app.use(require('../routes-api/poll'));
+app.use(require('../routes-api/explore'));
+app.use(require('../routes-api/vote'));
+// require('../routes-api/vote-routes.js')(app, Client, checkJwt);
 
 
 app.use(function(err, req, res, next){
@@ -110,7 +113,7 @@ const state = {
           return reject(new Error('USAGE ERROR: the state is on'))
       state.isOn = true
       // console.log('this is the client database', client)
-      return client.connect()
+      return Client.connect()
       .then(() => {
         state.http = app.listen(process.env.PORT, () => {
           console.log('__SERVER_UP__', process.env.PORT)
@@ -127,7 +130,7 @@ const state = {
   server.stop = () => {
     return new Promise((resolve, reject) => {
       if (!state.isOn) return reject(new Error('USAGE ERROR: the state is off'))
-      return client.end()
+      return Client.end()
         .then(() => {
           state.http.close(() => {
             console.log('__SERVER_DOWN__')
