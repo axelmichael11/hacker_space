@@ -4,7 +4,7 @@ import Auth0Lock from 'auth0-lock'
 import { connect } from 'react-redux'
 import { Link, Route } from 'react-router-dom'
 import Loading from '../loading'
-
+import TotalVotesGraph from '../charts/vote-totals/index'
 
 //Methods
 
@@ -29,7 +29,8 @@ import RaisedButton from 'material-ui/RaisedButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import ContentFilter from 'material-ui/svg-icons/content/filter-list';
 import FileFileDownload from 'material-ui/svg-icons/file/file-download';
-import {withRouter} from 'react-router-dom'
+
+
 import {
     fetchVoteHistory
 } from '../../action/vote-actions'
@@ -43,7 +44,7 @@ import {
 } from 'material-ui/Card'
 
 import ReligionPie from '../charts/religion/index'
-
+import TotalDemographicBarCharts from '../charts/total-demographics-bar-charts/index'
 class PollResultsPage extends React.Component {
   constructor(props) {
     super(props)
@@ -60,8 +61,14 @@ class PollResultsPage extends React.Component {
   render() {
     console.log('pollResultsPage',this.state, this.props)
     return (
-      <ReligionPie/>
-
+      <div>
+        <MuiThemeProvider>
+          <TotalVotesGraph totalVotesData={this.state.pollData.totals_data}/>
+          <TotalDemographicBarCharts title={'No Demographics'} voteData={this.state.pollData.no_data}/>
+          <TotalDemographicBarCharts title={'Yes Demographics'} voteData={this.state.pollData.yes_data}/>
+          <ReligionPie/>
+        </MuiThemeProvider>
+      </div>
     )
   }
 }
@@ -74,4 +81,4 @@ export const mapStateToProps = state => ({
 export const mapDispatchToProps = dispatch => ({
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PollResultsPage))
+export default connect(mapStateToProps, mapDispatchToProps)(PollResultsPage)
