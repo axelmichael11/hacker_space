@@ -5,7 +5,7 @@ import Paper from 'material-ui/Paper'
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import AppBar from 'material-ui/AppBar'
 
-import {VictoryBar} from 'victory'
+import {VictoryBar, VictoryContainer, VictoryChart, VictoryAxis} from 'victory'
 import MaterialStyles from '../../../style/material-ui-style'
 
 // import '../../style/index.scss'
@@ -61,18 +61,47 @@ class TotalVotesGraph extends React.Component {
       };
       return(
           <div>
-              <Card  style={{maxWidth: 450, margin: 'auto', marginBottom: 15 }}>
+              <Card  style={{maxWidth: 450, margin: 'auto', marginBottom: 15, textAlign:'center'}}>
                     <AppBar
                       style={{...MaterialStyles.title, margin:'auto' }}
                       title={'Vote Results'}
                       showMenuIconButton={false}
                     />
                   <CardMedia>
+                  <VictoryChart
+                    domainPadding={{ x: 100 }}
+                  >
+                  <VictoryAxis/>
                   <VictoryBar name="Bar-1"
-                        style={style}
-                        labels={(d) => d.y+"%"}
+                        style={{
+                          data: {
+                            fill: (d) => d.x === "Yes" ? '#4CAF50' : '#D32F2F',
+                            fillOpacity: 0.7,
+                          },
+                          labels: {
+                            fontSize: 20,
+                            fill: (d) => d.x === "Yes" ? '#4CAF50' : '#D32F2F'
+                          },
+                          margin: "20%", 
+                          maxWidth: "100%"
+                        }}
+                        categories={{
+                          x: ["Yes", "No"]
+                        }}
+                        labels={(d) => `${d.y}%`}
                         data={this.state.data}
+                        animate={{
+                          duration: 2000,
+                          onLoad: { duration: 1000 }
+                        }}
+          
+                        // containerComponent={<VictoryContainer responsive={false}/>}
                     />
+                    </VictoryChart>
+                    <CardText style={{...MaterialStyles.title,display:'inline-block', padding: "0px", marginBottom:10, marginTop:10 }}
+                    >
+                    Total Votes: {this.props.totalVotesData.totalVotes}
+                    </CardText>
                   </CardMedia>
                   </Card>
           </div>

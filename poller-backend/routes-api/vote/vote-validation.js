@@ -164,18 +164,19 @@ vote.formatYesOrNoData = function(voteArrays){
     let data = {};
     //total votes data
     data.totalVotes = total;
+    let isZero = (data.totalVotes ===0)
 
     //religion data
     data.religion_data ={};
-    data.religion_data.yes_religion_total = (yes_religion/total)*100
-    data.religion_data.no_religion_total=  (no_religion/total)*100
-    data.religion_data.null_religion_total =  (religion_null/total)*100
+    data.religion_data.yes_religion_total =  isZero ? 0 : (yes_religion/total)*100
+    data.religion_data.no_religion_total=  isZero ? 0 :  (no_religion/total)*100
+    data.religion_data.null_religion_total =  isZero ? 0 :  (religion_null/total)*100
 
     //gender data
     data.gender_data= {}
-    data.gender_data.female_total =  (female/total)*100
-    data.gender_data.male_total =  (male/total)*100
-    data.gender_data.gender_null_total = (gender_null/total)*100
+    data.gender_data.female_total =  isZero ? 0 :  (female/total)*100
+    data.gender_data.male_total =  isZero ? 0 :  (male/total)*100
+    data.gender_data.gender_null_total =  isZero ? 0 : (gender_null/total)*100
 
 
     console.log('this is the yes or no vote data...', data)
@@ -184,14 +185,17 @@ vote.formatYesOrNoData = function(voteArrays){
 
 
 vote.formatSendData = function(yes_data_array, no_data_array, voteCount){
+    let isZero = (voteCount ===0);
     let data = {};
     data.totals_data = {}
     data.yes_data = vote.formatYesOrNoData(yes_data_array);
     data.no_data = vote.formatYesOrNoData(no_data_array);
     //total vote data
-    data.totals_data.yesVotes = (data.yes_data.totalVotes/voteCount)*100;
-    data.totals_data.noVotes = (data.no_data.totalVotes/voteCount)*100;
-    data.totals_data.totalVotes = voteCount
+
+    console.log('yes_data.totalVotes', data.yes_data.totalVotes, voteCount, (data.yes_data.totalVotes/voteCount) )
+    data.totals_data.yesVotes = isZero ? 0 : (data.yes_data.totalVotes/voteCount)*100;
+    data.totals_data.noVotes = isZero ? 0 : (data.no_data.totalVotes/voteCount)*100;
+    data.totals_data.totalVotes = voteCount;
     console.log('this is the DATA TO SEND', data)
     return data
 }
