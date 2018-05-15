@@ -12,7 +12,6 @@ const env = {
 
 module.exports = {
     getVotes : (res, user, voteData)=> {
-        console.log('this is the user',user[`${env.uid}`])
 
         Client.query(`
                 SELECT count(votes), array_yes_data, array_no_data
@@ -31,9 +30,7 @@ module.exports = {
                 if (success) {
                 //   console.log('this is success from db', success, success.rows, success.rowCount)
                   if (success.rows[0]) {
-                      console.log('this is the success ROWS DATA', success.rows[0],'this is the array yes data',success.rows[0].array_yes_data);
-                      let data = {}
-                      data.yes_data = vollValidate.formatVoteData(success.rows[0].array_yes_data)
+                      let data = vollValidate.formatSendData(success.rows[0].array_yes_data, success.rows[0].array_no_data, success.rows[0].count)
                     res.status(200).send(data)
                   }
                     res.status(401).send()
@@ -84,10 +81,7 @@ castNoVote = (res,user,voteData)=>{
     if (success) {
       console.log('this is success from db', (success.rows.length> 0), success.rowCount)
       if (success.rows.length >0) {
-          console.log('array no RESPONSE,')
-          let data = {}
-          data.yes_data = vollValidate.formatVoteData(success.rows[0].array_yes_data)
-          data.no_data = vollValidate.formatVoteData(success.rows[0].array_no_data)
+        let data = vollValidate.formatSendData(success.rows[0].array_yes_data, success.rows[0].array_no_data, success.rows[0].count)
         res.status(200).send(data)
       }
       if (success.rows.length = 0){
@@ -127,9 +121,7 @@ castYesVote = (res,user,voteData)=>{
                 if (success) {
                   console.log('this is success from db', (success.rows.length> 0), success.rowCount)
                   if (success.rows.length >0) {
-                      console.log('array yes data,')
-                      let data = {}
-                      data.yes_data = vollValidate.formatVoteData(success.rows[0].array_yes_data)
+                    let data = vollValidate.formatSendData(success.rows[0].array_yes_data, success.rows[0].array_no_data, success.rows[0].count)
                     res.status(200).send(data)
                   }
                   if (success.rows.length = 0){
