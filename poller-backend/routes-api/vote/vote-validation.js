@@ -148,16 +148,20 @@ vote.formatYesOrNoData = function(voteArrays){
         if (voteArrays[i][4]===null){
             gender_null+=1;
         }else {
-            (voteArrays[i][4]==='M')
+            if(voteArrays[i][4]==='M'){
                 male+=1;
-            female+=1;
+            } else {
+                female+=1;
+            }
         }
         if (voteArrays[i][5]===null){
             religion_null+=1;
         }else {
-            (voteArrays[i][5]==='true')
+            if (voteArrays[i][5]==='true'){
                 yes_religion+=1;
-            no_religion+=1;
+            } else {
+                no_religion+=1;
+            }
         }
     }
 
@@ -178,6 +182,13 @@ vote.formatYesOrNoData = function(voteArrays){
     data.gender_data.male_total =  isZero ? 0 :  (male/total)*100
     data.gender_data.gender_null_total =  isZero ? 0 : (gender_null/total)*100
 
+    // profession data 
+
+    //gender data
+    data.profession_data= {}
+    data.profession_data.female_total =  isZero ? 0 :  (female/total)*100
+    data.profession_data.male_total =  isZero ? 0 :  (male/total)*100
+    data.profession_data.profession_null_total =  isZero ? 0 : (profession_null/total)*100
 
     console.log('this is the yes or no vote data...', data)
     return data;

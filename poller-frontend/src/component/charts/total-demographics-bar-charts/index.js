@@ -5,7 +5,7 @@ import Paper from 'material-ui/Paper'
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import AppBar from 'material-ui/AppBar'
 
-import {VictoryBar, VictoryStack, VictorySelectionContainer} from 'victory'
+import {VictoryBar, VictoryStack, VictorySelectionContainer, Bar, VictoryChart, VictoryGroup, VictoryAxis} from 'victory'
 import MaterialStyles from '../../../style/material-ui-style'
 
 // import '../../style/index.scss'
@@ -14,31 +14,42 @@ class TotalDemographicBarCharts extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-        // data: this.getData(),
+        religionData: this.getReligionData(),
+        genderData: this.getGenderData(),
         // transitionData: this.getTransitionData(),
-        // colorScale: [
-        //     "#D85F49",
-        //     "#F66D3B",
-        //     "#D92E1D",
-        //     "#D73C4C",
-        //     "#FFAF59",
-        //     "#E28300",
-        //     "#F6A57F"
-        //   ],
+        colorScale: [
+            "#D85F49",
+            "#F66D3B",
+            "#D92E1D",
+            "#D73C4C",
+            "#FFAF59",
+            "#E28300",
+            "#F6A57F"
+          ],
 
     }
 
   }
 
 
-//   getData() {
-//     const rand = () => Math.max(Math.floor(Math.random() * 10000), 1000);
+  getYesData() {
+    // const rand = () => Math.max(Math.floor(Math.random() * 10000), 1000);
 
-//     return [
-//         { x: 'Yes', y: this.props.totalVotesData.yesVotes },
-//         { x: 'No', y: this.props.totalVotesData.noVotes },
-//       ];
-//   }
+    return [
+        { x: 'Religious', y: this.props.voteData.religion_data.yes_religion_total},
+        { x: 'Not Religious', y: this.props.voteData.religion_data.no_religion_total},
+        { x: 'Unknown', y: this.props.voteData.religion_data.null_religion_total},
+      ];
+  }
+    getNoData() {
+    // const rand = () => Math.max(Math.floor(Math.random() * 10000), 1000);
+
+    return [
+        { x: 'Religious', y: this.props.voteData.religion_data.yes_religion_total},
+        { x: 'Not Religious', y: this.props.voteData.religion_data.no_religion_total},
+        { x: 'Unknown', y: this.props.voteData.religion_data.null_religion_total},
+      ];
+  }
 
 
 
@@ -55,7 +66,7 @@ class TotalDemographicBarCharts extends React.Component {
 
 
   render(){
-      console.log('total bar GRAPH DATA!', this.state, this.props)
+      console.log('total demographics GRAPH DATA!', this.state, this.props)
       const style = {
         parent: { data: { fill: "black"}, margin: "2%", maxWidth: "100%" }
       };
@@ -68,78 +79,26 @@ class TotalDemographicBarCharts extends React.Component {
                       showMenuIconButton={false}
                     />
                   <CardMedia>
-                  <VictoryStack style={style}
-                    containerComponent={
-                    <VictorySelectionContainer
-                        selectionStyle={{
-                        stroke: "tomato", strokeWidth: 2, fill: "tomato", fillOpacity: 0.1
-                        }}
+                  <VictoryChart
+                            // domainPadding={{ x: 100 }}
+                        >
+                        <VictoryAxis/>
+                        <VictoryGroup 
+                            offset={25}
+                            colorScale={["tomato", "orange", "gold"]}
+                            animate={{
+                                duration: 2000,
+                                onLoad: { duration: 1000 }
+                              }}
+                        >
                         
-                    />
-                    }
-                    animate={{
-                        duration: 2000,
-                        onLoad: { duration: 1000 }
-                      }}
-                    labels={["Age", "Country", "Ethnicity"]}
-                >
-                    <VictoryBar
-                    style={{
-                        data: {
-                        fill: "tomato",
-                        stroke: (d, active) => active ? "black" : "none",
-                        strokeWidth: 2
-                        }
-                    }}
-                    size={(datum, active) => active ? 5 : 3}
-                    data={[
-                        { x: 1, y: -5 },
-                        { x: 2, y: 4 },
-                        { x: 3, y: 2 },
-                        { x: 4, y: 3 },
-                        { x: 5, y: 1 },
-                        { x: 6, y: -3 },
-                        { x: 7, y: 3 }
-                    ]}
-                    />
-                    <VictoryBar
-                    style={{
-                        data: {
-                        fill: "orange",
-                        stroke: (d, active) => active ? "black" : "none",
-                        strokeWidth: 2
-                        }
-                    }}
-                    size={(datum, active) => active ? 5 : 3}
-                    data={[
-                        { x: 1, y: -3 },
-                        { x: 2, y: 5 },
-                        { x: 3, y: 3 },
-                        { x: 4, y: 0 },
-                        { x: 5, y: -2 },
-                        { x: 6, y: -2 },
-                        { x: 7, y: 5 }
-                    ]}
-                    />
-                    <VictoryBar
-                    style={{
-                        data: {
-                        fill: "gold",
-                        stroke: (d, active) => active ? "black" : "none",
-                        strokeWidth: 2
-                        }
-                    }}
-                    data={[
-                        { x: 1, y: 5 },
-                        { x: 2, y: -4 },
-                        { x: 3, y: -2 },
-                        { x: 4, y: -3 },
-                        { x: 5, y: -1 },
-                        { x: 6, y: 3 },
-                        { x: 7, y: -3 }
-                    ]}
-                    />
-          </VictoryStack>
+                            <VictoryBar
+                            data={this.state.religionData}
+                            categories={{ x: ["dogs", "cats", "mice"] }}
+                            />
+                            
+                        </VictoryGroup>
+                        </VictoryChart>
                   </CardMedia>
                   </Card>
           </div>
@@ -152,3 +111,46 @@ class TotalDemographicBarCharts extends React.Component {
 }
 
 export default TotalDemographicBarCharts
+
+
+
+
+
+// <VictoryStack 
+// colorScale="heatmap"
+//   containerComponent={
+//       <VictorySelectionContainer
+//           selectionStyle={{
+//           stroke: "tomato", strokeWidth: 2, fill: "tomato", fillOpacity: 0.1
+//           }}
+//           onSelection={(points, bounds, props)=>console.log(points, bounds, props)}
+//           />
+//       }
+//   animate={{
+//       duration: 2000,
+//       onLoad: { duration: 1000 }
+//   }}
+//   labels={["Religious", "Gender", "Profession"]}
+//   >
+
+//       <VictoryBar
+//       // dataComponent={
+//       //     <Bar
+//       //       events={{
+//       //         onClick: (evt) => {
+//       //             console.log(evt)
+//       //         }
+//       //       }}
+//       //     />
+//       //   }
+//       style={{
+//           data: {
+//           stroke: (d, active) => active ? "black" : "none",
+//           strokeWidth: 2
+//           }
+//       }}
+//       size={(datum, active) => active ? 5 : 3}
+//       data={this.state.religionData}
+//       />
+
+// </VictoryStack>

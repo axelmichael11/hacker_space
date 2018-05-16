@@ -43,8 +43,9 @@ import {
   CardText,
 } from 'material-ui/Card'
 
-import ReligionPie from '../charts/religion/index'
-import TotalDemographicBarCharts from '../charts/total-demographics-bar-charts/index'
+import ReligionPieResults from '../charts/religion/index'
+import GenderPieResults from '../charts/gender/index'
+
 class PollResultsPage extends React.Component {
   constructor(props) {
     super(props)
@@ -63,10 +64,9 @@ class PollResultsPage extends React.Component {
     return (
       <div>
         <MuiThemeProvider>
-          <TotalVotesGraph totalVotesData={this.state.pollData.totals_data}/>
-          <TotalDemographicBarCharts title={'No Demographics'} voteData={this.state.pollData.no_data}/>
-          <TotalDemographicBarCharts title={'Yes Demographics'} voteData={this.state.pollData.yes_data}/>
-          <ReligionPie/>
+          <TotalVotesGraph totalVotesData={this.state.pollData.totals_data} />
+          <ReligionPieResults totalsData={this.state.pollData.totals_data} yesVoteData={this.state.pollData.yes_data.religion_data} noVoteData={this.state.pollData.no_data.religion_data}/>
+          <GenderPieResults totalsData={this.state.pollData.totals_data} yesVoteData={this.state.pollData.yes_data.gender_data} noVoteData={this.state.pollData.no_data.gender_data}/>
         </MuiThemeProvider>
       </div>
     )

@@ -8,37 +8,41 @@ import AppBar from 'material-ui/AppBar'
 
 import '../../../style/index.scss'
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
+ 
 import MaterialStyles from '../../../style/material-ui-style'
 import NoVotes from '../no-votes-render'
 
 
-class ReligionPieResults extends React.Component {
+class GenderPieResults extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-        yesReligionData: this.getYesReligionData(),
-        noReligionData: this.getNoReligionData()
+      
+
+        yesGenderData: this.getYesGenderData(),
+        noGenderData: this.getNoGenderData()
     }
     this.renderYesPie = this.renderYesPie.bind(this)
     this.renderNoPie = this.renderNoPie.bind(this)
   }
 
 
-  getYesReligionData() {
+  getYesGenderData() {
 
     return [
-      { x: "Religious", y: this.props.yesVoteData.yes_religion_total },
-      { x: "Not Religious", y: this.props.yesVoteData.no_religion_total },
-      { x: "Unknown", y: this.props.yesVoteData.null_religion_total },
+      { x: "Female", y: this.props.yesVoteData.female_total },
+      { x: "Male", y: this.props.yesVoteData.male_total },
+      { x: "Unknown", y: this.props.yesVoteData.gender_null_total },
     ];
   }
 
-  getNoReligionData() {
+  getNoGenderData() {
 
     return [
-      { x: "Religious", y: this.props.noVoteData.yes_religion_total },
-      { x: "Not Religious", y: this.props.noVoteData.no_religion_total },
-      { x: "Unknown", y: this.props.noVoteData.null_religion_total },
+      { x: "Female", y: this.props.noVoteData.female_total },
+      { x: "Male", y: this.props.noVoteData.male_total },
+      { x: "Unknown", y: this.props.noVoteData.gender_null_total },
     ];
   }
 
@@ -47,9 +51,9 @@ renderYesPie(){
       this.props.totalsData.yesVotes === 0 ? <NoVotes/> :
       <div>  
         <VictoryPie
-         labelComponent={<VictoryTooltip/>}
+        labelComponent={<VictoryTooltip/>}
           innerRadius={50}
-          data={this.state.yesReligionData}
+          data={this.state.yesGenderData}
           padAngle={1}
           animate={{ duration: 2000 }}
           style={{ labels: { fill: "white", fontSize: 20, fontWeight: "bold" } }}
@@ -65,9 +69,10 @@ renderNoPie(){
       this.props.totalsData.noVotes === 0 ? <NoVotes/> :
       <div> 
         <VictoryPie
-         labelComponent={<VictoryTooltip/>}
+                labelComponent={<VictoryTooltip/>}
+
           innerRadius={50}
-          data={this.state.noReligionData}
+          data={this.state.noGenderData}
           padAngle={1}
           animate={{ duration: 2000 }}
           style={{ labels: { fill: "white", fontSize: 20, fontWeight: "bold" } }}
@@ -84,7 +89,7 @@ renderNoPie(){
            <Card  style={{maxWidth: 1000, margin: 'auto', marginBottom: 15, textAlign:'center'}}>
             <AppBar
               style={{...MaterialStyles.title, margin:'auto' }}
-              title={'Religion'}
+              title={'Gender'}
               showMenuIconButton={false}
             />
             <CardMedia>
@@ -107,6 +112,14 @@ renderNoPie(){
                 </div>
               </div>
               <div className="yes-no-pies-legend">
+                {/* <Paper zDepth={1}>
+                    <BottomNavigation selectedIndex={this.state.selectedIndex}>
+                    <BottomNavigationItem
+                        label="Female"
+                        onClick={() => this.select(0)}
+                    />
+                    </BottomNavigation>
+                </Paper> */}
               <VictoryLegend 
                 x={125} 
                 y={10}
@@ -116,7 +129,7 @@ renderNoPie(){
                 style={{ border: { stroke: "black" } }}
                 colorScale={[ "navy", "blue", "cyan" ]}
                 data={[
-                  { name: "Religious" }, { name: "Not Religious" }, { name: "Unknown" }
+                  { name: "Female" }, { name: "Male" }, { name: "Unknown" }
                 ]}
               />
               </div>
@@ -126,28 +139,8 @@ renderNoPie(){
       )
   }
 
-//   render() {
-//     console.log('THIS>PROPS ON LOGIN PAGE', this.props)
-//     return (
-//       <div>
-//         <MuiThemeProvider>
-//           <Paper zdepth={2} style={styles.login_container}>
-//           <VictoryPie
-//             style={{ ...this.state.style, labels: { fontSize: 0 } }}
-//             data={this.state.data}
-//             innerRadius={100}
-//             animate={{ duration: 2000 }}
-//             colorScale={this.state.colorScale}
-//             dataComponent={<BorderLabelSlice />}
-//           />
-//           </Paper>
-//         </MuiThemeProvider>
-
-//       </div>
-//     )
-//   }
 
 
 }
 
-export default ReligionPieResults
+export default GenderPieResults

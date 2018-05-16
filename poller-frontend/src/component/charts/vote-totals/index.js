@@ -15,17 +15,7 @@ class TotalVotesGraph extends React.Component {
     super(props)
     this.state = {
         data: this.getData(),
-        // transitionData: this.getTransitionData(),
-        // colorScale: [
-        //     "#D85F49",
-        //     "#F66D3B",
-        //     "#D92E1D",
-        //     "#D73C4C",
-        //     "#FFAF59",
-        //     "#E28300",
-        //     "#F6A57F"
-        //   ],
-
+        
     }
 
   }

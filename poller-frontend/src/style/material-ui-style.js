@@ -12,6 +12,10 @@ module.exports = {
         fontFamily: "Play",
         margin:'auto'
     },
+    legendText:{
+      fontSize: 10,
+      fontFamily: "Play",
+    },
       block: {
         maxWidth: 250,
       },
