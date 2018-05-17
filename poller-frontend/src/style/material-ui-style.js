@@ -2,10 +2,16 @@ module.exports = {
     title: {
         fontSize: 40,
         fontFamily: "Play",
-        margin:'auto'
+        margin:'auto',
     },
     sub_title: {
 
+    },
+    appBarTitle:{
+      fontSize: 40,
+        fontFamily: "Play",
+        margin:'auto',
+        backgroundColor:'#000'
     },
     text: {
         fontSize: 20,

@@ -23,6 +23,8 @@ import NavMenu from '../menu/loggedin-menu'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
 import AppBar from 'material-ui/AppBar'
+import {grey50} from 'material-ui/styles/colors';
+
 
 
 
@@ -95,14 +97,14 @@ class NavBar extends React.Component {
           <AppBar
             title={"Poller"}
             style={{
-              backgroundColor: '#E8660C',
+              backgroundColor: '#000',
             }}
             titleStyle={{
               letterSpacing: '.2em',
               fontWeight: '800',
             }}
             showMenuIconButton={false}
-            iconElementRight={<NavMenu/>}
+            iconElementRight={<NavMenu color={grey50}/>}
           />
         </MuiThemeProvider>
       </div>

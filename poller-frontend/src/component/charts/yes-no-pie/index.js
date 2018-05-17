@@ -11,16 +11,29 @@ import Chip from 'material-ui/Chip';
 
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import MaterialStyles from '../../../style/material-ui-style'
-import NoVotes from '../no-votes-render'
+
 
 
 class PieResults extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      noColorScale: this.getColorsArray(this.props.noData),
+      yesColorScale: this.getColorsArray(this.props.yesData)
+    }
     this.renderYesPie = this.renderYesPie.bind(this)
     this.renderNoPie = this.renderNoPie.bind(this)
     this.renderLegendKey = this.renderLegendKey.bind(this)
+  }
+
+  getColorsArray(data){
+    let color_data = []
+    data.map((category)=>{
+      console.log('category....!',category, this.props.colorCategories)
+        color_data.push(this.props.colorCategories[category.x])
+    })
+    console.log('COLOR DATAAA', color_data)
+    return color_data;
   }
   
 renderYesPie(){
@@ -37,7 +50,7 @@ renderYesPie(){
           animate={{ duration: 2000 }}
           style={{ labels: { fill: "white", fontSize: 20, fontWeight: "bold" } }}
           labelRadius={90}
-          colorScale={this.props.colorScale}
+          colorScale={this.state.yesColorScale}
         />
         </div>
   )
@@ -57,7 +70,7 @@ renderNoPie(){
           animate={{ duration: 2000 }}
           style={{ labels: { fill: "white", fontSize: 20, fontWeight: "bold" } }}
           labelRadius={90}
-          colorScale={this.props.colorScale}
+          colorScale={this.state.noColorScale}
         />
         </div>
   )
@@ -65,11 +78,10 @@ renderNoPie(){
 
 renderLegendKey(){
     return(
-            this.props.categories.map((category, i)=>{
-              console.log('COLORSCALE', i, category, this.props.colorCategories[category])
+            Object.keys(this.props.colorCategories).map((category, i)=>{
                 return (
                     <div key={i}>
-                    <Chip style={{...MaterialStyles.legendChip, backgroundColor:this.props.colorScale[i]}}>
+                    <Chip style={{...MaterialStyles.legendChip, backgroundColor:this.props.colorCategories[category]}}>
                         {category}
                     </Chip>
                     </div>
@@ -84,7 +96,7 @@ renderLegendKey(){
         <div>
            <Card  style={{maxWidth: 1000, margin: 'auto', marginBottom: 15, textAlign:'center'}}>
             <AppBar
-              style={{...MaterialStyles.title, margin:'auto' }}
+              style={{...MaterialStyles.appBarTitle, margin:'auto' }}
               title={this.props.title}
               showMenuIconButton={false}
             />

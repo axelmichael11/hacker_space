@@ -30,20 +30,6 @@ class TotalVotesGraph extends React.Component {
       ];
   }
 
-
-
-//   getTransitionData() {
-//     const data = random(6, 9);
-//     return range(data).map((datum) => {
-//       return {
-//         x: datum,
-//         y: random(2, 9),
-//         label: `#${datum}`
-//       };
-//     });
-//   }
-
-
   render(){
       console.log('total bar GRAPH DATA!', this.state, this.props)
       const style = {
@@ -53,7 +39,7 @@ class TotalVotesGraph extends React.Component {
           <div>
               <Card  style={{maxWidth: 450, margin: 'auto', marginBottom: 15, textAlign:'center'}}>
                     <AppBar
-                      style={{...MaterialStyles.title, margin:'auto' }}
+                      style={{...MaterialStyles.appBarTitle, margin:'auto' }}
                       title={'Vote Results'}
                       showMenuIconButton={false}
                     />

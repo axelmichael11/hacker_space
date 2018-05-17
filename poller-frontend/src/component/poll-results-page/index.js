@@ -4,6 +4,7 @@ import Auth0Lock from 'auth0-lock'
 import { connect } from 'react-redux'
 import { Link, Route } from 'react-router-dom'
 import Loading from '../loading'
+import PieResults from '../charts/yes-no-pie/index'
 
 
 import randomColor from 'randomcolor'; // import the script
@@ -11,6 +12,7 @@ import randomColor from 'randomcolor'; // import the script
 import TotalVotesGraph from '../charts/vote-totals/index'
 import profession_data from '../../lib/professions.js'
 import ethnicity_data from '../../lib/ethnicities.js'
+import country_data from '../../lib/countries.js'
 //Methods
 
 import * as util from '../../lib/util.js'
@@ -48,9 +50,7 @@ import {
   CardText,
 } from 'material-ui/Card'
 
-import PieResults from '../charts/yes-no-pie/index'
 
-import GenderPieResults from '../charts/gender/index'
 
 class PollResultsPage extends React.Component {
   constructor(props) {
@@ -71,151 +71,36 @@ class PollResultsPage extends React.Component {
       // noAgeData: this.getNoAgeData(),
       noProfessionData: this.generatePieData(this.props.pollData.no_data.profession_data, profession_data),
       yesProfessionData: this.generatePieData(this.props.pollData.yes_data.profession_data, profession_data),
-      professionCategories: this.generateCategories(this.props.pollData.yes_data.profession_data, this.props.pollData.no_data.profession_data, profession_data)
-      // categoriesAge: this.generateCategoriesAndColors(this.props.pollData.yes_data.age_data.age_list, this.props.pollData.no_data.age_data.age_list ),
-
+      professionCategories: this.generateCategories(this.props.pollData.yes_data.profession_data, this.props.pollData.no_data.profession_data, profession_data),
+      //ethnicity data
+      noEthnicityData: this.generatePieData(this.props.pollData.no_data.ethnicity_data, ethnicity_data),
+      yesEthnicityData: this.generatePieData(this.props.pollData.yes_data.ethnicity_data, ethnicity_data),
+      ethnicityCategories: this.generateCategories(this.props.pollData.yes_data.ethnicity_data, this.props.pollData.no_data.ethnicity_data, ethnicity_data),
+      //age data
+      noAgeData: this.generatePieData(this.props.pollData.no_data.age_data),
+      yesAgeData: this.generatePieData(this.props.pollData.yes_data.age_data ),
+      ageCategories: this.generateCategories(this.props.pollData.yes_data.age_data, this.props.pollData.no_data.age_data),
+      //gender data
+      noGenderData: this.generatePieData(this.props.pollData.no_data.gender_data),
+      yesGenderData: this.generatePieData(this.props.pollData.yes_data.gender_data ),
+      genderCategories: this.generateCategories(this.props.pollData.yes_data.gender_data, this.props.pollData.no_data.gender_data),
+      //country data
+      noCountryData: this.generatePieData(this.props.pollData.no_data.country_data, country_data),
+      yesCountryData: this.generatePieData(this.props.pollData.yes_data.country_data, country_data ),
+      countryCategories: this.generateCategories(this.props.pollData.yes_data.country_data, this.props.pollData.no_data.country_data, country_data),
+      //religion data
+      noReligionData: this.generatePieData(this.props.pollData.no_data.religion_data),
+      yesReligionData: this.generatePieData(this.props.pollData.yes_data.religion_data ),
+      religionCategories: this.generateCategories(this.props.pollData.yes_data.religion_data, this.props.pollData.no_data.religion_data),
     }
-  }
-  
-  getYesReligionData() {
-    console.log('hitting getYesReligionData, this is the data....', this.props)
-    let {religion_data} = this.props.pollData.yes_data
-    console.log('hitting getYesReligionData, this is the data....', religion_data)
-
-    return [
-      { x: "Religious", y: religion_data.yes_religion_total },
-      { x: "Not Religious", y: religion_data.no_religion_total },
-      { x: "Unknown", y: religion_data.null_religion_total },
-    ];
-  }
-
-  getNoReligionData() {
-    let {religion_data} = this.props.pollData.no_data
-    return [
-      { x: "Religious", y: religion_data.yes_religion_total },
-      { x: "Not Religious", y: religion_data.no_religion_total },
-      { x: "Unknown", y: religion_data.null_religion_total },
-    ];
-  }
-
-  getYesGenderData() {
-    let {gender_data} = this.props.pollData.yes_data
-    return [
-      { x: "Female", y: gender_data.female_total },
-      { x: "Male", y: gender_data.male_total },
-      { x: "Unknown", y: gender_data.gender_null_total },
-    ];
-  }
-
-  getNoGenderData() {
-    let {gender_data} = this.props.pollData.no_data
-    return [
-      { x: "Female", y: gender_data.female_total },
-      { x: "Male", y: gender_data.male_total },
-      { x: "Unknown", y: gender_data.gender_null_total },
-    ];
-  }
-
-  getNoCountryData(){
-    let {country_list} = this.props.pollData.no_data.country_data
-    let country_values = [];
-    Object.keys(country_list).map((key, i)=>{
-       return country_values.push({x: key, y: country_list[key]})
-    })
-    country_values.push({x: 'Unknown', y: this.props.pollData.no_data.country_data.country_null})
-    console.log('getNoCountryData()', country_values)
-    return country_values
-  }
-
-  getYesCountryData(){
-    let {country_list} = this.props.pollData.yes_data.country_data
-    let country_values = [];
-    Object.keys(country_list).map((key, i)=>{
-       return country_values.push({x: key, y: country_list[key]})
-    })
-    country_values.push({x: 'Unknown', y: this.props.pollData.yes_data.country_data.country_null})
-    console.log('getNoCountryData()', country_values)
-    return country_values
-  }
-
-  getYesProfessionData(){
-    let {profession_list} = this.props.pollData.yes_data.profession_data
-    let profession_values =[];
-    console.log('profession_list!!!',profession_list)
-    Object.keys(profession_list).map((key)=>{
-      return profession_values.push({x: profession_data[key], y: profession_list[key]})
-   })
-   profession_values.push({x: 'Unknown', y: this.props.pollData.yes_data.profession_data.profession_null})
-   console.log('getYESSSprofessionData()', profession_values)
-   return profession_values
-  }
-
-  getNoProfessionData(){
-    let {profession_list} = this.props.pollData.no_data.profession_data
-    let profession_values =[];
-    console.log('profession_list!!!',profession_list)
-    Object.keys(profession_list).map((key)=>{
-      return profession_values.push({x: profession_data[key], y: profession_list[key]})
-   })
-   profession_values.push({x: 'Unknown', y: this.props.pollData.no_data.profession_data.profession_null})
-   console.log('getYESSSprofessionData()', profession_values)
-   return profession_values
-  }
-
-
-  
-  getYesEthnicityData(){
-    let {ethnicity_list} = this.props.pollData.yes_data.ethnicity_data
-    let ethnicicity_values =[];
-    console.log('profession_list!!!',ethnicity_list)
-    Object.keys(ethnicity_list).map((key)=>{
-      return ethnicicity_values.push({x: ethnicity_data[key], y: ethnicity_list[key]})
-   })
-   ethnicicity_values.push({x: 'Unknown', y: this.props.pollData.yes_data.profession_data.profession_null})
-   console.log('getYESSSprofessionData()', ethnicicity_values)
-   return ethnicicity_values
-  }
-
-  getNoEthnicityData(){
-    let {ethnicity_list} = this.props.pollData.no_data.ethnicity_data
-    let ethnicicity_values =[];
-    console.log('profession_list!!!',ethnicity_list)
-    Object.keys(ethnicity_list).map((key)=>{
-      return ethnicicity_values.push({x: ethnicity_data[key], y: ethnicity_list[key]})
-   })
-   ethnicicity_values.push({x: 'Unknown', y: this.props.pollData.yes_data.profession_data.profession_null})
-   console.log('getYESSSprofessionData()', ethnicicity_values)
-   return ethnicicity_values
-  }
-
-  getYesAgeData(){
-    let {age_list} = this.props.pollData.yes_data.age_data
-    let age_values = [];
-    Object.keys(age_list).map((key, i)=>{
-       return age_values.push({x: key, y: age_list[key]})
-    })
-    age_values.push({x: 'Unknown', y: this.props.pollData.yes_data.age_data.age_null})
-    console.log('getNoageData()', age_values)
-    return age_values
-  }
-
-  getNoAgeData(){
-    let {age_list} = this.props.pollData.no_data.age_data
-    let age_values = [];
-    Object.keys(age_list).map((key, i)=>{
-       return age_values.push({x: key, y: age_list[key]})
-    })
-    age_values.push({x: 'Unknown', y: this.props.pollData.yes_data.age_data.age_null})
-    console.log('getNoageData()', age_values)
-    return age_values
   }
 
   generatePieData(data_object,  demographic_list){
     let data_values = [];
     if (demographic_list) {
       Object.keys(data_object).map((key, i)=>{
-        if (demographic_list[parseInt(key)]){
-          return data_values.push({x: demographic_list[parseInt(key)], y: data_object[key]})
+        if (demographic_list[key]){
+          return data_values.push({x: demographic_list[key], y: data_object[key]})
         } else {
           return data_values.push({x: key, y: data_object[key]})
         }
@@ -248,6 +133,7 @@ class PollResultsPage extends React.Component {
           categories[data]=randomColor();
       })
     }
+    console.log('categories!!!!!!Sdflkjadsf',categories)
     return categories
   }
 
@@ -287,50 +173,52 @@ class PollResultsPage extends React.Component {
                     </Card>
                   </Card> */}
           <TotalVotesGraph totalVotesData={this.state.pollData.totals_data} />
-          {/* <PieResults title={'Age'} 
+          <PieResults title={'Age'}
           totalsData={this.props.pollData.totals_data} 
           yesData={this.state.yesAgeData} 
           noData={this.state.noAgeData} 
-          colorScale={'heatmap'}
-          categories={[...Object.keys(this.props.pollData.no_data.age_data.age_list), ...Object.keys(this.props.pollData.yes_data.age_data.age_list), "Unknown"]}
-          /> */}
-          {/* <PieResults title={'Religion'} 
-          totalsData={this.props.pollData.totals_data} 
-          yesData={this.state.yesReligionData} 
-          noData={this.state.noReligionData} 
-          colorScale={'heatmap'}
-          categories={["Religious", "Not Religious", "Unkown"]}
-          /> */}
-          {/* <PieResults title={'Gender'} 
-          totalsData={this.props.pollData.totals_data} 
-          yesData={this.state.yesGenderData} 
-          noData={this.state.noGenderData} 
-          colorScale={"heatmap"}
-          categories={["Female", "Male", "Unkown"]}
-          /> */}
-          {/* <PieResults title={'Countries Represented'}
+          categories={Object.keys(this.state.ageCategories)}
+          colorCategories= {this.state.ageCategories}
+          />
+           <PieResults title={'Country'}
           totalsData={this.props.pollData.totals_data} 
           yesData={this.state.yesCountryData} 
           noData={this.state.noCountryData} 
-          colorScale={'heatmap'}
-          categories={[...Object.keys(this.props.pollData.no_data.country_data.country_list), ...Object.keys(this.props.pollData.yes_data.country_data.country_list), "Unknown"]}
-          /> */}
+          categories={Object.keys(this.state.countryCategories)}
+          colorCategories= {this.state.countryCategories}
+          />
+
+         <PieResults title={'Gender'}
+          totalsData={this.props.pollData.totals_data} 
+          yesData={this.state.yesGenderData} 
+          noData={this.state.noGenderData} 
+          categories={Object.keys(this.state.genderCategories)}
+          colorCategories= {this.state.genderCategories}
+          />
+
           <PieResults title={'Professions'}
           totalsData={this.props.pollData.totals_data} 
           yesData={this.state.yesProfessionData} 
           noData={this.state.noProfessionData} 
-          colorScale={Object.values(this.state.professionCategories)}
           categories={Object.keys(this.state.professionCategories)}
-          colorCatoregories= {this.state.professionCategories}
+          colorCategories= {this.state.professionCategories}
           />
-          {/* <PieResults title={'Ethnicity'}
+          <PieResults title={'Ethnicity'}
           totalsData={this.props.pollData.totals_data} 
           yesData={this.state.yesEthnicityData} 
           noData={this.state.noEthnicityData} 
-          colorScale={'heatmap'}
-          categories={["suh"]}
-          /> */}
-
+          categories={Object.keys(this.state.ethnicityCategories)}
+          colorCategories= {this.state.ethnicityCategories}
+          />
+          <PieResults title={'Religion'}
+          totalsData={this.props.pollData.totals_data} 
+          yesData={this.state.yesReligionData} 
+          noData={this.state.noReligionData} 
+          categories={Object.keys(this.state.religionCategories)}
+          colorCategories= {this.state.religionCategories}
+          />
+          
+          
 
         </MuiThemeProvider>
       </div>
