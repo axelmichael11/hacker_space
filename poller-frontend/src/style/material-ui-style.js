@@ -56,6 +56,18 @@ module.exports = {
         width: '50%',
         fontSize: 20,
         fontFamily: "Play"
-      }
-
+      },
+      legendStyle:{
+        maxWidth: 300,
+        margin: 'auto', 
+        marginBottom: 15, 
+        textAlign:'center',
+        position:'relative'
+      },
+      legendChip:{
+        marginTop:5,
+         marginBottom:5,  
+         fontFamily:'Play', 
+      position:'relative'
+    },
 }

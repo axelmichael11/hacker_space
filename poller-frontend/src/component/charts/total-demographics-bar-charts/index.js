@@ -45,7 +45,7 @@ class TotalDemographicBarCharts extends React.Component {
     // const rand = () => Math.max(Math.floor(Math.random() * 10000), 1000);
 
     return [
-        { x: 'Religious', y: this.props.voteData.religion_data.yes_religion_total},
+        { x: 'Religious', y: this.props.voteData.religion_data.no_religion_total},
         { x: 'Not Religious', y: this.props.voteData.religion_data.no_religion_total},
         { x: 'Unknown', y: this.props.voteData.religion_data.null_religion_total},
       ];

@@ -27,8 +27,9 @@ import ClearIcon from 'material-ui/svg-icons/content/clear'
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
-import country_list from './countries.js'
-import occupation_list from './occupations.js'
+import country_list from '../../lib/countries.js'
+import profession_list from '../../lib/professions.js'
+import ethnicity_list from '../../lib/ethnicities.js'
 import AppBar from 'material-ui/AppBar'
 
 import MaterialStyles from '../../style/material-ui-style'
@@ -74,6 +75,8 @@ class ProfileSettings extends React.Component {
       updatedAutoHideDuration: 4000,
       updatedMessage: 'Profile Successfully Updated',
       updatedOpen: false,
+      updateErrorOpen: false,
+      updateErrorMessage:'There was an error updating your profile Information'
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleUpdateAlert = this.handleUpdateAlert.bind(this)
@@ -81,13 +84,14 @@ class ProfileSettings extends React.Component {
     this.handleEthnicityChange = this.handleEthnicityChange.bind(this)
     this.updateMaleCheckBox = this.updateMaleCheckBox.bind(this)
     this.updateFemaleCheckBox = this.updateFemaleCheckBox.bind(this)
-    this.handleOccupationChange = this.handleOccupationChange.bind(this)
+    this.handleProfessionChange = this.handleProfessionChange.bind(this)
     this.updateReligionNoCheckBox = this.updateReligionNoCheckBox.bind(this)
     this.updateReligionYesCheckBox = this.updateReligionYesCheckBox.bind(this)
     this.profileUpdateSubmit = this.profileUpdateSubmit.bind(this);
     this.handleAgeChange = this.handleAgeChange.bind(this)
     this.renderAges = this.renderAges.bind(this)
     this.handleUpdatedSnackBarRequest = this.handleUpdatedSnackBarRequest.bind(this)
+    this.handleUpdateErrorSnackBarRequest = this.handleUpdateErrorSnackBarRequest.bind(this)
   }
 
   componentWillMount() {
@@ -111,7 +115,6 @@ class ProfileSettings extends React.Component {
   }
 
   handleCountryChange(event, index, value){
-    console.log('this is the country change event', value, index)
     this.setState({country: value});
   }
 
@@ -119,7 +122,7 @@ class ProfileSettings extends React.Component {
     this.setState({ethnicity: value})
   }
 
-  handleOccupationChange(event,index,value){
+  handleProfessionChange(event,index,value){
     this.setState({profession: value})
   }
 
@@ -226,6 +229,14 @@ class ProfileSettings extends React.Component {
       this.handleUpdatedSnackBarRequest()
       this.handleUpdateAlert()
     })
+    .catch(err=>{
+      console.log('this is the error updating profile', err)
+      if (err===500){
+        this.handleUpdateErrorSnackBarRequest()
+        this.handleUpdateAlert()
+
+      }
+    })
   }
 
   renderAges(){
@@ -241,6 +252,13 @@ class ProfileSettings extends React.Component {
     this.setState((oldState)=>{
       return {
         updatedOpen: !oldState.updatedOpen,
+      }
+    });
+  }
+  handleUpdateErrorSnackBarRequest(){
+    this.setState((oldState)=>{
+      return {
+        updateErrorOpen: !oldState.updateErrorOpen,
       }
     });
   }
@@ -266,7 +284,7 @@ class ProfileSettings extends React.Component {
     const formStyle = {
       marginLeft: 3,
     }
-    console.log('profile SETINGS ',MaterialStyles)
+    console.log('profile SETINGS ',this.state, this.props)
     return (
       <div className="profile-form" style={{maxWidth: 450, margin: 'auto'}}>
         <MuiThemeProvider>
@@ -324,8 +342,8 @@ class ProfileSettings extends React.Component {
               >
                <MenuItem value={null} primaryText="" />
                {
-                country_list.map((country, i)=>{
-                  return <MenuItem value={i} primaryText={country} />
+                Object.keys(country_list).map((key, i)=>{
+                  return <MenuItem value={key} primaryText={country_list[key]} />
                 })
               }
               </SelectField>
@@ -335,26 +353,23 @@ class ProfileSettings extends React.Component {
                 onChange={this.handleEthnicityChange}
                 style={MaterialStyles.selectFieldWidth}
               >
-                <MenuItem value={null} primaryText="" />
-                <MenuItem value={1} primaryText="Asian" />
-                <MenuItem value={2} primaryText="Native Hawaiian or Other Pacific Islander" />
-                <MenuItem value={3} primaryText="Black, Afro-Caribbean, or African American" />
-                <MenuItem value={4} primaryText="Latino"/>
-                <MenuItem value={5} primaryText="Native American or Alaskan Native" />
-                <MenuItem value={6} primaryText="White/Causasian"/>
-                <MenuItem value={7} primaryText="Middle Eastern or Arab American"/>
+                {
+                Object.keys(ethnicity_list).map((key)=>{
+                  return <MenuItem value={parseInt(key)} primaryText={ethnicity_list[key]} />
+                })
+              }
               </SelectField>
 
               <SelectField
-                floatingLabelText="Occupation"
+                floatingLabelText="profession"
                 value={this.state.profession}
-                onChange={this.handleOccupationChange}
+                onChange={this.handleProfessionChange}
                 style={MaterialStyles.selectFieldWidth}
               >
                <MenuItem value={null} primaryText="" />
               {
-              occupation_list.map((item, i) => {
-                return <MenuItem value={i} primaryText={item}/>
+              Object.keys(profession_list).map((i) => {
+                return <MenuItem value={parseInt(i)} primaryText={profession_list[i]}/>
               })  
                }
               </SelectField>
@@ -407,6 +422,14 @@ class ProfileSettings extends React.Component {
           autoHideDuration={this.state.updatedAutoHideDuration}
           onActionClick={this.handleUpdatedSnackBarRequest}
           onRequestClose={this.handleUpdatedSnackBarRequest}
+        />
+         <Snackbar
+          open={this.state.updateErrorOpen}
+          message={this.state.updateErrorMessage}
+          action={null}
+          autoHideDuration={this.state.updatedAutoHideDuration}
+          onActionClick={this.handleUpdateErrorSnackBarRequest}
+          onRequestClose={this.handleUpdateErrorSnackBarRequest}
         />
         </MuiThemeProvider>
       </div>

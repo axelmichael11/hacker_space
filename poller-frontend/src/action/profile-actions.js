@@ -53,14 +53,15 @@ export const profileUpdate = (profile) => (dispatch, getState) => {
       .set('Authorization', `Bearer ${auth0Token}`)
       .send(profile)
       .then(res => {
-        try {
-          let parsed = JSON.parse(res.text)
-        console.log('successfully updated user in DB',parsed)
+        let parsed = JSON.parse(res.text)
         dispatch(storeUserProfile(parsed))
-        return parsed
-        } catch (err) {
-          console.log('THIS IS THE ERROR from update repsonse',err)
-        }
+        console.log('thsi is the resposne!',parsed)
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        console.log('thsi is the error!',err)
+
+        if (err.status == 500){
+          throw err.status
+        } 
+      })
 }
