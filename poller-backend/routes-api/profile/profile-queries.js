@@ -63,7 +63,7 @@ module.exports = {
                   let sendProfile = profileValidate.formatSendProfile(success.rows[0], user)
                   res.json(sendProfile)
                 } else {
-                    console.log('')
+                    console.log(err)
                   res.status(500).json({message:"unsuccessful updating user profile"})
                 }
               })

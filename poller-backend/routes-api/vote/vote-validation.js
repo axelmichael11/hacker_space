@@ -2,36 +2,7 @@ const Date = require('datejs');
 
 const vote = {};
 
-
-function notNumberOrNull (value) {
-    if (typeof value === 'number'){
-            return false
-        }
-    if (value === null){
-        return false
-    }
-    return true;
-    };
-
-function notStringOrNull (value) {
-    if (typeof value === 'string'){
-            return false
-        }
-    if (value === null){
-        return false
-    }
-    return true;
-    };
-
-function notBooleanOrNull (value) {
-    if (typeof value === 'boolean'){
-            return false
-        }
-    if (value === null){
-        return false
-    }
-    return true;
-    };
+const validator = require('../../lib/validation-methods')
 
 vote.validateGetVoteData = function(incomingGetVoteData){
     console.log('this is the incoming data', incomingGetVoteData)
@@ -72,27 +43,27 @@ vote.validateCastVoteData = function(incomingPostVoteData){
         throw new Error('invalid author_username type or length, or nonexistant property');
     }
 
-    if (notNumberOrNull(voteData.age)){
+    if (validator.notNumberOrNull(voteData.age)){
         console.log(voteData.age)
         throw new Error('invalid age data type');
     }
-    if (notNumberOrNull(voteData.country)){
+    if (validator.notStringOrNull(voteData.country)){
         throw new Error('invalid country data type');
     }
-    if (notNumberOrNull(voteData.ethnicity)){
+    if (validator.notNumberOrNull(voteData.ethnicity)){
         throw new Error('invalid ethnicity data type');
     }
-    if (notNumberOrNull(voteData.profession)){
+    if (validator.notNumberOrNull(voteData.profession)){
         throw new Error('invalid profession data type');
     }
-    if (notBooleanOrNull(voteData.religion)){
+    if (validator.notBooleanOrNull(voteData.religion)){
         console.log('religion',voteData.religion)
         throw new Error('invalid religion data type', voteData.religion);
     }
     if (!voteData.vote || typeof voteData.vote !== 'string'){
         throw new Error('invalid vote data type or nonexistant property');
     }
-    console.log('he0re is the votedata function,', voteData)
+
     return voteData
 }
 
@@ -164,7 +135,7 @@ vote.formatYesOrNoData = function(voteArrays){
             }
         }
     }
-
+    console.log('DATAAA ARRAYYYS', country, profession, ethnicity)
     let data = {};
     //total votes data
     data.totalVotes = total;
@@ -182,13 +153,30 @@ vote.formatYesOrNoData = function(voteArrays){
     data.gender_data.male_total =  isZero ? 0 :  (male/total)*100
     data.gender_data.gender_null_total =  isZero ? 0 : (gender_null/total)*100
 
-    // profession data 
+ 
 
-    //gender data
-    data.profession_data= {}
-    data.profession_data.female_total =  isZero ? 0 :  (female/total)*100
-    data.profession_data.male_total =  isZero ? 0 :  (male/total)*100
-    data.profession_data.profession_null_total =  isZero ? 0 : (profession_null/total)*100
+    //profession data (array)
+    data.profession_data = {}
+    data.profession_data = vote.countExistingCategories(profession);
+    (profession_null===0) ? null : data.profession_data.profession_null = profession_null;
+    //age data (array)
+
+    //country data (array)
+    data.country_data = {}
+    data.country_data = vote.countExistingCategories(country);
+    data.country_data.country_null = country_null;
+    console.log('COUTNRY DATA', data.country_data, country, country_null);
+
+
+    //ethnicity data (array)
+    data.ethnicity_data = {}
+    data.ethnicity_data = vote.countExistingCategories(ethnicity)
+    data.ethnicity_data.ethnicity_null = ethnicity_null
+    
+    //age data (array)
+    data.age_data = {}
+    data.age_data = vote.countAgeCategories(age);
+    (age_null===0) ? null: data.age_data.age_null = age_null;
 
     console.log('this is the yes or no vote data...', data)
     return data;
@@ -196,6 +184,7 @@ vote.formatYesOrNoData = function(voteArrays){
 
 
 vote.formatSendData = function(yes_data_array, no_data_array, voteCount){
+
     let isZero = (voteCount ===0);
     let data = {};
     data.totals_data = {}
@@ -211,4 +200,56 @@ vote.formatSendData = function(yes_data_array, no_data_array, voteCount){
     return data
 }
 
+
+
+
+vote.countExistingCategories = function(array){
+    let categories= {};
+    array.map((data, i)=>{
+        console.log(data)
+        if (!categories[data]){
+            categories[data]=1;
+        } else {
+            categories[data]+=1;
+        }
+    })
+
+    console.log(categories)
+    return categories
+}
+
+//I want to refactor this method...
+vote.countAgeCategories = function(array){
+    let categories= {};
+    array.map((data, i)=>{
+        console.log('this is the coute age function!', data, i, array)
+        if (0<data<=17){
+            return categories['0-17']=+1;
+        }
+        if (17<data<= 26 ) {
+            return categories['18-26']=+1;
+        }
+        if (26<data<= 32 ) {
+            return categories['27-32']=+1;
+        }
+        if (32<data<= 40 ) {
+            return categories['33-40']=+1;
+        }
+        if (40<data<= 50 ) {
+            return categories['41-50']=+1;
+        }
+        if (50<data<= 70 ) {
+            return categories['51-70']=+1;
+        }
+        if (70<data) {
+            return categories['71 and Older']=+1;
+        }
+    })
+
+    console.log(categories)
+    return categories
+}
+
 module.exports = vote;
+
+

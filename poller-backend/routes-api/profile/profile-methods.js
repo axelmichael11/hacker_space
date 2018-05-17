@@ -31,9 +31,15 @@ const profile = {};
         .then(user=>{
           query.updateProfileQuery(res, user, profileInfo)
         })
-        .catch(err=>console.log(err))
+        .catch(err=>{
+          console.log(err)
+          res(500).send(err)
+        })
       })
-      .catch(err=>console.log(err))
+      .catch(err=>{
+        console.log(err)
+        res(500).send(err)
+      })
     }
 
     profile.delete 

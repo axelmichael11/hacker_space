@@ -21,5 +21,34 @@ module.exports = {
                 resolve(user)
             }
         })
+    },
+    notNumberOrNull: (value)=> {
+    if (typeof value === 'number'){
+            return false
+        }
+    if (value === null){
+        return false
     }
+    return true;
+    },
+
+ notStringOrNull : (value) => {
+    if (typeof value === 'string'){
+            return false
+        }
+    if (value === null){
+        return false
+    }
+    return true;
+    },
+
+ notBooleanOrNull : (value) => {
+    if (typeof value === 'boolean'){
+            return false
+        }
+    if (value === null){
+        return false
+    }
+    return true;
+    },
 }
