@@ -2,15 +2,32 @@ module.exports = {
     title: {
         fontSize: 40,
         fontFamily: "Play",
-        margin:'auto'
+        margin:'auto',
+    },
+    pie_hover_text:{
+      fontSize: 20,
+      fontFamily: "Play",
+      margin:'auto',
+      color:'white',
+      backgroundColor:'black'
     },
     sub_title: {
 
+    },
+    appBarTitle:{
+      fontSize: 40,
+        fontFamily: "Play",
+        margin:'auto',
+        backgroundColor:'#000'
     },
     text: {
         fontSize: 20,
         fontFamily: "Play",
         margin:'auto'
+    },
+    legendText:{
+      fontSize: 10,
+      fontFamily: "Play",
     },
       block: {
         maxWidth: 250,
@@ -52,6 +69,18 @@ module.exports = {
         width: '50%',
         fontSize: 20,
         fontFamily: "Play"
-      }
-
+      },
+      legendStyle:{
+        maxWidth: 300,
+        margin: 'auto', 
+        marginBottom: 15, 
+        textAlign:'center',
+        position:'relative'
+      },
+      legendChip:{
+        marginTop:5,
+         marginBottom:5,  
+         fontFamily:'Play', 
+      position:'relative'
+    },
 }

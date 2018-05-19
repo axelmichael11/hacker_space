@@ -2,36 +2,7 @@ const Date = require('datejs');
 
 const vote = {};
 
-
-function notNumberOrNull (value) {
-    if (typeof value === 'number'){
-            return false
-        }
-    if (value === null){
-        return false
-    }
-    return true;
-    };
-
-function notStringOrNull (value) {
-    if (typeof value === 'string'){
-            return false
-        }
-    if (value === null){
-        return false
-    }
-    return true;
-    };
-
-function notBooleanOrNull (value) {
-    if (typeof value === 'boolean'){
-            return false
-        }
-    if (value === null){
-        return false
-    }
-    return true;
-    };
+const validator = require('../../lib/validation-methods')
 
 vote.validateGetVoteData = function(incomingGetVoteData){
     console.log('this is the incoming data', incomingGetVoteData)
@@ -72,132 +43,160 @@ vote.validateCastVoteData = function(incomingPostVoteData){
         throw new Error('invalid author_username type or length, or nonexistant property');
     }
 
-    if (notNumberOrNull(voteData.age)){
+    if (validator.notNumberOrNull(voteData.age)){
         console.log(voteData.age)
         throw new Error('invalid age data type');
     }
-    if (notNumberOrNull(voteData.country)){
+    if (validator.notStringOrNull(voteData.country)){
         throw new Error('invalid country data type');
     }
-    if (notNumberOrNull(voteData.ethnicity)){
+    if (validator.notNumberOrNull(voteData.ethnicity)){
         throw new Error('invalid ethnicity data type');
     }
-    if (notNumberOrNull(voteData.profession)){
+    if (validator.notNumberOrNull(voteData.profession)){
         throw new Error('invalid profession data type');
     }
-    if (notBooleanOrNull(voteData.religion)){
+    if (validator.notBooleanOrNull(voteData.religion)){
         console.log('religion',voteData.religion)
         throw new Error('invalid religion data type', voteData.religion);
     }
     if (!voteData.vote || typeof voteData.vote !== 'string'){
         throw new Error('invalid vote data type or nonexistant property');
     }
-    console.log('he0re is the votedata function,', voteData)
+
     return voteData
 }
 
 
-
-
-
-vote.formatYesOrNoData = function(voteArrays){
-    let total = 0;
-    let age = [];
-    let country = [];
-    let ethnicity = [];
-    let profession = [];
-    let male = 0;
-    let female = 0;
-    let yes_religion = 0;
-    let no_religion = 0;
-
-    let age_null = 0;
-    let country_null = 0;
-    let ethnicity_null = 0;
-    let profession_null = 0;
-    let gender_null = 0;
-    let religion_null = 0;
-    for (var i = 0; i<voteArrays.length; i++){
-
-        total += 1;
-
-        if (voteArrays[i][0]===null){
-            age_null+=1;
-        }else {
-            age.push(parseInt(voteArrays[i][0]))
-        }
-
-        if (voteArrays[i][1]===null){
-            country_null+=1;
-        }else {
-            country.push(voteArrays[i][1])
-        }
-
-        if (voteArrays[i][2]===null){
-            ethnicity_null+=1;
-        }else {
-            ethnicity.push(voteArrays[i][2])
-        }
-
-        if (voteArrays[i][3]===null){
-            profession_null+=1;
-        }else {
-            profession.push(voteArrays[i][3])
-        }
-
-        if (voteArrays[i][4]===null){
-            gender_null+=1;
-        }else {
-            (voteArrays[i][4]==='M')
-                male+=1;
-            female+=1;
-        }
-        if (voteArrays[i][5]===null){
-            religion_null+=1;
-        }else {
-            (voteArrays[i][5]==='true')
-                yes_religion+=1;
-            no_religion+=1;
-        }
+vote.reducedYesOrNoData = function(dataArray){
+    console.log('#@#@##@@#@# REDUCE METHOD')
+    let dataCount = dataArray.reduce((acc, current, i)=>{
+	console.log('current',acc, current, i)
+    acc.totalVotes++;
+    //age
+	if(current[0]===null){
+        acc.age_data['unknown age']=+1; 
+    } else {
+        let age = vote.categorizeAge(dataArray[i][0])
+        acc.age_data[age]=+1
     }
+    //country
+    if(current[1]===null){
+        acc.country_data['unknown country']=+1; 
+    } else {
+        acc.country_data[current[1]]=+1
+    }
+    //ethnicity
+    if(current[2]===null){
+        acc.ethnicity_data['unknown ethnicity']=+1; 
+    } else {
+        acc.ethnicity_data[current[2]]=+1
+    }
+    //profession
+    if(current[3]===null){
+        acc.profession_data['unknown profession']=+1; 
+    } else {
+        acc.profession_data[current[3]]=+1
+    }
+    //gender
+    if(current[4]===null){
+        acc.gender_data['unknown gender']=+1; 
+    } else {
+        let gender;
+        if (current[4]=='M'){
+            gender = 'male';
+        } else {
+            gender = 'female';
+        }
+        acc.gender_data[gender]=+1
+    }
+    //religion
+    if(current[5]===null){
+        acc.religion_data['unknown religion']=+1; 
+    } else {
+        let religion;
+        if (current[5]===true){
+            religion = 'religious';
+        } else {
+            religion = 'not religious';
+        }
+        acc.religion_data[religion]=+1
+    }
+	return acc
+    }, {
+        totalVotes:0,
+        age_data:{},
+        country_data:{},
+        ethnicity_data:{},
+        gender_data:{}, 
+        profession_data:{}, 
+        religion_data:{}
+    });
+    
+    let result = {}
+    result.totalVotes = dataCount.totalVotes
+    result.age_data = vote.formatPercentofVotes(dataCount.age_data, dataCount.totalVotes);
+    result.country_data = vote.formatPercentofVotes(dataCount.country_data, dataCount.totalVotes);
+    result.ethnicity_data = vote.formatPercentofVotes(dataCount.ethnicity_data, dataCount.totalVotes);
+    result.gender_data = vote.formatPercentofVotes(dataCount.gender_data, dataCount.totalVotes);
+    result.profession_data = vote.formatPercentofVotes(dataCount.profession_data, dataCount.totalVotes);
+    result.religion_data = vote.formatPercentofVotes(dataCount.religion_data, dataCount.totalVotes);
+    console.log('result of reduced percents $%$%$%%$', result)
+    return result;
+}
 
-    let data = {};
-    //total votes data
-    data.totalVotes = total;
-    let isZero = (data.totalVotes ===0)
-
-    //religion data
-    data.religion_data ={};
-    data.religion_data.yes_religion_total =  isZero ? 0 : (yes_religion/total)*100
-    data.religion_data.no_religion_total=  isZero ? 0 :  (no_religion/total)*100
-    data.religion_data.null_religion_total =  isZero ? 0 :  (religion_null/total)*100
-
-    //gender data
-    data.gender_data= {}
-    data.gender_data.female_total =  isZero ? 0 :  (female/total)*100
-    data.gender_data.male_total =  isZero ? 0 :  (male/total)*100
-    data.gender_data.gender_null_total =  isZero ? 0 : (gender_null/total)*100
-
-
-    console.log('this is the yes or no vote data...', data)
-    return data;
+vote.categorizeAge = function(age){
+    let ageCategory;
+    if (0<age<=17){
+        ageCategory = '0-17';
+    }
+    if (17<age<= 26 ) {
+        ageCategory = '18-26';
+    }
+    if (26<age<= 32 ) {
+        ageCategory = '27-32';
+    }
+    if (32<age<= 40 ) {
+        ageCategory = '33-40';
+    }
+    if (40<age<= 50 ) {
+        ageCategory = '41-50';
+    }
+    if (50<age<= 70 ) {
+        ageCategory = '51-70';
+    }
+    if (70<age) {
+        ageCategory = '71 and Older';
+    }
+    return ageCategory
 }
 
 
 vote.formatSendData = function(yes_data_array, no_data_array, voteCount){
+
     let isZero = (voteCount ===0);
     let data = {};
     data.totals_data = {}
-    data.yes_data = vote.formatYesOrNoData(yes_data_array);
-    data.no_data = vote.formatYesOrNoData(no_data_array);
-    //total vote data
-
-    console.log('yes_data.totalVotes', data.yes_data.totalVotes, voteCount, (data.yes_data.totalVotes/voteCount) )
+    data.yes_data = vote.reducedYesOrNoData(yes_data_array);
+    data.no_data = vote.reducedYesOrNoData(no_data_array);
     data.totals_data.yesVotes = isZero ? 0 : (data.yes_data.totalVotes/voteCount)*100;
     data.totals_data.noVotes = isZero ? 0 : (data.no_data.totalVotes/voteCount)*100;
     data.totals_data.totalVotes = voteCount;
+
     console.log('this is the DATA TO SEND', data)
     return data
 }
 
+vote.formatPercentofVotes = (categories, total) => {
+    Object.keys(categories).map((category)=>{
+        categories[category]= (categories[category])/total *100
+    })
+
+    console.log('vote categories...',categories)
+
+    return categories
+}
+
 module.exports = vote;
+
+

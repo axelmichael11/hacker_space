@@ -14,12 +14,12 @@ module.exports = {
     getVotes : (res, user, voteData)=> {
 
         Client.query(`
-                SELECT count(votes), array_yes_data, array_no_data
+                SELECT cardinality(votes) as count, array_yes_data, array_no_data
                 FROM polls
                 WHERE author_username=($2) 
                 AND created_at=($1) 
                 AND ($3) = ANY(votes)
-                GROUP BY array_yes_data, array_no_data;
+                GROUP BY polls.array_yes_data, polls.array_no_data, cardinality(polls.votes);
               `,
               [
                 voteData.created_at,
@@ -28,7 +28,7 @@ module.exports = {
               ],
               function(err, success) {
                 if (success) {
-                //   console.log('this is success from db', success, success.rows, success.rowCount)
+                  console.log('this is success from db', success)
                   if (success.rows[0]) {
                       let data = vollValidate.formatSendData(success.rows[0].array_yes_data, success.rows[0].array_no_data, success.rows[0].count)
                     res.status(200).send(data)
@@ -64,7 +64,7 @@ castNoVote = (res,user,voteData)=>{
     votes = array_append(votes, ($7))
     WHERE polls.author_username=($8)
     AND polls.created_at=($9) 
-    RETURNING polls.array_yes_data, polls.array_no_data, cardinality(votes) as totolVotes, cardinality(array_yes_data) as votedYes, cardinality(array_no_data) as votedNo;
+    RETURNING polls.array_yes_data, polls.array_no_data, cardinality(votes) as count;
   `,
   [
     voteData.age,
@@ -104,7 +104,7 @@ castYesVote = (res,user,voteData)=>{
                 votes = array_append(votes, ($7))
                 WHERE polls.author_username=($8)
                 AND polls.created_at=($9) 
-                RETURNING polls.array_yes_data, polls.array_no_data, cardinality(votes) as totolVotes, cardinality(array_yes_data) as votedYes, cardinality(array_no_data) as votedNo;
+                RETURNING polls.array_yes_data, polls.array_no_data, cardinality(votes) as count;
               `,
               [
                 voteData.age,
@@ -119,7 +119,7 @@ castYesVote = (res,user,voteData)=>{
               ],
               function(err, success) {
                 if (success) {
-                  console.log('this is success from db', (success.rows.length> 0), success.rowCount)
+                  console.log('this is success from db', (success.rows.length> 0), success.rows[0])
                   if (success.rows.length >0) {
                     let data = vollValidate.formatSendData(success.rows[0].array_yes_data, success.rows[0].array_no_data, success.rows[0].count)
                     res.status(200).send(data)

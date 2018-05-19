@@ -86,7 +86,7 @@ class HomePage extends React.Component {
                   <Card  style={{maxWidth: 450, margin: 'auto', marginBottom: 15 }}>
                     <AppBar
                       style={{...MaterialStyles.title, margin:'auto' }}
-                      title={'Poll'}
+                      title={null}
                       showMenuIconButton={false}
                     />
                   <CardMedia>

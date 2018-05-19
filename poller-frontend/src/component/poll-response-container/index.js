@@ -47,14 +47,14 @@ class PollResponseContainer extends React.Component {
     super(props)
     this.state = {
       alreadyVoted: this.props.alreadyVoted,
-      pollData: null,
+      pollData: this.props.pollData,
     }
     this.renderResponse = this.renderResponse.bind(this)
     this.setData = this.setData.bind(this)
   }
 
   componentWillMount() {
-    console.log('this.props.history on the public poll page', this.props.match)
+    console.log('this.props on the  poll response container', this.props)
   }
 
   setData(results){
@@ -66,7 +66,7 @@ class PollResponseContainer extends React.Component {
   renderResponse(){
     console.log('poll response container', this.state, this.props)
       return (
-          this.props.alreadyVoted ? <PollResultsPage pollData={this.props.pollData}/> :
+          this.props.alreadyVoted ? <PollResultsPage pollData={this.state.pollData}/> :
           <PollVotePage 
           castAlreadyVoted={this.props.castAlreadyVoted} 
           setDataAfterVote={this.props.setDataAfterVote}/>

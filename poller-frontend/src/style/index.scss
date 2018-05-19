@@ -29,5 +29,35 @@
     padding:0px;
 }
 
+.yes-no-pie-container {
+    position: relative;
+    white-space: normal;
+    vertical-align: top;
+}
+
+.yes-no-pie {
+    font-family: 'Play', sans-serif;
+    font-size: 2em;
+    display: inline-block;
+    width: '50%';
+    vertical-align: top;
+    white-space: nowrap;
+
+}
+
+.yes-no-pies-legend {
+    font-family: 'Play', sans-serif;
+    font-size: 2em;
+    margin: 0 auto;
+    
+}
+
+.no-votes{
+    vertical-align: middle;
+}
+
+.svg-pie {
+
+}
 
 
