@@ -31,7 +31,6 @@ class AuthLockButton extends React.Component {
       oidcConformant: true, //this determines METADATA is returned in scope...
       rememberLastLogin: true,
       auth: {
-        // redirectUrl: 'http://localhost:8080',
         audience: __AUTH0_AUDIENCE__,
         params: {
           scope: 'openid profile userId user_metadata update:users_app_metadata openid email profile read:clients write:clients update:users_app_metadata update:users update:current_user_metadata', //need to research the scope parameter...
@@ -53,8 +52,7 @@ class AuthLockButton extends React.Component {
         this.props.profileFetch()
         .then(profile=>{
             if (this.props.loggedIn && this.props.userProfile){
-            console.log('THIS>PROPS:LOGINNNNN')
-            this.props.history.push('/home')
+            this.props.history.push('/explore')
           } else {
             this.props.history.push('login')
           }
@@ -63,7 +61,6 @@ class AuthLockButton extends React.Component {
     })
 
     this.lock.on('authorization_error', (error)=>{
-      console.log('this is the AUTH0 lock ERROR', error)
     })
 
 

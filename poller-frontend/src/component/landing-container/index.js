@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import Auth0Lock from 'auth0-lock'
 import {Route, Switch} from 'react-router-dom'
 
-import HomePage from '../home-page'
+import ExplorePage from '../explore-page'
 import ProfileSettings from '../profile-settings'
 import PollCreatePage from '../poll-create'
 import PollLandingContainer from '../poll-landing-container'
@@ -32,8 +32,8 @@ class LandingContainer extends React.Component {
       <div>
         <NavBar/>
          <Switch>
-          <Route  path="/settings" component={ProfileSettings} />
-          <Route  path="/home" component={HomePage} />
+          <Route  path="/settings" component={ProfileSettings}/>
+          <Route  path="/explore" component={ExplorePage}/>
           <Route path="/pollcreate" component={PollCreatePage}/>
           <Route path='/poll/:author_username/:created_at' component={PollLandingContainer}/>
         </Switch>

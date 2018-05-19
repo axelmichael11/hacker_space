@@ -16,7 +16,7 @@ import MenuItem from 'material-ui/MenuItem';
 
 
 
-class HomeButton extends React.Component{
+class ExploreButton extends React.Component{
     constructor(props) {
         super(props)
         this.state = {}
@@ -24,13 +24,13 @@ class HomeButton extends React.Component{
       }
 
     nextPath(){
-        this.props.history.push('/home')
+        this.props.history.push('/explore')
     }
     render(){
         console.log('this.PROPS on the home button', this.context, this.props.history)
         return (
             <div>
-                <MenuItem onClick={()=>this.nextPath()} primaryText={"Home"} />
+                <MenuItem onClick={()=>this.nextPath()} primaryText={"Explore"} />
            </div>
         )
     }
@@ -45,4 +45,4 @@ export const mapDispatchToProps = dispatch => ({
 })
 
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(HomeButton))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ExploreButton))

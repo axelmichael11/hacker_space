@@ -24,7 +24,7 @@ import ContentFilter from 'material-ui/svg-icons/content/filter-list';
 import FileFileDownload from 'material-ui/svg-icons/file/file-download';
 
 
-import HomeButton from './home-button.js'
+import ExploreButton from './Explore-button.js'
 import SettingsButton from './settings-button.js'
 import PollCreateButton from './poll-create-button.js'
 
@@ -66,7 +66,7 @@ class NavMenu extends React.Component{
                   onRequestChange={this.handleOnRequestChange}
                   onChange={this.handleOnItemChange}
                 >
-                  <HomeButton />
+                  <ExploreButton />
                   <PollCreateButton/>
                   <SettingsButton />
                   <AuthLockButton />

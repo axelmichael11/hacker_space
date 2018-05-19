@@ -32,10 +32,8 @@ class SettingsButton extends React.Component{
         console.log('this.PROPS on the home button', this.context, this.props.history)
         return (
             <div>
-                <MuiThemeProvider>
-                <FlatButton onClick={()=>this.nextPath()} label={"Settings"} />
-                </MuiThemeProvider>
-           </div>
+                <MenuItem onClick={()=>this.nextPath()} primaryText={"Settings"} />
+            </div>
         )
     }
 }
