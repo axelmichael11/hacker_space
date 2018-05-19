@@ -3,7 +3,7 @@ import React from 'react'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import Paper from 'material-ui/Paper'
 
-import {VictoryPie, VictoryLegend, VictoryTooltip} from 'victory'
+import {VictoryPie, VictoryLegend, VictoryTooltip, VictoryLabel} from 'victory'
 import AppBar from 'material-ui/AppBar'
 
 import '../../../style/index.scss'
@@ -19,7 +19,8 @@ class PieResults extends React.Component {
     super(props)
     this.state = {
       noColorScale: this.getColorsArray(this.props.noData),
-      yesColorScale: this.getColorsArray(this.props.yesData)
+      yesColorScale: this.getColorsArray(this.props.yesData),
+      toolTipColor: null,
     }
     this.renderYesPie = this.renderYesPie.bind(this)
     this.renderNoPie = this.renderNoPie.bind(this)
@@ -41,10 +42,30 @@ renderYesPie(){
 
   return (
       this.props.totalsData.yesVotes === 0 ? <NoVotes/> :
-      <div>  
+      <div className="yes-no-pie">
+
+      <CardText style={{...MaterialStyles.title,display:'inline-block', 
+                  padding: "0px", 
+                  marginBottom:10, 
+                  marginTop:10 }}
+                          > Yes Votes </CardText>
+                          
         <VictoryPie
-         labelComponent={<VictoryTooltip/>}
-          innerRadius={50}
+         labelComponent={
+            <VictoryTooltip
+              x={345}
+              y={375}
+              dx={0}
+              dy={0}
+              orientation={'bottom'}
+              pointerLength={0}
+              pointerWidth={0}
+              style={MaterialStyles.pie_hover_text}
+              events={{onClick:(e)=>console.log(e)}}
+              text={(data) => data.y+"% of users who voted yes "+this.props.labelSentence+data.x}
+              labelComponent={<VictoryLabel/>}
+            />}
+          innerRadius={10}
           data={this.props.yesData}
           padAngle={1}
           animate={{ duration: 2000 }}
@@ -61,10 +82,28 @@ renderNoPie(){
   console.log('this.props on NO PIE', this.props)
   return (
       this.props.totalsData.noVotes === 0 ? <NoVotes/> :
-      <div> 
+      <div className="yes-no-pie"> 
+      <CardText style={{...MaterialStyles.title,display:'inline-block', 
+                  padding: "0px", 
+                  marginBottom:10, 
+                  marginTop:10 }}
+                          > No Votes </CardText>
         <VictoryPie
-         labelComponent={<VictoryTooltip/>}
-          innerRadius={50}
+         labelComponent={
+          <VictoryTooltip
+            x={325}
+            y={375}
+            dx={0}
+            dy={0}
+            orientation={'bottom'}
+            pointerLength={0}
+            pointerWidth={0}
+            style={MaterialStyles.pie_hover_text}
+            events={{onClick:(e)=>console.log(e)}}
+            text={(data) => data.y+"% of users who voted no "+this.props.labelSentence+data.x}
+            labelComponent={<VictoryLabel/>}
+          />}
+          innerRadius={10}
           data={this.props.noData}
           padAngle={1}
           animate={{ duration: 2000 }}
@@ -102,22 +141,8 @@ renderLegendKey(){
             />
             <CardMedia>
               <div className="yes-no-pie-container">
-                <div  className="yes-no-pie">
-                <CardText style={{...MaterialStyles.title,display:'inline-block', 
-                  padding: "0px", 
-                  marginBottom:10, 
-                  marginTop:10 }}
-                          > Yes Votes </CardText>
-               {this.renderYesPie()}
-                </div>
-                <div className="yes-no-pie">
-                <CardText style={{...MaterialStyles.title,display:'inline-block', 
-                  padding: "0px", 
-                  marginBottom:10, 
-                  marginTop:10 }}
-                          > No Votes </CardText>  
+               {this.renderYesPie()}  
                 {this.renderNoPie()}
-                </div>
               </div>
               <div>
               <Paper style={MaterialStyles.legendStyle}>

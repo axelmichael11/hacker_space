@@ -179,6 +179,7 @@ class PollResultsPage extends React.Component {
           noData={this.state.noAgeData} 
           categories={Object.keys(this.state.ageCategories)}
           colorCategories= {this.state.ageCategories}
+          labelSentence={"have an age between"}
           />
            <PieResults title={'Country'}
           totalsData={this.props.pollData.totals_data} 
@@ -186,6 +187,7 @@ class PollResultsPage extends React.Component {
           noData={this.state.noCountryData} 
           categories={Object.keys(this.state.countryCategories)}
           colorCategories= {this.state.countryCategories}
+          labelSentence={" are from "}
           />
 
          <PieResults title={'Gender'}
@@ -194,14 +196,16 @@ class PollResultsPage extends React.Component {
           noData={this.state.noGenderData} 
           categories={Object.keys(this.state.genderCategories)}
           colorCategories= {this.state.genderCategories}
+          labelSentence={" are of gender "}
           />
 
-          <PieResults title={'Professions'}
+          <PieResults title={'Profession'}
           totalsData={this.props.pollData.totals_data} 
           yesData={this.state.yesProfessionData} 
           noData={this.state.noProfessionData} 
           categories={Object.keys(this.state.professionCategories)}
           colorCategories= {this.state.professionCategories}
+          labelSentence={" have a profession of "}
           />
           <PieResults title={'Ethnicity'}
           totalsData={this.props.pollData.totals_data} 
@@ -209,6 +213,7 @@ class PollResultsPage extends React.Component {
           noData={this.state.noEthnicityData} 
           categories={Object.keys(this.state.ethnicityCategories)}
           colorCategories= {this.state.ethnicityCategories}
+          labelSentence={" are of "}
           />
           <PieResults title={'Religion'}
           totalsData={this.props.pollData.totals_data} 
@@ -216,6 +221,7 @@ class PollResultsPage extends React.Component {
           noData={this.state.noReligionData} 
           categories={Object.keys(this.state.religionCategories)}
           colorCategories= {this.state.religionCategories}
+          labelSentence={" are "}
           />
           
           

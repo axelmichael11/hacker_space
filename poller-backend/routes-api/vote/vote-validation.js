@@ -68,118 +68,107 @@ vote.validateCastVoteData = function(incomingPostVoteData){
 }
 
 
-
-
-
-vote.formatYesOrNoData = function(voteArrays){
-    let total = 0;
-    let age = [];
-    let country = [];
-    let ethnicity = [];
-    let profession = [];
-    let male = 0;
-    let female = 0;
-    let yes_religion = 0;
-    let no_religion = 0;
-
-    let age_null = 0;
-    let country_null = 0;
-    let ethnicity_null = 0;
-    let profession_null = 0;
-    let gender_null = 0;
-    let religion_null = 0;
-    for (var i = 0; i<voteArrays.length; i++){
-
-        total += 1;
-
-        if (voteArrays[i][0]===null){
-            age_null+=1;
-        }else {
-            age.push(parseInt(voteArrays[i][0]))
-        }
-
-        if (voteArrays[i][1]===null){
-            country_null+=1;
-        }else {
-            country.push(voteArrays[i][1])
-        }
-
-        if (voteArrays[i][2]===null){
-            ethnicity_null+=1;
-        }else {
-            ethnicity.push(voteArrays[i][2])
-        }
-
-        if (voteArrays[i][3]===null){
-            profession_null+=1;
-        }else {
-            profession.push(voteArrays[i][3])
-        }
-
-        if (voteArrays[i][4]===null){
-            gender_null+=1;
-        }else {
-            if(voteArrays[i][4]==='M'){
-                male+=1;
-            } else {
-                female+=1;
-            }
-        }
-        if (voteArrays[i][5]===null){
-            religion_null+=1;
-        }else {
-            if (voteArrays[i][5]==='true'){
-                yes_religion+=1;
-            } else {
-                no_religion+=1;
-            }
-        }
+vote.reducedYesOrNoData = function(dataArray){
+    console.log('#@#@##@@#@# REDUCE METHOD')
+    let dataCount = dataArray.reduce((acc, current, i)=>{
+	console.log('current',acc, current, i)
+    acc.totalVotes++;
+    //age
+	if(current[0]===null){
+        acc.age_data['unknown age']=+1; 
+    } else {
+        let age = vote.categorizeAge(dataArray[i][0])
+        acc.age_data[age]=+1
     }
-    console.log('DATAAA ARRAYYYS', country, profession, ethnicity)
-    let data = {};
-    //total votes data
-    data.totalVotes = total;
-    let isZero = (data.totalVotes ===0)
-
-    //religion data
-    data.religion_data ={};
-    data.religion_data.yes_religion_total =  isZero ? 0 : (yes_religion/total)*100
-    data.religion_data.no_religion_total=  isZero ? 0 :  (no_religion/total)*100
-    data.religion_data.null_religion_total =  isZero ? 0 :  (religion_null/total)*100
-
-    //gender data
-    data.gender_data= {}
-    data.gender_data.female_total =  isZero ? 0 :  (female/total)*100
-    data.gender_data.male_total =  isZero ? 0 :  (male/total)*100
-    data.gender_data.gender_null_total =  isZero ? 0 : (gender_null/total)*100
-
- 
-
-    //profession data (array)
-    data.profession_data = {}
-    data.profession_data = vote.countExistingCategories(profession);
-    (profession_null===0) ? null : data.profession_data.profession_null = profession_null;
-    //age data (array)
-
-    //country data (array)
-    data.country_data = {}
-    data.country_data = vote.countExistingCategories(country);
-    data.country_data.country_null = country_null;
-    console.log('COUTNRY DATA', data.country_data, country, country_null);
-
-
-    //ethnicity data (array)
-    data.ethnicity_data = {}
-    data.ethnicity_data = vote.countExistingCategories(ethnicity)
-    data.ethnicity_data.ethnicity_null = ethnicity_null
+    //country
+    if(current[1]===null){
+        acc.country_data['unknown country']=+1; 
+    } else {
+        acc.country_data[current[1]]=+1
+    }
+    //ethnicity
+    if(current[2]===null){
+        acc.ethnicity_data['unknown ethnicity']=+1; 
+    } else {
+        acc.ethnicity_data[current[2]]=+1
+    }
+    //profession
+    if(current[3]===null){
+        acc.profession_data['unknown profession']=+1; 
+    } else {
+        acc.profession_data[current[3]]=+1
+    }
+    //gender
+    if(current[4]===null){
+        acc.gender_data['unknown gender']=+1; 
+    } else {
+        let gender;
+        if (current[4]=='M'){
+            gender = 'male';
+        } else {
+            gender = 'female';
+        }
+        acc.gender_data[gender]=+1
+    }
+    //religion
+    if(current[5]===null){
+        acc.religion_data['unknown religion']=+1; 
+    } else {
+        let religion;
+        if (current[5]===true){
+            religion = 'religious';
+        } else {
+            religion = 'not religious';
+        }
+        acc.religion_data[religion]=+1
+    }
+	return acc
+    }, {
+        totalVotes:0,
+        age_data:{},
+        country_data:{},
+        ethnicity_data:{},
+        gender_data:{}, 
+        profession_data:{}, 
+        religion_data:{}
+    });
     
-    //age data (array)
-    data.age_data = {}
-    data.age_data = vote.countAgeCategories(age);
-    (age_null===0) ? null: data.age_data.age_null = age_null;
+    let result = {}
+    result.totalVotes = dataCount.totalVotes
+    result.age_data = vote.formatPercentofVotes(dataCount.age_data, dataCount.totalVotes);
+    result.country_data = vote.formatPercentofVotes(dataCount.country_data, dataCount.totalVotes);
+    result.ethnicity_data = vote.formatPercentofVotes(dataCount.ethnicity_data, dataCount.totalVotes);
+    result.gender_data = vote.formatPercentofVotes(dataCount.gender_data, dataCount.totalVotes);
+    result.profession_data = vote.formatPercentofVotes(dataCount.profession_data, dataCount.totalVotes);
+    result.religion_data = vote.formatPercentofVotes(dataCount.religion_data, dataCount.totalVotes);
+    console.log('result of reduced percents $%$%$%%$', result)
+    return result;
+}
 
-    console.log('this is the yes or no vote data...', data)
-    return data;
+vote.categorizeAge = function(age){
+    let ageCategory;
+    if (0<age<=17){
+        ageCategory = '0-17';
+    }
+    if (17<age<= 26 ) {
+        ageCategory = '18-26';
+    }
+    if (26<age<= 32 ) {
+        ageCategory = '27-32';
+    }
+    if (32<age<= 40 ) {
+        ageCategory = '33-40';
+    }
+    if (40<age<= 50 ) {
+        ageCategory = '41-50';
+    }
+    if (50<age<= 70 ) {
+        ageCategory = '51-70';
+    }
+    if (70<age) {
+        ageCategory = '71 and Older';
+    }
+    return ageCategory
 }
 
 
@@ -188,65 +177,23 @@ vote.formatSendData = function(yes_data_array, no_data_array, voteCount){
     let isZero = (voteCount ===0);
     let data = {};
     data.totals_data = {}
-    data.yes_data = vote.formatYesOrNoData(yes_data_array);
-    data.no_data = vote.formatYesOrNoData(no_data_array);
-    //total vote data
-
-    console.log('yes_data.totalVotes', data.yes_data.totalVotes, voteCount, (data.yes_data.totalVotes/voteCount) )
+    data.yes_data = vote.reducedYesOrNoData(yes_data_array);
+    data.no_data = vote.reducedYesOrNoData(no_data_array);
     data.totals_data.yesVotes = isZero ? 0 : (data.yes_data.totalVotes/voteCount)*100;
     data.totals_data.noVotes = isZero ? 0 : (data.no_data.totalVotes/voteCount)*100;
     data.totals_data.totalVotes = voteCount;
+
     console.log('this is the DATA TO SEND', data)
     return data
 }
 
-
-
-
-vote.countExistingCategories = function(array){
-    let categories= {};
-    array.map((data, i)=>{
-        console.log(data)
-        if (!categories[data]){
-            categories[data]=1;
-        } else {
-            categories[data]+=1;
-        }
+vote.formatPercentofVotes = (categories, total) => {
+    Object.keys(categories).map((category)=>{
+        categories[category]= (categories[category])/total *100
     })
 
-    console.log(categories)
-    return categories
-}
+    console.log('vote categories...',categories)
 
-//I want to refactor this method...
-vote.countAgeCategories = function(array){
-    let categories= {};
-    array.map((data, i)=>{
-        console.log('this is the coute age function!', data, i, array)
-        if (0<data<=17){
-            return categories['0-17']=+1;
-        }
-        if (17<data<= 26 ) {
-            return categories['18-26']=+1;
-        }
-        if (26<data<= 32 ) {
-            return categories['27-32']=+1;
-        }
-        if (32<data<= 40 ) {
-            return categories['33-40']=+1;
-        }
-        if (40<data<= 50 ) {
-            return categories['41-50']=+1;
-        }
-        if (50<data<= 70 ) {
-            return categories['51-70']=+1;
-        }
-        if (70<data) {
-            return categories['71 and Older']=+1;
-        }
-    })
-
-    console.log(categories)
     return categories
 }
 

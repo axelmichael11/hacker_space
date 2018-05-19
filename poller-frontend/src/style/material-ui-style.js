@@ -4,6 +4,13 @@ module.exports = {
         fontFamily: "Play",
         margin:'auto',
     },
+    pie_hover_text:{
+      fontSize: 20,
+      fontFamily: "Play",
+      margin:'auto',
+      color:'white',
+      backgroundColor:'black'
+    },
     sub_title: {
 
     },
