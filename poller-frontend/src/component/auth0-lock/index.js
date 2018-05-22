@@ -2,7 +2,11 @@
 import React from 'react'
 import Auth0Lock from 'auth0-lock'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom'
+import {compose} from 'recompose'
+import MaterialStyles from '../../style/material-ui-style'
+import { withStyles } from '@material-ui/core/styles';
 
 import {
   profileFetch,
@@ -13,8 +17,7 @@ import {
 import {setAuthToken} from '../../action/auth0-actions.js'
 import { login, logout } from '../../action/auth-actions.js'
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import RaisedButton from 'material-ui/RaisedButton';
+import Button from '@material-ui/core/Button';
 
 class AuthLockButton extends React.Component {
   constructor(props) {
@@ -84,17 +87,15 @@ class AuthLockButton extends React.Component {
       }
 
   render() {
-      console.log('AUTH LOCK BUTTON', this.state, this.props)
+      let {classes} = this.props
     return (
-      <div>
-        <MuiThemeProvider>
-           <RaisedButton
-            onClick={this.props.loggedIn ? this.logout : this.showLock}
-            label={this.props.loggedIn ? 'LOGOUT' : 'SIGNUP / LOGIN'}
-            style={{ marginTop: '4px', marginRight: '10px', backgroundColor:'#9C27B0' }}
-          /> 
-        </MuiThemeProvider>
-
+      <div className={classes.container}>
+        <Button 
+        variant="outlined"
+        onClick={this.props.loggedIn ? this.logout : this.showLock} 
+        className={classes.button}>
+        {this.props.loggedIn ? 'LOGOUT' : 'SIGNUP / LOGIN'}
+        </Button>
       </div>
     )
   }
@@ -110,4 +111,14 @@ export const mapStateToProps = state => ({
     profileFetch: () => dispatch(profileFetch()),
   })
   
-  export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AuthLockButton))
+
+  AuthLockButton.propTypes = {
+    classes: PropTypes.object.isRequired,
+  };
+
+
+  export default compose(
+    withRouter,
+    connect(mapStateToProps, mapDispatchToProps),
+    withStyles(MaterialStyles.flat_button_2)
+  )(AuthLockButton)

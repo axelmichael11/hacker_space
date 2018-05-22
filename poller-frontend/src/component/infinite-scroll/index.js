@@ -5,8 +5,8 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Auth0Lock from 'auth0-lock'
 import InfiniteScroll from 'react-infinite-scroller'
-import {  compose } from 'redux'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import {  compose } from 'recompose'
+
 import Paper from 'material-ui/Paper'
 
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
@@ -25,56 +25,76 @@ import '../../style/index.scss'
 
 import {getPublicPolls} from '../../action/public-poll-actions.js'
 import LoginPage from '../login'
-import SettingsButton from '../menu/settings-button.js'
 import Loading from '../loading'
+import PublicPoll from '../public-poll-card'
 
-
-const List = ({ list }) => {
+const List = ({ list }) => 
     <div className="list">
-    {list.map(poll => <div className="list-row" key={item.objectID}>
-        <Link to={{
-                  pathname:`/poll/${poll.author_username}/${poll.created_at}`,
-                  state: poll
-                  }}>
-                  <Card  style={{maxWidth: 450, margin: 'auto', marginBottom: 15 }}>
-                    <AppBar
-                      style={{...MaterialStyles.title, margin:'auto' }}
-                      title={null}
-                      showMenuIconButton={false}
-                    />
-                  <CardMedia>
-                    <CardText style={{...MaterialStyles.title,display:'inline-block'}}
-                    >
-                      "<CardText style={{...MaterialStyles.title,display:'inline-block'}}>
-                          {poll.question}
-                        </CardText>
-                      "
-                    </CardText>
-                  </CardMedia>
-                  <Card>
-                    <CardHeader
-                      title={poll.subject}
-                      subtitle={'Posted By: '+poll.author_username}
-                      style={MaterialStyles.title}
-                    />
-                    </Card>
-                  </Card>
-                </Link>
+    {list.map(poll => <div className="list-row" key={poll.objectID}>
+        <PublicPoll 
+        author_username={poll.author_username} 
+        created_at={poll.created_at}
+        subject={poll.subject}
+        question={poll.question}
+        />
     </div>)}
   </div>
-}
+
+
+const withPaginated = (conditionFn) => (Component) => (props) =>
+  <div>
+    <Component {...props} />
+
+    <div className="interactions">
+      {
+        conditionFn(props) &&
+        <div>
+          <div>
+            Something went wrong...
+          </div>
+          <button
+            type="button"
+            onClick={props.getPublicPolls}
+          >
+            Try Again
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+
+
+const withLoading = (conditionFn) => (Component) => (props) =>
+  <div>
+    <Component {...props} />
+
+    <div className="interactions">
+      {conditionFn(props) && <span>Loading...</span>}
+    </div>
+  </div>
 
 
 
-export const withInfiniteScroll = (Component) => {
-  return class WithInfiniteScroll extends React.Component {
-    constructor(props) {
+
+
+const withInfiniteScroll =(conditionFn) => (Component) => 
+  class WithInfiniteScroll extends React.Component {
+   constructor(props) {
         super(props);
-        
-        this.onScroll = this.onScroll.bind(this);
+        this.state={
+          scrollY : window.scrollY,
+          innerHeight: window.innerHeight,
+
         }
+        this.onScroll = this.onScroll.bind(this);
+        } 
+
+      componentWillMount(){
+        console.log('infinite scroll component!', this.state, this.props)
+      }
 
     componentDidMount() {
+      
       window.addEventListener('scroll', this.onScroll, false);
     }
 
@@ -83,17 +103,30 @@ export const withInfiniteScroll = (Component) => {
     }
 
     onScroll(){
-        if (
-          (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 500) &&
-          this.props.list.length &&
-          !this.props.Loading
-        ) {
-          this.props.getPublicPolls();
-        }
+        conditionFn(this.props) && this.props.getPublicPolls();
       }
 
     render() {
-      return <Component {...this.props} />;
+      return (<Component {...this.props} />)
     }
   }
-}
+
+  const infiniteScrollCondition = props =>
+  (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 500)
+  && props.list.length
+  && !props.Loading
+  && !props.isError;
+
+  const loadingCondition = props =>
+  props.Loading;
+
+  const paginatedCondition = props =>
+  props.page !== null && !props.Loading && props.isError;
+
+  const AdvancedList = compose(
+    withPaginated(paginatedCondition),
+    withInfiniteScroll(infiniteScrollCondition),
+    withLoading(loadingCondition),
+  )(List);
+
+export default AdvancedList

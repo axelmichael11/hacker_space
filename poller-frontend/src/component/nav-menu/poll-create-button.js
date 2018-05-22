@@ -3,20 +3,11 @@ import { withRouter, Route } from 'react-router'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { NavLink } from 'react-router-dom'
-import LoginPage from '../login'
+
+import MenuItem from '@material-ui/core/MenuItem';
 
 
-
-import FlatButton from 'material-ui/FlatButton'
-import FontAwesome from 'react-fontawesome' 
-
-
-import MenuItem from 'material-ui/MenuItem';
-
-
-
-
-class ExploreButton extends React.Component{
+class MyPollsButton extends React.Component{
     constructor(props) {
         super(props)
         this.state = {}
@@ -24,13 +15,15 @@ class ExploreButton extends React.Component{
       }
 
     nextPath(){
-        this.props.history.push('/explore')
+        this.props.history.push('/pollcreate')
+        this.props.handleClose()
+
     }
     render(){
-        console.log('this.PROPS on the home button', this.context, this.props.history)
+        console.log('this.PROPS on the pollcreate button', this.context, this.props.history)
         return (
             <div>
-                <MenuItem onClick={()=>this.nextPath()} primaryText={"Explore"} />
+                <MenuItem onClick={()=>this.nextPath()}>My Polls</MenuItem>
            </div>
         )
     }
@@ -45,4 +38,4 @@ export const mapDispatchToProps = dispatch => ({
 })
 
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ExploreButton))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MyPollsButton))

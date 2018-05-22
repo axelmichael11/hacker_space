@@ -1,13 +1,21 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types';
+import {compose} from 'recompose'
+import MaterialStyles from '../../style/material-ui-style'
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import Paper from 'material-ui/Paper'
-import Face from 'material-ui/svg-icons/action/face'
-import SpeakerNotes from 'material-ui/svg-icons/action/speaker-notes'
-import Assessment from 'material-ui/svg-icons/action/assessment'
-import SwapVert from 'material-ui/svg-icons/action/swap-vert'
+
+import Face from '@material-ui/icons/face'
+// import SpeakerNotes from '@material-ui/icons/speaker-notes'
+// import Assessment from '@material-ui/icons/assessment'
+// import SwapVert from '@material-ui/icons/swap-vert'
+
 
 import FlatButton from 'material-ui/FlatButton';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
+
 
 import AuthLockButton from  '../auth0-lock'
 import NavigateGettingStartedButton from '../getting-started-button'
@@ -46,32 +54,35 @@ class LoginPage extends React.Component {
 
   render() {
     console.log('THIS>PROPS ON LOGIN PAGE', this.props)
+    let {classes} = this.props;
     return (
       <div>
-        <MuiThemeProvider>
-          <Paper zdepth={2} style={styles.intro_container}>
+          <Paper elevation={2} className={classes.container_paper.root}>
             <p id="title">Poller</p>
 
             <div id="parent">
                 <Face style={styles.middle_icon}/>
-                <SpeakerNotes style={styles.middle_icon}/>
-                <Assessment style={styles.middle_icon}/>
-                <SwapVert style={styles.middle_icon}/>
             </div>
 
-
             <NavigateGettingStartedButton/>
-
-
           </Paper>
-          <Paper zdepth={2} style={styles.login_container}>
+
+          <Paper elevation={2} className={classes.container_paper.root}>
             <AuthLockButton style={{margin: 15}}/>
           </Paper>
-          </MuiThemeProvider>
-
       </div>
     )
   }
 }
 
-export default LoginPage
+
+LoginPage.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+
+export default compose(
+  // These are both single-argument HOCs
+
+  withStyles(MaterialStyles )
+)(LoginPage)

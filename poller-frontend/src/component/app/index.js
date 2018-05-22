@@ -17,7 +17,7 @@ import {storageLogin} from '../../action/storage-login-attempt'
 
 import PrivateRoute from './privateroute.js'
 
-import GettingStartedPage from '../getting-started'
+import GettingStartedPage from '../getting-started/horizontal'
 
 
 

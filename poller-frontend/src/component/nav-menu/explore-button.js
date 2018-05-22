@@ -3,21 +3,13 @@ import { withRouter, Route } from 'react-router'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { NavLink } from 'react-router-dom'
-import LoginPage from '../login'
 
-
-
-import FlatButton from 'material-ui/FlatButton'
-import FontAwesome from 'react-fontawesome' 
-
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-
-import MenuItem from 'material-ui/MenuItem';
+import MenuItem from '@material-ui/core/MenuItem';
 
 
 
 
-class SettingsButton extends React.Component{
+class ExploreButton extends React.Component{
     constructor(props) {
         super(props)
         this.state = {}
@@ -25,24 +17,29 @@ class SettingsButton extends React.Component{
       }
 
     nextPath(){
-        this.props.history.push('/settings')
-    }
+        this.props.history.push('/explore')
+        this.props.handleClose()
 
+    }
     render(){
         console.log('this.PROPS on the home button', this.context, this.props.history)
         return (
             <div>
-                <MenuItem onClick={()=>this.nextPath()} primaryText={"Settings"} />
-            </div>
+                <MenuItem onClick={()=>this.nextPath()}>Explore</MenuItem>
+           </div>
         )
     }
 }
 
 export const mapStateToProps = state => ({
+    loggedIn: state.loggedIn,
+    userProfile: state.userProfile,
 })
 
 export const mapDispatchToProps = dispatch => ({
 })
 
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SettingsButton))
+
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ExploreButton))

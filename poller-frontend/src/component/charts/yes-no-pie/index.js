@@ -11,7 +11,7 @@ import Chip from 'material-ui/Chip';
 
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import MaterialStyles from '../../../style/material-ui-style'
-
+import NoVotes from './no-votes'
 
 
 class PieResults extends React.Component {
@@ -29,11 +29,14 @@ class PieResults extends React.Component {
 
   getColorsArray(data){
     let color_data = []
-    data.map((category)=>{
-      console.log('category....!',category, this.props.colorCategories)
-        color_data.push(this.props.colorCategories[category.x])
-    })
-    console.log('COLOR DATAAA', color_data)
+    if (data.length> 0){
+      data.map((category)=>{
+        console.log('category....!',category, this.props.colorCategories)
+          color_data.push(this.props.colorCategories[category.x])
+      })
+      console.log('COLOR DATAAA', color_data)
+    }
+  
     return color_data;
   }
   
@@ -41,15 +44,15 @@ renderYesPie(){
   console.log('this.props on Yes PIE', this.props)
 
   return (
-      this.props.totalsData.yesVotes === 0 ? <NoVotes/> :
-      <div className="yes-no-pie">
+    <div className="yes-no-pie">
 
       <CardText style={{...MaterialStyles.title,display:'inline-block', 
                   padding: "0px", 
                   marginBottom:10, 
                   marginTop:10 }}
                           > Yes Votes </CardText>
-                          
+                      
+      {this.props.totalsData.yesVotes === 0 ? <NoVotes/> :
         <VictoryPie
          labelComponent={
             <VictoryTooltip
@@ -72,7 +75,7 @@ renderYesPie(){
           style={{ labels: { fill: "white", fontSize: 20, fontWeight: "bold" } }}
           labelRadius={90}
           colorScale={this.state.yesColorScale}
-        />
+        />}
         </div>
   )
 }
@@ -81,13 +84,14 @@ renderYesPie(){
 renderNoPie(){
   console.log('this.props on NO PIE', this.props)
   return (
-      this.props.totalsData.noVotes === 0 ? <NoVotes/> :
-      <div className="yes-no-pie"> 
+    <div className="yes-no-pie"> 
       <CardText style={{...MaterialStyles.title,display:'inline-block', 
                   padding: "0px", 
                   marginBottom:10, 
                   marginTop:10 }}
                           > No Votes </CardText>
+
+      {this.props.totalsData.noVotes === 0 ? <NoVotes/> :
         <VictoryPie
          labelComponent={
           <VictoryTooltip
@@ -110,7 +114,7 @@ renderNoPie(){
           style={{ labels: { fill: "white", fontSize: 20, fontWeight: "bold" } }}
           labelRadius={90}
           colorScale={this.state.noColorScale}
-        />
+        />}
         </div>
   )
 }
