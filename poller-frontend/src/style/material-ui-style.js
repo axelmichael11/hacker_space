@@ -25,9 +25,13 @@ module.exports = {
         fontFamily:"Play",
         fontSize: 25,
       },
-      subheading:{
+      headline:{
         fontFamily:"Play",
         fontSize: 30,
+      },
+      subheading:{
+        fontFamily:"Play",
+        fontSize: 15,
       }
     },
     overrides: {

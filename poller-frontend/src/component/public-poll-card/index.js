@@ -7,7 +7,7 @@ import Auth0Lock from 'auth0-lock'
 import InfiniteScroll from 'react-infinite-scroller'
 import {  compose } from 'recompose'
 
-import Paper from 'material-ui/Paper'
+import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import classnames from 'classnames';
 import Card from '@material-ui/core/Card';
@@ -37,7 +37,6 @@ const styles = theme =>({
     },
     cardStack:{
         backgroundColor: theme.palette.primary.main,
-        color: theme.palette.primary.main,
         fontFamily: theme.typography.fontFamily,
         fontSize:30,
         height:20,
@@ -49,17 +48,23 @@ const styles = theme =>({
 })
 
 const PublicPollCard = ({question, subject, author_username, created_at, classes, theme}) =>
-<div>
+<div className={classes.root}>
+ <Paper square elevation={2} className={classes.root}>
     <Link to={{
         pathname:`/poll/${author_username}/${created_at}`,
         state: {question, subject, author_username, created_at }
         }}
         style={{ textDecoration: 'none' }}
         >
-        <Paper square elevation={2} className={classes.root}>
-        <Paper square elevation={2} className={classes.cardStack}>
-        </Paper>
             <Card>
+            <CardHeader
+            action={
+              <IconButton>
+                <MoreVertIcon />
+              </IconButton>
+            }
+            className={classes.cardStack}
+          />
             <CardContent>
                 <Typography variant="headline" component="h1">
                     {question}
@@ -74,13 +79,13 @@ const PublicPollCard = ({question, subject, author_username, created_at, classes
                 </Typography>
             </CardContent>
             </Card>
-        </Paper>
     </Link>
+    </Paper>
 </div>
 
 PublicPollCard.propTypes = {
     classes: PropTypes.object.isRequired,
-    theme: PropTypes.object.isRequired,
+    // theme: PropTypes.object.isRequired,
     author_username: PropTypes.string.isRequired,
     created_at: PropTypes.string.isRequired,
     subject: PropTypes.string.isRequired,

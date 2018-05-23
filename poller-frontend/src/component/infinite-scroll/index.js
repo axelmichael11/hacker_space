@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import Auth0Lock from 'auth0-lock'
 import InfiniteScroll from 'react-infinite-scroller'
 import {  compose } from 'recompose'
+import _ from 'lodash'
 
 import Paper from 'material-ui/Paper'
 
@@ -23,7 +24,7 @@ import MaterialStyles from '../../style/material-ui-style'
 import AppBar from 'material-ui/AppBar'
 import '../../style/index.scss'
 
-import {getPublicPolls} from '../../action/public-poll-actions.js'
+import {fetchPolls} from '../../action/public-poll-actions.js'
 import LoginPage from '../login'
 import Loading from '../loading'
 import PublicPoll from '../public-poll-card'
@@ -54,7 +55,7 @@ const withPaginated = (conditionFn) => (Component) => (props) =>
           </div>
           <button
             type="button"
-            onClick={props.getPublicPolls}
+            onClick={props.fetchPolls}
           >
             Try Again
           </button>
@@ -69,7 +70,7 @@ const withLoading = (conditionFn) => (Component) => (props) =>
     <Component {...props} />
 
     <div className="interactions">
-      {conditionFn(props) && <span>Loading...</span>}
+      {conditionFn(props) && <Loading/>}
     </div>
   </div>
 
@@ -95,33 +96,34 @@ const withInfiniteScroll =(conditionFn) => (Component) =>
 
     componentDidMount() {
       
-      window.addEventListener('scroll', this.onScroll, false);
+      window.addEventListener('scroll',  _.throttle(this.onScroll, 200), false);
     }
 
     componentWillUnmount() {
-      window.removeEventListener('scroll', this.onScroll, false);
+      window.removeEventListener('scroll', _.throttle(this.onScroll, 200), false);
     }
 
     onScroll(){
-        conditionFn(this.props) && this.props.getPublicPolls();
+        conditionFn(this.props) && this.props.fetchPolls();
       }
 
     render() {
+      console.log('INFINITE SCROLL', window.pageYOffset, window.scrollY, window.innerHeight, document.body.offsetHeight, )
       return (<Component {...this.props} />)
     }
   }
 
   const infiniteScrollCondition = props =>
-  (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 500)
-  && props.list.length
+  (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
+  // && props.list.length
   && !props.Loading
-  && !props.isError;
+  && !props.error;
 
   const loadingCondition = props =>
   props.Loading;
 
   const paginatedCondition = props =>
-  props.page !== null && !props.Loading && props.isError;
+   !props.Loading && props.error;
 
   const AdvancedList = compose(
     withPaginated(paginatedCondition),

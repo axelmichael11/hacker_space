@@ -6,32 +6,38 @@ import { Link } from 'react-router-dom'
 import Auth0Lock from 'auth0-lock'
 
 import {  compose } from 'recompose'
-
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import Paper from 'material-ui/Paper'
-
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
-import AdvancedList from '../infinite-scroll/index.js'
-import {
-    Step,
-    Stepper,
-    StepButton,
-    StepContent,
-  } from 'material-ui/Stepper';
-import RaisedButton from 'material-ui/RaisedButton';
+import {loadingOn, loadingOff} from '../../action/loading-actions'
 import MaterialStyles from '../../style/material-ui-style'
-import AppBar from 'material-ui/AppBar'
+
 import '../../style/index.scss'
 
-import {getPublicPolls} from '../../action/public-poll-actions.js'
+import {getPublicPolls, fetchPublicPolls} from '../../action/public-poll-actions.js'
 
 import LoginPage from '../login'
 import Loading from '../loading'
+import { withStyles } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import AdvancedList from '../infinite-scroll'
 
 
+const styles = theme =>({
+
+})
 
 
+const applyUpdateResult = (result) => (prevState) => ({
+  hits: [...prevState.hits, ...result.hits],
+  page: result.page,
+  isError: false,
+  isLoading: false,
+});
+
+const applySetResult = (result) => (prevState) => ({
+  hits: result.hits,
+  page: result.page,
+  isError: false,
+  isLoading: false,
+});
 
 class ExplorePage extends React.Component {
   constructor(props) {
@@ -39,33 +45,37 @@ class ExplorePage extends React.Component {
     this.state = {
       polls: this.props.publicPolls,
       Loading:this.props.Loading,
-      isError: this.props.isError,
+      error: this.props.error,
     }
+    this.fetchPolls = this.fetchPolls.bind(this)
   }
 
   componentWillMount(){
-    this.props.getPublicPolls()
+    if (this.props.publicPolls.length===0){
+      this.fetchPolls()
+    }
   }
 
-
+  fetchPolls(){
+    this.props.getPublicPolls()
+  }
 
 
   render() {
     const {stepIndex} = this.state;    
     console.log('explore page', this.state, this.props)
     return (
-        <div className="endless-scroller">
-        <MuiThemeProvider>
-            <CardText style={MaterialStyles.title}> Explore </CardText>
+        // <div className="endless-scroller">
+        <div>
+          <Typography variant="headline"> Explore </Typography>
             
             <AdvancedList
               list={this.props.publicPolls}
-              isError={this.state.isError}
+              error={this.state.error}
               Loading={this.state.Loading}
               page={this.state.page}
-              getPublicPolls={this.props.getPublicPolls}
+              fetchPolls={this.fetchPolls}
               />
-            </MuiThemeProvider>
       </div>
     )
   }
@@ -75,22 +85,24 @@ export const mapStateToProps = state => ({
     loggedIn: state.loggedIn,
     publicPolls: state.publicPolls,
     Loading: state.Loading,
-    isError: state.isError,
+    error: state.error,
   })
   
   export const mapDispatchToProps = dispatch => ({
-    getPublicPolls:()=>dispatch(getPublicPolls())
-    
+    getPublicPolls:()=>dispatch(getPublicPolls()),
+    fetchPublicPolls:()=> dispatch(fetchPublicPolls(polls)),
+    loadingOn:()=>dispatch(loadingOn()),
+    loadingOff: ()=> dispatch(loadingOff())
   })
 
     
-// const ListWithLoadingWithInfinite = compose(
-//   withInfiniteScroll,
-//   Loading,
-// )(List);
+export default compose(
+  withStyles(styles, {withTheme:true}),
+  connect(mapStateToProps, mapDispatchToProps),
+)(ExplorePage);
 
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(ExplorePage)
+// export default connect(mapStateToProps, mapDispatchToProps)(ExplorePage)
 
 
