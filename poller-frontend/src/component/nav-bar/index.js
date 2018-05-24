@@ -3,7 +3,9 @@ import React from 'react'
 import Auth0Lock from 'auth0-lock'
 import { connect } from 'react-redux'
 import { Link, Route } from 'react-router-dom'
-
+import {withRouter} from 'react-router-dom'
+import PropTypes from 'prop-types';
+import {compose} from 'recompose'
 
 //Methods
 import { storeUserProfile } from '../../action/user-profile-actions.js'
@@ -16,43 +18,33 @@ import * as util from '../../lib/util.js'
 
 
 
-import NavMenu from '../menu/loggedin-menu'
+import NavMenu from '../nav-menu/index.js'
 
 
 //Style
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
-import AppBar from 'material-ui/AppBar'
 import {grey50} from 'material-ui/styles/colors';
 
 
+//new Material UI
+import MaterialStyles from '../../style/material-ui-style'
+import { withStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormGroup from '@material-ui/core/FormGroup';
+import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu';
 
 
 
-import FlatButton from 'material-ui/FlatButton'
-import FontAwesome from 'react-fontawesome' 
-
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
-import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import ContentFilter from 'material-ui/svg-icons/content/filter-list';
-import FileFileDownload from 'material-ui/svg-icons/file/file-download';
-import {withRouter} from 'react-router-dom'
-
-import {
-  Card,
-  CardActions,
-  CardHeader,
-  CardMedia,
-  CardTitle,
-  CardText,
-} from 'material-ui/Card'
 
 
-import SettingsButton from '../menu/settings-button.js'
 class NavBar extends React.Component {
   constructor(props) {
     super(props)
@@ -61,19 +53,10 @@ class NavBar extends React.Component {
       loggedIn: this.props.loggedIn,
       openMenu: false,
     }
-    this.titleRender = this.titleRender.bind(this)
   }
 
   componentWillMount() {
     console.log('this.props.history on the NAVBAR', this.props)
-  }
-
-  titleRender(){
-    let {pathname} = this.props.location;
-    if (pathname == "/settings"){
-      return "Edit Profile"
-    }
-    return "Poller"
   }
 
 
@@ -91,22 +74,18 @@ class NavBar extends React.Component {
 
   render() {
     console.log('NAVBAR', this.props)
+    const { classes } = this.props;
     return (
-      <div className="login-box">
-        <MuiThemeProvider>
-          <AppBar
-            title={"Poller"}
-            style={{
-              backgroundColor: '#000',
-            }}
-            titleStyle={{
-              letterSpacing: '.2em',
-              fontWeight: '800',
-            }}
-            showMenuIconButton={false}
-            iconElementRight={<NavMenu color={grey50}/>}
-          />
-        </MuiThemeProvider>
+      <div className={classes.root}>
+          <AppBar position="static" className={classes.navBar}>
+          <Toolbar>
+         
+            <Typography variant="title" color="inherit" className={classes.flex}>
+              Poller
+            </Typography>
+            <NavMenu/>
+          </Toolbar>
+        </AppBar>
       </div>
     )
   }
@@ -121,7 +100,23 @@ export const mapDispatchToProps = dispatch => ({
   setAuthToken: (token) => dispatch(setAuthToken(token)),
   login: () => dispatch(login()),
   logout: () => dispatch(logout()),
-//   profileUpdate: profile => dispatch(profileUpdate(profile)),
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NavBar))
+
+NavBar.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+
+export default compose(
+  // These are both single-argument HOCs
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps),
+  withStyles(MaterialStyles.navBar)
+)(NavBar)
+
+
+
+// export default withStyles(styles)(withRouter(connect(mapStateToProps, mapDispatchToProps)(NavBar)));
+
+// export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NavBar))

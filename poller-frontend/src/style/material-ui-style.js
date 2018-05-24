@@ -1,9 +1,190 @@
 module.exports = {
-    title: {
-        fontSize: 40,
-        fontFamily: "Play",
-        margin:'auto',
+  pollerTheme:{
+    palette: {
+      primary: {
+        light: '#0A0208',
+        main: '#0A0208',
+        dark: '#0A0208',
+        contrastText: '#fff',
+      },
+      secondary: {
+        light: '#616161',
+        main: '#616161',
+        dark: '#616161',
+        contrastText: '#000',
+      }
     },
+    typography:{
+      fontFamily: [
+        'Play',
+        'Roboto',
+        'Arial',
+        'sans-serif',
+      ].join(','),
+      title:{
+        fontFamily:"Play",
+        fontSize: 25,
+      },
+      headline:{
+        fontFamily:"Play",
+        fontSize: 30,
+      },
+      subheading:{
+        fontFamily:"Play",
+        fontSize: 15,
+      }
+    },
+    overrides: {
+      MuiButton: { // Name of the component ⚛️ / style shee
+        root: theme => ({
+          container: {
+            textAlign:'center',
+            display: 'flex',
+            flexWrap: 'wrap',
+          },
+          button: {
+            margin: theme.spacing.unit,
+            marginBottom:15,
+            textAlign: 'center',
+            backgroundColor: '#fff',
+            color:"#000",
+            fontFamily: [
+              'Play',
+              'Roboto',
+              'Arial',
+              'sans-serif',
+            ].join(','),
+            '&:hover': {
+              backgroundColor: '#000',
+              color:'#fff'
+            },
+          },
+        }),
+      },
+    }
+
+  },
+  text:{
+    fontFamily: [
+      'Play',
+      'Roboto',
+      'Arial',
+      'sans-serif',
+    ].join(','),
+    fontSize: 15,
+    color:'#000'
+  },
+  title:{
+    marginBottom:15,
+    fontFamily: [
+      'Play',
+      'Roboto',
+      'Arial',
+      'sans-serif',
+    ].join(','),
+    fontSize: 35,
+    color:'#000'
+  },
+  container_paper: theme => ({
+      root: theme.mixins.gutters({
+        maxWidth: 450, 
+        margin: 'auto',
+        marginBottom:20,
+        paddingTop: 16,
+        marginTop: theme.spacing.unit * 3,
+      }),
+    }),
+    flat_button: theme => ({
+      container: {
+        display: 'flex',
+        flexWrap: 'wrap',
+      },
+      button: {
+        margin: theme.spacing.unit,
+        marginBottom:15,
+        textAlign: 'center',
+        backgroundColor: '#000',
+        color:"#fff",
+        borderColor: '#000',
+        fontFamily: [
+          'Play',
+          'Roboto',
+          'Arial',
+          'sans-serif',
+        ].join(','),
+        '&:hover': {
+          backgroundColor: '#808080',
+        },
+      },
+    }),
+    flat_button_2: theme => ({
+      container: {
+        textAlign:'center',
+        display: 'flex',
+        flexWrap: 'wrap',
+      },
+      button: {
+        margin: theme.spacing.unit,
+        marginBottom:15,
+        textAlign: 'center',
+        backgroundColor: '#fff',
+        color:"#000",
+        fontFamily: [
+          'Play',
+          'Roboto',
+          'Arial',
+          'sans-serif',
+        ].join(','),
+        '&:hover': {
+          backgroundColor: '#000',
+          color:'#fff'
+        },
+      },
+    }),
+    navBar:{
+      navBar:{
+        fontSize: 20,
+        fontFamily: "Play",
+        backgroundColor: '#000',
+      },
+      root:{
+        flexGrow: 1,
+      },
+      flex:{
+        flex:1
+      },
+    },
+    getting_started_page: theme => ({
+      root: {
+        width: '90%',
+      },
+      paper_root: theme.mixins.gutters({
+        maxWidth: 450, 
+        margin: 'auto',
+        marginBottom:20,
+        paddingTop: 16,
+        marginTop: theme.spacing.unit * 3,
+      }),
+      button: {
+        marginRight: theme.spacing.unit,
+      },
+      instructions: {
+        marginTop: theme.spacing.unit,
+        marginBottom: theme.spacing.unit,
+      },
+    }),
+
+
+
+
+
+
+
+
+
+
+
+
     pie_hover_text:{
       fontSize: 20,
       fontFamily: "Play",

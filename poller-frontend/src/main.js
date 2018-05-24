@@ -6,9 +6,13 @@ import { Provider } from 'react-redux'
 import storeCreate from './lib/store-create'
 import { persistStore } from 'redux-persist'
 import {profileFetch} from './action/profile-actions.js'
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import MaterialStyles from './style/material-ui-style'
 
 const store = storeCreate()
 persistStore(store)
+
+const theme = createMuiTheme(MaterialStyles.pollerTheme)
 
 class Main extends React.Component {
   componentWillUpdate() {
@@ -23,7 +27,9 @@ class Main extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <App />
+        <MuiThemeProvider theme={theme}>
+          <App />
+        </MuiThemeProvider>
       </Provider>
     )
   }

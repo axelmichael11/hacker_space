@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Redirect, Route } from 'react-router-dom'
-import HomePage from '../home-page'
 import ProfileSettings from '../profile-settings'
 import LandingContainer from '../landing-container'
 const PrivateRoute = ({ component: Component, loggedIn, redirectTo, ...rest }) => {
