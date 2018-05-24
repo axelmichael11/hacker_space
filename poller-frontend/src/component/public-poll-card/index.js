@@ -47,7 +47,7 @@ const styles = theme =>({
     }
 })
 
-const PublicPollCard = ({question, subject, author_username, created_at, classes, theme}) =>
+const PublicPollCard = ({question, subject, author_username, created_at, classes, theme, }) =>
 <div className={classes.root}>
  <Paper square elevation={2} className={classes.root}>
     <Link to={{
@@ -67,7 +67,7 @@ const PublicPollCard = ({question, subject, author_username, created_at, classes
           />
             <CardContent>
                 <Typography variant="headline" component="h1">
-                    {question}
+                   "{question}"
                 </Typography>
             </CardContent>
             <CardContent>

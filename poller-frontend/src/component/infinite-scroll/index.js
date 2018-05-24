@@ -65,14 +65,18 @@ const withPaginated = (conditionFn) => (Component) => (props) =>
   </div>
 
 
-const withLoading = (conditionFn) => (Component) => (props) =>
-  <div>
+const withLoading = (conditionFn) => (Component) => (props) => {
+  console.log('HITTING LOADING COMPONENT', conditionFn, Component, props, )
+  return(
+    <div>
     <Component {...props} />
 
     <div className="interactions">
       {conditionFn(props) && <Loading/>}
     </div>
   </div>
+  )
+}
 
 
 
@@ -96,11 +100,11 @@ const withInfiniteScroll =(conditionFn) => (Component) =>
 
     componentDidMount() {
       
-      window.addEventListener('scroll',  _.throttle(this.onScroll, 200), false);
+      window.addEventListener('scroll',  _.throttle(this.onScroll, 500), false);
     }
 
     componentWillUnmount() {
-      window.removeEventListener('scroll', _.throttle(this.onScroll, 200), false);
+      window.removeEventListener('scroll', _.throttle(this.onScroll, 500), false);
     }
 
     onScroll(){
@@ -108,14 +112,14 @@ const withInfiniteScroll =(conditionFn) => (Component) =>
       }
 
     render() {
-      console.log('INFINITE SCROLL', window.pageYOffset, window.scrollY, window.innerHeight, document.body.offsetHeight, )
+      console.log('INFINITE SCROLL', window.innerHeight, window.pageYOffset,'>=', document.body.offsetHeight, )
       return (<Component {...this.props} />)
     }
   }
 
   const infiniteScrollCondition = props =>
   (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
-  // && props.list.length
+  && props.list.length
   && !props.Loading
   && !props.error;
 

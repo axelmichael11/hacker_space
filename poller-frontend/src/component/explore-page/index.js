@@ -72,7 +72,7 @@ class ExplorePage extends React.Component {
             <AdvancedList
               list={this.props.publicPolls}
               error={this.state.error}
-              Loading={this.state.Loading}
+              Loading={this.props.Loading}
               page={this.state.page}
               fetchPolls={this.fetchPolls}
               />
