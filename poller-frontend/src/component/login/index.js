@@ -22,17 +22,8 @@ import NavigateGettingStartedButton from '../getting-started-button'
 
 import '../../style/index.scss'
 
-const styles = {
-  intro_container:{
-    maxWidth: 450, 
-    height:300,
-    margin: 'auto',
-    marginBottom:20
-  },
-  login_container:{
-    maxWidth: 450, 
-    margin: 'auto'
-  },
+const styles = theme=> ({
+  container: theme.overrides.MuiPaper,
   middle_icon: {
     display:'center',
     margin:'auto',
@@ -41,7 +32,7 @@ const styles = {
     textAlign: 'center',
     position: 'relative'
   }
-}
+})
 class LoginPage extends React.Component {
   constructor(props) {
     super(props)
@@ -54,20 +45,20 @@ class LoginPage extends React.Component {
 
   render() {
     console.log('THIS>PROPS ON LOGIN PAGE', this.props)
-    let {classes} = this.props;
+    let {classes, theme} = this.props;
     return (
       <div>
-          <Paper elevation={2} className={classes.container_paper.root}>
+          <Paper elevation={2} className={classes.container}>
             <p id="title">Poller</p>
 
             <div id="parent">
-                <Face style={styles.middle_icon}/>
+                <Face className={classes.middle_icon}/>
             </div>
 
             <NavigateGettingStartedButton/>
           </Paper>
 
-          <Paper elevation={2} className={classes.container_paper.root}>
+          <Paper elevation={2} className={classes.container}>
             <AuthLockButton style={{margin: 15}}/>
           </Paper>
       </div>
@@ -78,11 +69,12 @@ class LoginPage extends React.Component {
 
 LoginPage.propTypes = {
   classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
 };
 
 
 export default compose(
   // These are both single-argument HOCs
 
-  withStyles(MaterialStyles )
+  withStyles(MaterialStyles, {withTheme:true})
 )(LoginPage)

@@ -7,3 +7,12 @@ export const log = (...args) => (__DEBUG__ ? console.log(...args) : null)
 
 export const logError = (...args) =>
   __DEBUG__ ? console.error(...args) : null
+
+
+  export const ageValidation = function(value) {
+    if (typeof value !== 'number' || 0 > value || 110 < value){
+        return true
+        } else {
+          return false;
+        }
+    };

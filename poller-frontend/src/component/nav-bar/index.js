@@ -43,6 +43,10 @@ import Menu from '@material-ui/core/Menu';
 
 
 
+const styles = theme =>({
+  appBar: theme.overrides.MuiAppBar,
+
+})
 
 
 class NavBar extends React.Component {
@@ -76,11 +80,11 @@ class NavBar extends React.Component {
     console.log('NAVBAR', this.props)
     const { classes } = this.props;
     return (
-      <div className={classes.root}>
-          <AppBar position="static" className={classes.navBar}>
+      <div>
+          <AppBar position="static" className={classes.appBar}>
           <Toolbar>
          
-            <Typography variant="title" color="inherit" className={classes.flex}>
+            <Typography variant="title" color="inherit" style={{flex: 1}}>
               Poller
             </Typography>
             <NavMenu/>
@@ -105,6 +109,8 @@ export const mapDispatchToProps = dispatch => ({
 
 NavBar.propTypes = {
   classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
+
 };
 
 
@@ -112,7 +118,7 @@ export default compose(
   // These are both single-argument HOCs
   withRouter,
   connect(mapStateToProps, mapDispatchToProps),
-  withStyles(MaterialStyles.navBar)
+  withStyles(styles , {withTheme: true})
 )(NavBar)
 
 

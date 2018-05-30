@@ -2,63 +2,126 @@ import React from 'react'
 import { connect } from 'react-redux'
 // import { checkProfileExists } from '../../action/profile-actions.js'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import {recompose, compose} from 'recompose'
+import {ageValidation} from '../../lib/util.js'
 
-import FontAwesome from 'react-fontawesome' 
+
 
 import {
   profileUpdate,
 } from '../../action/profile-actions.js'
+import classnames from 'classnames';
 
-import Pets from 'material-ui/svg-icons/action/pets'
-import TextField from 'material-ui/TextField'
-import Checkbox from 'material-ui/Checkbox'
-import Paper from 'material-ui/Paper'
-import Divider from 'material-ui/Divider'
-import TimePicker from 'material-ui/TimePicker'
-import RaisedButton from 'material-ui/RaisedButton'
-import * as util from '../../lib/util.js'
-import uuid from 'uuid/v1'
-import Avatar from 'material-ui/Avatar'
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton'
+import PropTypes from 'prop-types';
+import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core/styles';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 
-import ChatIcon from 'material-ui/svg-icons/communication/chat'
-import ClearIcon from 'material-ui/svg-icons/content/clear'
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import Divider from '@material-ui/core/Divider';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Checkbox from '@material-ui/core/Checkbox';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardMedia from '@material-ui/core/CardMedia';
+import MenuList from '@material-ui/core/MenuList';
+import Snackbar from '@material-ui/core/Snackbar';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import IconButton from '@material-ui/core/IconButton';
+import Collapse from '@material-ui/core/Collapse';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Avatar from '@material-ui/core/Avatar';
+import TextField from '@material-ui/core/TextField';
+import Toolbar from '@material-ui/core/Toolbar';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
+
 import country_list from '../../lib/countries.js'
 import profession_list from '../../lib/professions.js'
 import ethnicity_list from '../../lib/ethnicities.js'
-import AppBar from 'material-ui/AppBar'
 
 import MaterialStyles from '../../style/material-ui-style'
-import Snackbar from 'material-ui/Snackbar';
 
-const styles = {
-  title:{
-    fontSize: 20,
-    fontFamily: "Play",
-    margin:'auto'
+
+
+
+
+const styles = theme => ({
+  container: theme.overrides.MuiPaper,
+  ageSelect:{
+    marginLeft: 15,
   },
-  text :{
-    fontSize: 8,
-    fontFamily: "Play",
-    margin:'auto'
+  buttonContainer: theme.overrides.MuiButton.root.container,
+  button: theme.overrides.MuiButton.root.button,
+  cardStack:{
+    backgroundColor: theme.palette.primary.main,
+    fontFamily: theme.typography.fontFamily,
+    fontSize:30,
+    height:20,
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: theme.palette.primary.main,
   },
-  block: {
-    maxWidth: 250,
+  text: theme.typography.text,
+  expand: {
+    transform: 'rotate(0deg)',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+    marginLeft: 'auto',
   },
-  checkbox: {
-    marginBottom: 16,
-    marginLeft: 10,
+  expandOpen: {
+    transform: 'rotate(180deg)',
   },
-  selectFieldWidth: {
-    width: 250,
-    display:'inline-block',
-    margin:'auto'
+  actions: {
+    display: 'flex',
+  },
+  cardHeader:{
+    root:{
+      fontFamily: theme.typography.fontFamily,
+      color:'#fff',
+      backgroundColor: theme.palette.secondary.main,
+    },
+    textAlign:'center',
+    fontFamily: theme.typography.fontFamily,
+    color:'#fff',
+    backgroundColor: theme.palette.secondary.main,
+  },
+  cardContent:{
+    root:{
+      fontFamily: theme.typography.fontFamily,
+      backgroundColor: theme.palette.secondary.main,
+    },
+    textAlign:'center',
+  },
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120,
+  }
+});
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
   },
 };
+
 
 
 class ProfileSettings extends React.Component {
@@ -71,13 +134,15 @@ class ProfileSettings extends React.Component {
       femaleCheckBox: this.props.userProfile.gender=="F" ? true : false,
       religionYesCheckBox: this.props.userProfile.religion ? true : false,
       religionNoCheckBox: this.props.userProfile.religion==false ? true : false,
-      ageErrorText:'',
+      ageError: false,
+      ageErrorText:'Not a valid Age',
       updatedAutoHideDuration: 4000,
       updatedMessage: 'Profile Successfully Updated',
       updatedOpen: false,
       updateErrorOpen: false,
       updateErrorMessage:'There was an error updating your profile Information'
     }
+    this.handleHelpExpand = this.handleHelpExpand.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleUpdateAlert = this.handleUpdateAlert.bind(this)
     this.handleCountryChange = this.handleCountryChange.bind(this)
@@ -92,6 +157,7 @@ class ProfileSettings extends React.Component {
     this.renderAges = this.renderAges.bind(this)
     this.handleUpdatedSnackBarRequest = this.handleUpdatedSnackBarRequest.bind(this)
     this.handleUpdateErrorSnackBarRequest = this.handleUpdateErrorSnackBarRequest.bind(this)
+    this.renderMenuItems = this.renderMenuItems.bind(this)
   }
 
   componentWillMount() {
@@ -103,9 +169,17 @@ class ProfileSettings extends React.Component {
     this.setState({profileUpdateAlert: !this.state.profileUpdateAlert});
   };
 
-  handleAgeChange(event, index, value) {
-    console.log('this should be the value now!', value)
-    this.setState({ age: value })
+  handleAgeChange(e) {
+    let value = parseInt(e.target.value)
+    console.log('this should be the value now!',0 > value || 110 < value,  typeof value, ageValidation(value))
+    if (ageValidation(value)){
+      this.setState({ ageError: true })
+    } else {
+      if (value === NaN){
+        value = null
+      }
+      this.setState({ age: value, ageError: false })
+    }
   }
 
   handleSubmit(e) {
@@ -114,16 +188,30 @@ class ProfileSettings extends React.Component {
     // this.props.history.push('/dashboard')
   }
 
-  handleCountryChange(event, index, value){
+  handleHelpExpand(){
+    this.setState({ helpExpanded: !this.state.helpExpanded });
+  }
+
+  handleCountryChange(e){
+    let value =e.target.value
+    console.log('hitting country!!!', value)
+
     this.setState({country: value});
   }
 
-  handleEthnicityChange(event, index, value){
-    this.setState({ethnicity: value})
+  handleEthnicityChange(e){
+    let value = e.target.value
+    console.log('hitting ethnicity!!!', value, ethnicity_list[value], ethnicity_list[value.toString()])
+    
+
+    this.setState({ethnicity: value});
   }
 
-  handleProfessionChange(event,index,value){
-    this.setState({profession: value})
+  handleProfessionChange(e){
+    let value = e.target.value
+    console.log('hitting profession!!!', value)
+
+    this.setState({profession: value});
   }
 
   updateMaleCheckBox() {
@@ -224,6 +312,7 @@ class ProfileSettings extends React.Component {
   }
   profileUpdateSubmit(){
     let {age, ethnicity, profession, gender, country, religion} = this.state;
+
     this.props.profileToUpdate({age, ethnicity, profession, gender, country, religion})
     .then((profile)=>{
       this.handleUpdatedSnackBarRequest()
@@ -263,14 +352,29 @@ class ProfileSettings extends React.Component {
     });
   }
 
+  renderMenuItems(list){
+    let {classes} = this.props
+    return Object.keys(list).map((key, i)=>{
+      console.log(key, list[key])
+        return (<MenuItem
+        key={i}
+        value={key}
+        style={{...classes.text}}
+        >
+        {list[key]}
+        </MenuItem>
+        )
+      })
+  }
+
 
   render() {
-    const actions = [<FlatButton
+    const actions = [<Button
       label="Cancel"
       primary={true}
       onClick={this.handleUpdateAlert}
     />,
-    <FlatButton
+    <Button
       label="Update Information"
       primary={true}
       onClick={this.profileUpdateSubmit}
@@ -284,154 +388,289 @@ class ProfileSettings extends React.Component {
     const formStyle = {
       marginLeft: 3,
     }
+    let {classes, theme} = this.props
     console.log('profile SETINGS ',this.state, this.props)
     return (
-      <div className="profile-form" style={{maxWidth: 450, margin: 'auto'}}>
-        <MuiThemeProvider>
-          <div>
-          <Dialog
-              title="Are You Sure?"
-              actions={actions}
-              modal={false}
-              open={this.state.profileUpdateAlert}
+      <div>
+        <Dialog
+            open={this.state.profileUpdateAlert}
+            modal={false}
+        >
+          <DialogTitle id="alert-dialog-title">"Are you sure?"</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+            This information can be updated or deleted at anytime. Do you still want to update your information?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+          <div className={classes.container}>
+
+            <Button 
+              onClick={this.handleUpdateAlert} 
+              className={classes.button}
             >
-              This information can be updated or deleted at anytime. Do you still want to update your information?
-          </Dialog>
-          </div>
-          <Card style={MaterialStyles.title}>
-          <CardHeader
-              title="Edit Profile"
-              style={MaterialStyles.title}
-             
-            />
-            <CardText style={MaterialStyles.text}>
-            Update your profile information if you want this information to be anonomysously submitted when
-            answering questions! None of these fields are required,
-            and no demographic information specific to you is shown in the results of a poll.
-            These can be updated as often as necessary. Why not make this app a little more interesting?
-          </CardText>
-          <CardHeader
-              title={this.props.userProfile.nickname}
-              subtitle={this.props.userProfile.email}
-              avatar={this.props.userProfile.picture}
-              style={MaterialStyles.title}
-            />
-            <CardMedia style={{margin:10}}>
-            <form onSubmit={this.handleSubmit}>
-              <Divider />
-              <SelectField
-                floatingLabelText="Age"
-                value={this.state.age}
-                onChange={this.handleAgeChange}
-                style={MaterialStyles.selectFieldWidth}
-              >
-               <MenuItem value={null} primaryText="" />
-               {
-                this.renderAges()
-              }
+              Cancel
+            </Button>
+            </div>
+            <div className={classes.container}>
 
-              </SelectField>
+            <Button 
+              onClick={this.profileUpdateSubmit} 
+              autoFocus
+              className={classes.button}
+            >
+              Update Profile
+            </Button>
+            </div>
+          </DialogActions>
+        </Dialog>
 
 
-              <Divider />
-              <SelectField
-                floatingLabelText="Country"
-                value={this.state.country}
-                onChange={this.handleCountryChange}
-                style={MaterialStyles.selectFieldWidth}
-              >
-               <MenuItem value={null} primaryText="" />
-               {
-                Object.keys(country_list).map((key, i)=>{
-                  return <MenuItem value={key} primaryText={country_list[key]} />
-                })
-              }
-              </SelectField>
-              <SelectField
-                floatingLabelText="Ethnicity"
-                value={this.state.ethnicity}
-                onChange={this.handleEthnicityChange}
-                style={MaterialStyles.selectFieldWidth}
-              >
-                {
-                Object.keys(ethnicity_list).map((key)=>{
-                  return <MenuItem value={parseInt(key)} primaryText={ethnicity_list[key]} />
-                })
-              }
-              </SelectField>
-
-              <SelectField
-                floatingLabelText="profession"
-                value={this.state.profession}
-                onChange={this.handleProfessionChange}
-                style={MaterialStyles.selectFieldWidth}
-              >
-               <MenuItem value={null} primaryText="" />
-              {
-              Object.keys(profession_list).map((i) => {
-                return <MenuItem value={parseInt(i)} primaryText={profession_list[i]}/>
-              })  
-               }
-              </SelectField>
-              
-              <Checkbox
-              checked={this.state.maleCheckBox}
-              onCheck={this.updateMaleCheckBox}
-                label="Male"
-                style={MaterialStyles.checkbox}
-              />
-              <Checkbox
-              checked={this.state.femaleCheckBox}
-              onCheck={this.updateFemaleCheckBox}
-                label="Female"
-                style={MaterialStyles.checkbox}
-              />
-              <Divider />
-              <CardHeader
-              title="Are you religious?"
-              style={MaterialStyles.title}
-              />
-              <Checkbox
-                checked={this.state.religionYesCheckBox}
-                onCheck={this.updateReligionYesCheckBox}
-                  label="Yes"
-                  style={MaterialStyles.checkbox}
-                />
-              <Checkbox
-                checked={this.state.religionNoCheckBox}
-                onCheck={this.updateReligionNoCheckBox}
-                  label="No"
-                  style={MaterialStyles.checkbox}
-                />
-                <Divider/>
-
-              <RaisedButton
-                style={{ margin: 20 }}
-                label="Update Profile"
-                type="submit"
-                onClick={this.handleUpdateAlert}
-                style={MaterialStyles.text}
-              />
-            </form>
-            </CardMedia>
+        <Paper className={classes.container}>
+          <Card>
+            <CardActions 
+              disableActionSpacing
+              onClick={this.handleHelpExpand}
+            >
+                <Typography className={classes.text}>
+                  Help
+                </Typography>
+                
+                <IconButton
+                  className={classnames(classes.expand, {
+                    [classes.expandOpen]: this.state.helpExpanded,
+                  })}
+                  // onClick={this.handleExpandClick}
+                  aria-expanded={this.state.helpExpanded}
+                  aria-label="Show more"
+                >
+                  <ExpandMoreIcon />
+                </IconButton>
+              </CardActions>
+            <Collapse in={this.state.helpExpanded} timeout="auto" unmountOnExit>
+              <CardContent>
+                  <Typography className={classes.text}>
+                Update your profile information if you want this information to be anonomysously submitted when
+                  answering questions! None of these fields are required,
+                  and no demographic information specific to you is shown in the results of a poll.
+                  These can be updated as often as necessary. Why not make this app a little more interesting?
+                </Typography>
+              </CardContent>
+            </Collapse>
           </Card>
-          <Snackbar
+        </Paper>
+
+        <form className={classes.container} noValidate onSubmit={this.handleSubmit} autoComplete="off">
+        <Paper className={classes.container}>
+          <Card>
+          <CardContent className={classes.cardHeader}>
+                <Typography variant="headline" component="h1" className={classes.cardHeader}>
+                    {this.props.userProfile.nickname}
+                </Typography>
+                <Typography variant="subheading" component="h5"  className={classes.cardHeader}>
+                    {this.props.userProfile.email}
+                </Typography>
+            </CardContent>
+            <Divider/>
+            <CardContent className={classes.cardContent}>
+              <Toolbar className={classes.cardContent}>
+                <Typography variant="subheading" component="h3" style={{marginRight:15}}>
+                    Age
+                </Typography>
+                <TextField
+                  id="Age"
+                  label={this.state.ageError ? this.state.ageErrorText : null}
+                  value={this.state.age}
+                  onChange={this.handleAgeChange}
+                  type="number"
+                  error={this.state.ageError}
+                  className={classes.ageSelect}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  margin="normal"
+                />
+              </Toolbar>
+            </CardContent>
+            <Divider/>
+            <CardContent className={classes.cardContent}>
+              <Toolbar>
+                <Typography variant="subheading" component="h3" style={{display:'block'}}>
+                    Gender
+                </Typography>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={this.state.maleCheckBox}
+                      value={this.state.maleCheckBox}
+                      onChange={this.updateMaleCheckBox}
+                        label="Male"
+                        style={MaterialStyles.checkbox}
+                    />
+                  }
+                  label="Male"
+                />
+                 <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={this.state.femaleCheckBox}
+                      value={this.state.femaleCheckBox}
+                      onChange={this.updateFemaleCheckBox}
+                        label="Female"
+                        style={MaterialStyles.checkbox}
+                    />
+                  }
+                  label="Female"
+                />
+              </Toolbar>
+            </CardContent>
+            <Divider/>
+
+            <CardContent className={classes.cardContent}>
+              <Toolbar>
+                <Typography variant="subheading" component="h3">
+                    Religious
+                </Typography>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={this.state.relgion}
+                      value={this.state.religionYesCheckBox}
+                      onChange={this.updateReligionYesCheckBox}
+                        label="Yes"
+                        style={MaterialStyles.checkbox}
+                    />
+                  }
+                  label="Yes"
+                />
+                 <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={this.state.religionNoCheckBox}
+                      value={this.state.religionNoCheckBox}
+                      onChange={this.updateReligionNoCheckBox}
+                        label="No"
+                        style={MaterialStyles.checkbox}
+                    />
+                  }
+                  label="No"
+                />
+              </Toolbar>
+            </CardContent>
+            <Divider/>
+            <CardContent className={classes.cardContent}>
+              <Toolbar className={classes.cardContent}>
+                <Typography variant="subheading" component="h3" style={{marginRight:15}}>
+                    Country
+                </Typography>
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="age-simple">Country</InputLabel>
+                  <Select
+                    autoWidth={true}
+                    value={this.state.country}
+                    onChange={this.handleCountryChange}
+                    MenuProps={MenuProps}
+                  >
+                    <MenuItem
+                      value={null}
+                      style={{...classes.text}}
+                      >
+                      None
+                      </MenuItem>
+                   {this.renderMenuItems(country_list)}
+                  </Select>
+                </FormControl>
+              </Toolbar>
+            </CardContent>
+            <Divider/>
+            <CardContent className={classes.cardContent}>
+              {/* <Toolbar className={classes.cardContent}> */}
+                <Typography variant="subheading" component="h3" style={{marginRight:15}}>
+                    Profession
+                </Typography>
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="age-simple">Profession</InputLabel>
+                  <Select
+                    autoWidth={true}
+                    value={this.state.profession}
+                    onChange={this.handleProfessionChange}
+                    MenuProps={MenuProps}
+                  >
+                    <MenuItem
+                      value={null}
+                      style={{...classes.text}}
+                      >
+                      None
+                      </MenuItem>
+                   {this.renderMenuItems(profession_list)}
+                  </Select>
+                </FormControl>
+              {/* </Toolbar> */}
+            </CardContent>
+            <Divider/>
+            <CardContent className={classes.cardContent}>
+              <Toolbar className={classes.cardContent}>
+                <Typography variant="subheading" component="h3" style={{marginRight:15}}>
+                    Ethnicity
+                </Typography>
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="age-simple">Ethnicity</InputLabel>
+                  <Select
+                    autoWidth={true}
+                    value={ this.state.ethnicity}
+                    onChange={this.handleEthnicityChange}
+                    MenuProps={MenuProps}
+                  >
+                    <MenuItem
+                      value={null}
+                      style={{...classes.text}}
+                    >
+                    None
+                    </MenuItem>
+                   {this.renderMenuItems(ethnicity_list)}
+                  </Select>
+                </FormControl>
+              </Toolbar>
+            </CardContent>
+            <Divider/>
+            <CardContent className={classes.container}>
+            <div className={classes.buttonContainer}>
+              <Button 
+              variant="outlined"
+              onClick={this.handleUpdateAlert} 
+              className={classes.button}>
+              Update Profile
+              </Button>
+            </div>
+            </CardContent>
+          </Card>
+         </Paper >
+         </form>
+         <Snackbar
+          anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+          onClose={this.handleUpdatedSnackBarRequest}
           open={this.state.updatedOpen}
           message={this.state.updatedMessage}
           action={null}
+          onClick={this.updatedOpen}
+
           autoHideDuration={this.state.updatedAutoHideDuration}
-          onActionClick={this.handleUpdatedSnackBarRequest}
-          onRequestClose={this.handleUpdatedSnackBarRequest}
+          // onActionClick={this.handleUpdatedSnackBarRequest}
+          // onRequestClose={this.handleUpdatedSnackBarRequest}
         />
          <Snackbar
+
+          anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+          onClose={this.handleUpdateErrorSnackBarRequest}
           open={this.state.updateErrorOpen}
           message={this.state.updateErrorMessage}
           action={null}
+          onClick={this.handleUpdatedSnackBarRequest}
+
           autoHideDuration={this.state.updatedAutoHideDuration}
-          onActionClick={this.handleUpdateErrorSnackBarRequest}
-          onRequestClose={this.handleUpdateErrorSnackBarRequest}
+          // onActionClick={this.handleUpdateErrorSnackBarRequest}
+          // onRequestClose={this.handleUpdateErrorSnackBarRequest}
         />
-        </MuiThemeProvider>
       </div>
     )
   }
@@ -445,4 +684,12 @@ export const mapDispatchToProps = dispatch => ({
   profileToUpdate: (profile)=> dispatch(profileUpdate(profile)),
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileSettings)
+
+
+
+export default compose(
+  withStyles(styles, {withTheme:true}),
+  connect(mapStateToProps, mapDispatchToProps)
+)(ProfileSettings)
+
+

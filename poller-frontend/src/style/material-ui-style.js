@@ -25,26 +25,33 @@ module.exports = {
         fontFamily:"Play",
         fontSize: 25,
       },
+      text:{
+        fontFamily:"Play",
+        fontSize: 15,
+      },
       headline:{
         fontFamily:"Play",
         fontSize: 30,
       },
       subheading:{
+        display:'inline-block',
         fontFamily:"Play",
         fontSize: 15,
       }
     },
     overrides: {
       MuiButton: { // Name of the component ⚛️ / style shee
-        root: theme => ({
+        root: {
           container: {
             textAlign:'center',
             display: 'flex',
             flexWrap: 'wrap',
+            textAlign:'center',
+            margin: 20,
+            
           },
           button: {
-            margin: theme.spacing.unit,
-            marginBottom:15,
+            margin:15,
             textAlign: 'center',
             backgroundColor: '#fff',
             color:"#000",
@@ -59,11 +66,32 @@ module.exports = {
               color:'#fff'
             },
           },
-        }),
+        },
       },
+      MuiSelectField: {
+        width: 250,
+        display:'inline-block',
+        margin:'auto'
+      },
+      MuiCheckbox: {
+      },
+      MuiPaper:{
+        root:{
+          maxWidth: 600, 
+          margin: 'auto',
+          marginBottom:20,
+          flexGrow: 1
+        }
+      },
+      MuiAppBar:{
+        fontSize: 20,
+        fontFamily: "Play",
+        backgroundColor: '#000',
+      }
     }
-
   },
+
+  
   text:{
     fontFamily: [
       'Play',

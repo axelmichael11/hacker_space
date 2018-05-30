@@ -1,10 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 // import { checkProfileExists } from '../../action/profile-actions.js'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-
-import FontAwesome from 'react-fontawesome' 
-
+import {compose} from 'recompose'
 
 import {
   pollsFetch,
@@ -14,38 +11,100 @@ import {
   
   
 
+  import classnames from 'classnames';
+  import PropTypes from 'prop-types';
 
-import Pets from 'material-ui/svg-icons/action/pets'
-import TextField from 'material-ui/TextField'
-import Checkbox from 'material-ui/Checkbox'
-import Paper from 'material-ui/Paper'
-import Divider from 'material-ui/Divider'
-import TimePicker from 'material-ui/TimePicker'
-import RaisedButton from 'material-ui/RaisedButton'
-import * as util from '../../lib/util.js'
-import uuid from 'uuid/v1'
-import Avatar from 'material-ui/Avatar'
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton'
 
-import ChatIcon from 'material-ui/svg-icons/communication/chat'
-import ClearIcon from 'material-ui/svg-icons/content/clear'
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import DeleteButton from 'material-ui/svg-icons/content/clear'
+  import Button from '@material-ui/core/Button';
+  import { withStyles } from '@material-ui/core/styles';
+  import Dialog from '@material-ui/core/Dialog';
+  import DialogActions from '@material-ui/core/DialogActions';
+  import DialogContent from '@material-ui/core/DialogContent';
+  import DialogContentText from '@material-ui/core/DialogContentText';
+  
+  import DialogTitle from '@material-ui/core/DialogTitle';
+  import InputLabel from '@material-ui/core/InputLabel';
+  import Input from '@material-ui/core/Input';
+  import MenuItem from '@material-ui/core/MenuItem';
+  import FormControl from '@material-ui/core/FormControl';
+  import Select from '@material-ui/core/Select';
+  import Divider from '@material-ui/core/Divider';
+  import Paper from '@material-ui/core/Paper';
+  import Typography from '@material-ui/core/Typography';
+  import Checkbox from '@material-ui/core/Checkbox';
+  import Card from '@material-ui/core/Card';
+  import CardActions from '@material-ui/core/CardActions';
+  import CardContent from '@material-ui/core/CardContent';
+  import CardHeader from '@material-ui/core/CardHeader';
+  import CardMedia from '@material-ui/core/CardMedia';
+  import MenuList from '@material-ui/core/MenuList';
+  import Snackbar from '@material-ui/core/Snackbar';
+  import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+  import IconButton from '@material-ui/core/IconButton';
+  import Collapse from '@material-ui/core/Collapse';
+  import MoreVertIcon from '@material-ui/icons/MoreVert';
+  import Avatar from '@material-ui/core/Avatar';
+  import TextField from '@material-ui/core/TextField';
+  import Toolbar from '@material-ui/core/Toolbar';
+  import FormControlLabel from '@material-ui/core/FormControlLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
+  
+  
+  
 
-import AppBar from 'material-ui/AppBar'
-
-import MaterialStyles from '../../style/material-ui-style'
-import Snackbar from 'material-ui/Snackbar';
-
-import {
-    Step,
-    Stepper,
-    StepButton,
-    StepContent,
-  } from 'material-ui/Stepper';
+  const styles = theme => ({
+    container: theme.overrides.MuiPaper,
+    ageSelect:{
+      marginLeft: 15,
+    },
+    buttonContainer: theme.overrides.MuiButton.root.container,
+    button: theme.overrides.MuiButton.root.button,
+    cardStack:{
+      backgroundColor: theme.palette.primary.main,
+      fontFamily: theme.typography.fontFamily,
+      fontSize:30,
+      height:20,
+      display: 'flex',
+      alignItems: 'center',
+      backgroundColor: theme.palette.primary.main,
+    },
+    text: theme.typography.text,
+    expand: {
+      transform: 'rotate(0deg)',
+      transition: theme.transitions.create('transform', {
+        duration: theme.transitions.duration.shortest,
+      }),
+      marginLeft: 'auto',
+    },
+    expandOpen: {
+      transform: 'rotate(180deg)',
+    },
+    actions: {
+      display: 'flex',
+    },
+    cardHeader:{
+      root:{
+        fontFamily: theme.typography.fontFamily,
+        color:'#fff',
+        backgroundColor: theme.palette.secondary.main,
+      },
+      textAlign:'center',
+      fontFamily: theme.typography.fontFamily,
+      color:'#fff',
+      backgroundColor: theme.palette.secondary.main,
+    },
+    cardContent:{
+      root:{
+        fontFamily: theme.typography.fontFamily,
+        backgroundColor: theme.palette.secondary.main,
+      },
+      textAlign:'center',
+    },
+    formControl: {
+      margin: theme.spacing.unit,
+      minWidth: 120,
+    }
+  });
 
 
 
@@ -55,7 +114,11 @@ class PollCreatePage extends React.Component {
     super(props)
     this.state = {
         pollSubject: '',
+        subjectError: false,
+        subjectErrorText: 'Max Subject Length Reached',
         pollQuestion:'',
+        questionError:false,
+        questionErrorText: "Max Question Length Reached",
         openSubjectValidationError: false,
         subjectValidationErrorMessage: 'Your Subject is too short!',
         openQuestionValidationError:false,
@@ -68,7 +131,9 @@ class PollCreatePage extends React.Component {
         pollDeleteSuccessMessage:'Poll has been deleted!',
         pollDeleteAlert: false,
         pollToDelete: null,
+        helpExpanded:false,
     }
+  this.handleHelpExpand = this.handleHelpExpand.bind(this)
    this.pollSubmit = this.pollSubmit.bind(this)
    this.handleSubjectChange = this.handleSubjectChange.bind(this)
    this.handleQuestionChange = this.handleQuestionChange.bind(this)
@@ -91,11 +156,19 @@ class PollCreatePage extends React.Component {
   }
 
   handleSubjectChange(e){
-      this.setState({pollSubject: e.target.value})
+      if (e.target.value.length < 25){
+        this.setState({pollSubject: e.target.value, subjectError:false})
+      }else {
+        this.setState({subjectError:true})
+      }
   }
 
   handleQuestionChange(e){
-    this.setState({pollQuestion: e.target.value})
+    if (e.target.value.length < 100){
+      this.setState({pollQuestion: e.target.value, questionError:false})
+    }else {
+      this.setState({questionError:true})
+    }
   }
 
   handleSubjectValidationError(){
@@ -150,6 +223,10 @@ class PollCreatePage extends React.Component {
       pollToDelete: poll
     });
   };
+
+  handleHelpExpand(){
+    this.setState({ helpExpanded: !this.state.helpExpanded });
+  }
 
   renderPoll(poll){
     console.log('this.state on renderPoll', this.state, this.props)
@@ -228,22 +305,107 @@ class PollCreatePage extends React.Component {
   }
 
   render() {
-    const pollDeleteActions = [<FlatButton
-      label="Cancel"
-      primary={true}
-      onClick={this.handlePollDeleteAlert}
-    />,
-    <FlatButton
-      label="Delete Poll"
-      primary={true}
-      onClick={this.handleSubmitPollDelete}
-    />];
+    // const pollDeleteActions = [<FlatButton
+    //   label="Cancel"
+    //   primary={true}
+    //   onClick={this.handlePollDeleteAlert}
+    // />,
+    // <FlatButton
+    //   label="Delete Poll"
+    //   primary={true}
+    //   onClick={this.handleSubmitPollDelete}
+    // />];
+    const {classes, theme} = this.props
 
     console.log('this is the poll create page state', this.state, this.props)
     return (
-        <div style={{maxWidth: 450, maxHeight: 600, margin: 'auto'}}>
-        <MuiThemeProvider>
-        <Card style={{marginBottom:15}}>
+        <div>
+          <Paper className={classes.container}>
+          <Card>
+            <CardActions 
+              disableActionSpacing
+              onClick={this.handleHelpExpand}
+            >
+                <Typography className={classes.text}>
+                  Help
+                </Typography>
+                
+                <IconButton
+                  className={classnames(classes.expand, {
+                    [classes.expandOpen]: this.state.helpExpanded,
+                  })}
+                  // onClick={this.handleExpandClick}
+                  aria-expanded={this.state.helpExpanded}
+                  aria-label="Show more"
+                >
+                  <ExpandMoreIcon />
+                </IconButton>
+              </CardActions>
+            <Collapse in={this.state.helpExpanded} timeout="auto" unmountOnExit>
+              <CardContent>
+                  <Typography className={classes.text}>
+                Update your profile information if you want this information to be anonomysously submitted when
+                  answering questions! None of these fields are required,
+                  and no demographic information specific to you is shown in the results of a poll.
+                  These can be updated as often as necessary. Why not make this app a little more interesting?
+                </Typography>
+              </CardContent>
+            </Collapse>
+          </Card>
+        </Paper>
+
+        <Paper className={classes.container}>
+        <Card>
+          <CardContent className={classes.cardHeader}>
+                <Typography variant="headline" component="h1" className={classes.cardHeader}>
+                    Poll Create
+                </Typography>
+            </CardContent>
+            <Divider/>
+            <CardContent className={classes.cardContent}>
+              <Toolbar className={classes.cardContent}>
+                <Typography variant="subheading" component="h3" style={{marginRight:15}}>
+                    Subject
+                </Typography>
+                <FormControl fullWidth>
+                  <InputLabel >{this.state.subjectError ? this.state.subjectErrorText : "Subject"}</InputLabel>
+                  <Input
+                    error={this.state.subjectError}
+                    // label={this.state.subjectError ? this.state.subjectErrorText : null}
+                    multiline={true}
+                    id="adornment-amount"
+                    value={this.state.pollSubject}
+                    onChange={this.handleSubjectChange}
+                  />
+                </FormControl>
+              </Toolbar>
+            </CardContent>
+            <Divider/>
+            <CardContent className={classes.cardContent}>
+              <Toolbar className={classes.cardContent}>
+                <Typography variant="subheading" component="h3" style={{marginRight:15}}>
+                    Question
+                </Typography>
+                <FormControl fullWidth>
+                  <InputLabel >{this.state.questionError ? this.state.questionErrorText : "Question"}</InputLabel>
+                  <Input
+                    error={this.state.questionError}
+                    // label={this.state.subjectError ? this.state.subjectErrorText : null}
+                    multiline={true}
+                    id="adornment-amount"
+                    value={this.state.pollQuestion}
+                    onChange={this.handleQuestionChange}
+                  />
+                </FormControl>
+              </Toolbar>
+            </CardContent>
+          </Card>
+        </Paper>
+
+
+
+
+        {/* <Card style={{marginBottom:15}}>
             <CardText style={MaterialStyles.title}>Poll Create</CardText>
             <CardText style={MaterialStyles.text}>
             Post a question here! You can post up to three questions for people to vote on!
@@ -284,7 +446,7 @@ class PollCreatePage extends React.Component {
           }
 
           </Card>
-        </Paper>
+        </Paper> */}
          <Snackbar
           open={this.state.openSubjectValidationError}
           message={this.state.subjectValidationErrorMessage}
@@ -327,7 +489,6 @@ class PollCreatePage extends React.Component {
           onActionClick={this.handlePollDeleteSuccess}
           onRequestClose={this.handlePollDeleteSuccess}
         />
-        </MuiThemeProvider>
       </div>
     )
   }
@@ -345,4 +506,13 @@ export const mapStateToProps = state => ({
     pollDelete: (poll)=> dispatch(pollDelete(poll))
   })
   
-  export default connect(mapStateToProps, mapDispatchToProps)(PollCreatePage)
+  // export default connect(mapStateToProps, mapDispatchToProps)(PollCreatePage)
+  PollCreatePage.propTypes = {
+    classes: PropTypes.object.isRequired,
+    theme: PropTypes.object.isRequired,
+  };  
+
+  export default compose(
+    withStyles(styles, {withTheme:true}),
+    connect(mapStateToProps, mapDispatchToProps)
+  )(PollCreatePage)
