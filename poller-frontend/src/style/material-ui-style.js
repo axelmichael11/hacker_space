@@ -1,12 +1,18 @@
-const mainColor = '#0A0208'
-const secondaryColor = '#616161'
+const primaryColor = '#0A0208'
+const secondaryColor = '#fff'
+const appFonts = [
+  'Play',
+  'Roboto',
+  'Arial',
+  'sans-serif',
+].join(',')
 
 module.exports = {
   pollerTheme:{
     palette: {
       primary: {
         light: '#0A0208',
-        main: mainColor,
+        main: primaryColor,
         dark: '#0A0208',
         contrastText: '#fff',
       },
@@ -72,7 +78,7 @@ module.exports = {
         },
       },
       MuiMenu:{
-        borderColor: mainColor,
+        borderColor: primaryColor,
       },
       MuiListItem:{
         // backgroundColor: theme.palette.primary.main,
@@ -105,19 +111,43 @@ module.exports = {
         backgroundColor: '#000',
       },
       PollCard:{
-        cardHeader: {
-          backgroundColor: mainColor,
-          fontSize:30,
-          height:5,
-          display: 'flex',
-          alignItems: 'center',
-        }
+        cardHeader:{
+          root:{
+            fontFamily: appFonts,
+            color:secondaryColor,
+            backgroundColor: primaryColor,
+          },
+          textAlign:'center',
+          fontFamily: appFonts,
+          color: secondaryColor,
+          backgroundColor: primaryColor,
+        },
+        pollActions:{
+          backgroundColor: primaryColor,
+          color: secondaryColor
+        },
+        cardContent:{
+          root:{
+            fontFamily:appFonts,
+            backgroundColor: primaryColor,
+          },
+          textAlign:'center',
+        },
       },
+      MuiCheckbox: {
+        color: primaryColor,
+        backgroundColor: secondaryColor,
+        marginBottom: 16,
+        marginLeft: 10,
+        fontFamily: 'Play',
+        fontSize: 20,
+      },
+
       MuiIcon:{
         root:{
         },
         colorPrimary: secondaryColor,
-      }
+      },
     }
   },
 
@@ -272,6 +302,7 @@ module.exports = {
         maxWidth: 250,
       },
       checkbox: {
+        color: primaryColor,
         marginBottom: 16,
         marginLeft: 10,
         fontFamily: 'Play',

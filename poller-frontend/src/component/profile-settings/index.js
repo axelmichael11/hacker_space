@@ -104,24 +104,9 @@ const styles = theme => ({
   actions: {
     display: 'flex',
   },
-  cardHeader:{
-    root:{
-      fontFamily: theme.typography.fontFamily,
-      color:'#fff',
-      backgroundColor: theme.palette.secondary.main,
-    },
-    textAlign:'center',
-    fontFamily: theme.typography.fontFamily,
-    color:'#fff',
-    backgroundColor: theme.palette.secondary.main,
-  },
-  cardContent:{
-    root:{
-      fontFamily: theme.typography.fontFamily,
-      backgroundColor: theme.palette.secondary.main,
-    },
-    textAlign:'center',
-  },
+  cardHeader:theme.overrides.PollCard.cardHeader,
+  cardContent:theme.overrides.PollCard.cardContent,
+  MuiCheckbox: theme.overrides.MuiCheckbox,
   formControl: {
     margin: theme.spacing.unit,
     minWidth: 120,
@@ -545,7 +530,8 @@ class ProfileSettings extends React.Component {
                       value={this.state.maleCheckBox}
                       onChange={this.updateMaleCheckBox}
                         label="Male"
-                        style={MaterialStyles.checkbox}
+                        className={classes.MuiCheckbox}
+                        color="default"
                     />
                   }
                   label="Male"
@@ -557,7 +543,8 @@ class ProfileSettings extends React.Component {
                       value={this.state.femaleCheckBox}
                       onChange={this.updateFemaleCheckBox}
                         label="Female"
-                        style={MaterialStyles.checkbox}
+                        className={classes.MuiCheckbox}
+                        color="default"
                     />
                   }
                   label="Female"
@@ -574,11 +561,12 @@ class ProfileSettings extends React.Component {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={this.state.relgion}
+                      checked={this.state.religionYesCheckBox}
                       value={this.state.religionYesCheckBox}
                       onChange={this.updateReligionYesCheckBox}
                         label="Yes"
-                        style={MaterialStyles.checkbox}
+                        className={classes.MuiCheckbox}
+                        color="default"
                     />
                   }
                   label="Yes"
@@ -590,7 +578,8 @@ class ProfileSettings extends React.Component {
                       value={this.state.religionNoCheckBox}
                       onChange={this.updateReligionNoCheckBox}
                         label="No"
-                        style={MaterialStyles.checkbox}
+                        className={classes.MuiCheckbox}
+                        color="default"
                     />
                   }
                   label="No"
@@ -603,7 +592,7 @@ class ProfileSettings extends React.Component {
             listTitle={'Country'}
             list={country_list}
             handleOpenList={this.handleOpenCountryList}
-            selectedItem={this.state.country ? country_list[this.state.country] :'null'}
+            selectedItem={this.state.country!==null ? country_list[this.state.country] :'null'}
             anchorEl={this.state.countryAnchor}
             handleCloseList={this.handleCloseList}
             renderMenuItems={this.renderMenuItems}
@@ -615,7 +604,7 @@ class ProfileSettings extends React.Component {
             listTitle={'Profession'}
             list={profession_list}
             handleOpenList={this.handleOpenProfessionList}
-            selectedItem={this.state.profession ? profession_list[this.state.profession] :'null'}
+            selectedItem={this.state.profession!==null ? profession_list[this.state.profession] :'null'}
             anchorEl={this.state.professionAnchor}
             handleCloseList={this.handleCloseList}
             renderMenuItems={this.renderMenuItems}
@@ -627,7 +616,7 @@ class ProfileSettings extends React.Component {
             listTitle={'Ethnicity'}
             list={ethnicity_list}
             handleOpenList={this.handleOpenEthnicityList}
-            selectedItem={this.state.ethnicity ? ethnicity_list[this.state.ethnicity] :'null'}
+            selectedItem={this.state.ethnicity!==null ? ethnicity_list[this.state.ethnicity] :'null'}
             anchorEl={this.state.ethnicityAnchor}
             handleCloseList={this.handleCloseList}
             renderMenuItems={this.renderMenuItems}

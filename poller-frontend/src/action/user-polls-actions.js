@@ -26,6 +26,7 @@ export const pollDelete = (poll) => (dispatch, getState) => {
         .then(res => {
           let parsed = JSON.parse(res.text)
           dispatch(deleteUserPoll(parsed.created_at))
+          return parsed
         })
         .catch(err => {
           if (err.status == 550){

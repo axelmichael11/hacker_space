@@ -36,20 +36,20 @@ const styles = theme =>({
 })
 
 
-const UserPollCard = ({question, subject, author_username, created_at, classes, theme, pollActions }) =>
+const UserPollCard = ({question, subject, author_username, created_at, classes, theme, pollActions, poll }) =>
 <div className={classes.container}>
  <Paper square elevation={2} className={classes.container}>
-    <Link to={{
-        pathname:`/poll/${author_username}/${created_at}`,
-        state: {question, subject, author_username, created_at }
-        }}
-        style={{ textDecoration: 'none' }}
-        >
             <Card>
             <CardHeader
                 action={pollActions}
                 className={classes.cardHeader}
             />
+            <Link to={{
+            pathname:`/poll/${author_username}/${created_at}`,
+            state: {question, subject, author_username, created_at }
+            }}
+            style={{ textDecoration: 'none' }}
+            >
             <CardContent>
                 <Typography variant="headline" component="h1">
                    "{question}"
@@ -63,8 +63,8 @@ const UserPollCard = ({question, subject, author_username, created_at, classes, 
                     {'Posted By: '+author_username}
                 </Typography>
             </CardContent>
+            </Link>
             </Card>
-    </Link>
     </Paper>
 </div>
 

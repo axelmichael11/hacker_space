@@ -52,7 +52,6 @@ import LoadingHOC from '../loading'
 import {MyPolls} from '../my-polls'
 
 
-const FeedBackMyPolls = LoadingHOC(MyPolls);
 
 const SubmitButton = ({...props}) =>{
   return (
@@ -71,7 +70,8 @@ const SubmitButton = ({...props}) =>{
 
 
 const FeedBackSubmitButton = LoadingHOC(SubmitButton)
-  
+const FeedBackMyPolls = LoadingHOC(MyPolls);
+
 
   const styles = theme => ({
     container: theme.overrides.MuiPaper,
@@ -80,15 +80,7 @@ const FeedBackSubmitButton = LoadingHOC(SubmitButton)
     },
     buttonContainer: theme.overrides.MuiButton.root.container,
     button: theme.overrides.MuiButton.root.button,
-    cardStack:{
-      backgroundColor: theme.palette.primary.main,
-      fontFamily: theme.typography.fontFamily,
-      fontSize:30,
-      height:20,
-      display: 'flex',
-      alignItems: 'center',
-      backgroundColor: theme.palette.primary.main,
-    },
+   
     text: theme.typography.text,
     expand: {
       transform: 'rotate(0deg)',
@@ -103,28 +95,13 @@ const FeedBackSubmitButton = LoadingHOC(SubmitButton)
     actions: {
       display: 'flex',
     },
-    cardHeader:{
-      root:{
-        fontFamily: theme.typography.fontFamily,
-        color:'#fff',
-        backgroundColor: theme.palette.secondary.main,
-      },
-      textAlign:'center',
-      fontFamily: theme.typography.fontFamily,
-      color:'#fff',
-      backgroundColor: theme.palette.secondary.main,
-    },
-    cardContent:{
-      root:{
-        fontFamily: theme.typography.fontFamily,
-        backgroundColor: theme.palette.secondary.main,
-      },
-      textAlign:'center',
-    },
+    cardHeader:theme.overrides.PollCard.cardHeader,
+    cardContent:theme.overrides.PollCard.cardContent,
     formControl: {
       margin: theme.spacing.unit,
       minWidth: 120,
-    }
+    },
+    pollActions: theme.overrides.PollCard.pollActions,
   });
 
 
@@ -156,24 +133,28 @@ class PollCreatePage extends React.Component {
         helpExpanded:false,
         unknownError: false,
         //loading
-        pollSubmitLoad:false,
-        MyPollsLoad:false
+        pollCreateLoad:false,
+        MyPollsLoad:false,
+        pollDeleteLoad:false,
+
     }
   this.handleHelpExpand = this.handleHelpExpand.bind(this)
-   this.pollSubmit = this.pollSubmit.bind(this)
+   this.handlePollSubmitCreate = this.handlePollSubmitCreate.bind(this)
+   //input changes
    this.handleSubjectChange = this.handleSubjectChange.bind(this)
    this.handleQuestionChange = this.handleQuestionChange.bind(this)
+
+   //error changes
    this.handleSubjectValidationError = this.handleSubjectValidationError.bind(this)
    this.handleQuestionValidationError = this.handleQuestionValidationError.bind(this)
    this.handlePollCreateSuccess = this.handlePollCreateSuccess.bind(this)
    this.handlePollClear = this.handlePollClear.bind(this)
    this.handleMaxPollReached = this.handleMaxPollReached.bind(this)
    this.handleUnknownError = this.handleUnknownError.bind(this)
-   this.renderPoll = this.renderPoll.bind(this)
    this.handlePollDeleteSuccess = this.handlePollDeleteSuccess.bind(this)
-   this.handlePollDeleteAlert = this.handlePollDeleteAlert.bind(this)
-   this.renderPollDeleteActions = this.renderPollDeleteActions.bind(this)
-   this.renderPollDeleteAlert = this.renderPollDeleteAlert.bind(this)
+   this.handlePollDeleteAlertOpen = this.handlePollDeleteAlertOpen.bind(this)
+   this.handlePollDeleteAlertClose = this.handlePollDeleteAlertClose.bind(this)
+
    this.handleSubmitPollDelete = this.handleSubmitPollDelete.bind(this)
   }
 
@@ -251,69 +232,57 @@ class PollCreatePage extends React.Component {
         });
   }
 
-  handlePollDeleteAlert(poll){
+  handlePollDeleteAlertOpen(poll){
     this.setState({
       pollDeleteAlert: !this.state.pollDeleteAlert,
       pollToDelete: poll
     });
   };
 
+  handlePollDeleteAlertClose(){
+    this.setState({
+      pollDeleteLoad:false,  
+      pollDeleteAlert:false, 
+      pollToDelete:null})
+  };
+
+
+
   handleHelpExpand(){
     this.setState({ helpExpanded: !this.state.helpExpanded });
   }
 
-  renderPoll(poll){
-    console.log('this.state on renderPoll', this.state, this.props)
-    return (
-    <Card style={{margin:15}}>
-      <AppBar
-        title={poll.subject}
-        showMenuIconButton={false}
-        iconElementRight={<DeleteButton 
-        onClick={()=>this.handlePollDeleteAlert(poll)}
-      />}
-      />
-      <CardText style={{whiteSpace: 'normal'}}>
-        {poll.question}
-      
-      </CardText>
-    </Card>
-    )
-  }
 
   handleSubmitPollDelete(){
+    this.setState({pollDeleteLoad:true})
     this.props.pollDelete(this.state.pollToDelete)
-    this.setState({pollDeleteAlert:false})
+    .then((res)=>{
+      console.log('this is the response', res)
+
+      this.handlePollDeleteAlertClose()
+  })
+  .catch(err=>{
+    let status = err.toString().slice(-3)
+    console.log('this is the error 2 ', )
+    if (status.includes('401')){
+      console.log('401 error ', )
+      this.handlePollDeleteAlertClose()
+    }
+    if (status.includes('501')){
+      console.log('501 error ', )
+      this.handlePollDeleteAlertClose()
+
+    } else {
+      console.log('other error ', )
+      this.handlePollDeleteAlertClose()
+
+    }
+  })
+
   }
   
-  renderPollDeleteActions(){
-    return [<FlatButton
-      label="Cancel"
-      primary={true}
-      onClick={this.handlePollDeleteAlert}
-    />,
-    <FlatButton
-      label="Delete Poll"
-      primary={true}
-      onClick={this.handleSubmitPollDelete}
-    />]
-  }
 
-  renderPollDeleteAlert(){
-    return(
-      <Dialog
-              title="Are You Sure?"
-              actions={this.renderPollDeleteActions}
-              modal={false}
-              open={this.state.pollDeleteAlert}
-            >
-              Are you sure you want to delete this poll? You cannot undo this.
-          </Dialog>
-    )
-  }
-
-
-  pollSubmit(){
+  handlePollSubmitCreate(){
       let {pollSubject, pollQuestion} = this.state
       let {nickname} = this.props.userProfile
       let poll = Object.assign({}, {pollSubject, pollQuestion, nickname})
@@ -327,23 +296,22 @@ class PollCreatePage extends React.Component {
           this.handleQuestionValidationError();
           return;
       }
-      this.setState({pollSubmitLoad:true})
+      this.setState({pollCreateLoad:true})
       this.props.pollSend(poll)
       .then((res)=>{
           console.log('this is the response', res)
           this.handlePollClear()
           this.handlePollCreateSuccess()
-          this.setState({pollSubmitLoad:false})
+          this.setState({pollCreateLoad:false, pollDeleteAlert:false})
       })
       .catch(err=>{
         let status = err.toString().slice(-3)
         console.log('this is the error 2 ', )
         if (status.includes('550')){
           this.handleMaxPollReached();
-          this.setState({pollSubmitLoad:false})
         } else {
           this.handleUnknownError();
-          this.setState({pollSubmitLoad:false})
+          this.setState({pollCreateLoad:false,  pollDeleteAlert:false})
         }
       })
   }
@@ -358,16 +326,6 @@ class PollCreatePage extends React.Component {
 
 
   render() {
-    // const pollDeleteActions = [<FlatButton
-    //   label="Cancel"
-    //   primary={true}
-    //   onClick={this.handlePollDeleteAlert}
-    // />,
-    // <FlatButton
-    //   label="Delete Poll"
-    //   primary={true}
-    //   onClick={this.handleSubmitPollDelete}
-    // />];
     const {classes, theme} = this.props
 
     console.log('this is the poll create page state', this.state, this.props)
@@ -386,7 +344,7 @@ class PollCreatePage extends React.Component {
           <DialogActions>
           <div className={classes.container}>
             <Button 
-              onClick={this.handlePollDeleteAlert} 
+              onClick={this.handlePollDeleteAlertOpen} 
               className={classes.button}
             >
               Cancel
@@ -394,13 +352,12 @@ class PollCreatePage extends React.Component {
             </div>
             <div className={classes.container}>
 
-            <Button 
-              onClick={this.handleSubmitPollDelete} 
-              autoFocus
-              className={classes.button}
-            >
-              Delete Poll
-            </Button>
+            <FeedBackSubmitButton
+                classes={classes}
+                submitClick={this.handleSubmitPollDelete}
+                buttonTitle={'Delete Poll'}
+                Loading={this.state.pollDeleteLoad}
+              />
             </div>
           </DialogActions>
         </Dialog>
@@ -490,9 +447,9 @@ class PollCreatePage extends React.Component {
             <CardContent className={classes.container}>
               <FeedBackSubmitButton
                 classes={classes}
-                submitClick={this.pollSubmit}
-                buttonTitle={'Submit Poll'}
-                Loading={this.state.pollSubmitLoad}
+                submitClick={this.handlePollSubmitCreate}
+                buttonTitle={'Create Poll'}
+                Loading={this.state.pollCreateLoad}
               />
             </CardContent>
           </Card>
@@ -500,7 +457,7 @@ class PollCreatePage extends React.Component {
         <Paper className={classes.container}>
           <CardContent className={classes.cardHeader}>
             <Typography variant="headline" component="h1" className={classes.cardHeader}>
-              Poll Create
+              My Polls
             </Typography>
           </CardContent>
           <Divider/>
@@ -508,6 +465,8 @@ class PollCreatePage extends React.Component {
             <FeedBackMyPolls
             Loading={this.state.MyPollsLoad}
             userPolls={this.props.userPolls}
+            classes={classes}
+            handlePollDeleteAlertOpen={this.handlePollDeleteAlertOpen}
             />
           </div>
         </Paper>

@@ -114,7 +114,7 @@ const MenuListSelect = ({list, listTitle, handleOpenList, selectedItem, anchorEl
       style={{...classes.text}}
       onClick={event => changeListValue(null)}
       >
-        Null
+        I don't wish to answer
       </MenuItem>
       {renderMenuItems(list, changeListValue)}
     </Menu>
