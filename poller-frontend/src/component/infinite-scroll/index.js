@@ -12,6 +12,7 @@ import Paper from 'material-ui/Paper'
 
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import {
     Step,
@@ -26,7 +27,7 @@ import '../../style/index.scss'
 
 import {fetchPolls} from '../../action/public-poll-actions.js'
 import LoginPage from '../login'
-import Loading from '../loading'
+
 import PublicPoll from '../public-poll-card'
 
 const List = ({ list }) => 
@@ -41,6 +42,15 @@ const List = ({ list }) =>
     </div>)}
   </div>
 
+
+const Loading = (props) => {
+  const { classes } = props;
+  return (
+    <div>
+      <CircularProgress style={{ color: "#000" }} thickness={7} size={50}/>
+    </div>
+  );
+};
 
 const withPaginated = (conditionFn) => (Component) => (props) =>
   <div>

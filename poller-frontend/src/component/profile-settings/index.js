@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import {recompose, compose} from 'recompose'
 import {ageValidation} from '../../lib/util.js'
+import {WithLoading} from '../loading'
 
 
 
@@ -38,6 +39,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import MenuList from '@material-ui/core/MenuList';
 import Snackbar from '@material-ui/core/Snackbar';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import DropDownArrowIcon from '@material-ui/icons/ArrowDropDown'
 import IconButton from '@material-ui/core/IconButton';
 import Collapse from '@material-ui/core/Collapse';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -45,16 +47,37 @@ import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
 import Toolbar from '@material-ui/core/Toolbar';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Menu from '@material-ui/core/Menu';
 
 import country_list from '../../lib/countries.js'
 import profession_list from '../../lib/professions.js'
 import ethnicity_list from '../../lib/ethnicities.js'
 
+import MenuListSelect from './menu-list-select'
+import LoadingHOC from '../loading'
+
+
 import MaterialStyles from '../../style/material-ui-style'
 
 
+const SubmitButton = ({...props}) =>{
+  return (
+    <div className={props.classes.buttonContainer}>
+      <Button 
+      variant="outlined"
+      onClick={props.submitClick} 
+      className={props.classes.button}
+      >
+      {props.buttonTitle}
+      </Button>
+    </div>
+  )
+}
 
+const FeedBackSubmitButton = LoadingHOC(SubmitButton)
 
 
 const styles = theme => ({
@@ -62,17 +85,11 @@ const styles = theme => ({
   ageSelect:{
     marginLeft: 15,
   },
+  listContainer: theme.overrides.MuiListItem.container,
+  listItem:theme.overrides.MuiListItem,
   buttonContainer: theme.overrides.MuiButton.root.container,
   button: theme.overrides.MuiButton.root.button,
-  cardStack:{
-    backgroundColor: theme.palette.primary.main,
-    fontFamily: theme.typography.fontFamily,
-    fontSize:30,
-    height:20,
-    display: 'flex',
-    alignItems: 'center',
-    backgroundColor: theme.palette.primary.main,
-  },
+ 
   text: theme.typography.text,
   expand: {
     transform: 'rotate(0deg)',
@@ -129,18 +146,32 @@ class ProfileSettings extends React.Component {
     super(props)
     console.log('this is hte props on profile settings', props)
     this.state = {...this.props.userProfile, 
-      profileUpdateAlert:false,
+      updatedAutoHideDuration: 4000,
+      
+      // gender checkbox state
       maleCheckBox: this.props.userProfile.gender=="M" ? true : false,
       femaleCheckBox: this.props.userProfile.gender=="F" ? true : false,
+
+      //religion checkbox state
       religionYesCheckBox: this.props.userProfile.religion ? true : false,
       religionNoCheckBox: this.props.userProfile.religion==false ? true : false,
-      ageError: false,
+
+      // text feedback
       ageErrorText:'Not a valid Age',
-      updatedAutoHideDuration: 4000,
+      updateErrorMessage:'There was an error updating your profile Information',
       updatedMessage: 'Profile Successfully Updated',
+
+      //modal states
       updatedOpen: false,
       updateErrorOpen: false,
-      updateErrorMessage:'There was an error updating your profile Information'
+      ageError: false,
+      profileUpdateAlert:false,
+
+      // list Anchors
+      countryAnchor:null,
+      professionAnchor:null,
+      ethnicityAnchor:null,
+
     }
     this.handleHelpExpand = this.handleHelpExpand.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -158,6 +189,13 @@ class ProfileSettings extends React.Component {
     this.handleUpdatedSnackBarRequest = this.handleUpdatedSnackBarRequest.bind(this)
     this.handleUpdateErrorSnackBarRequest = this.handleUpdateErrorSnackBarRequest.bind(this)
     this.renderMenuItems = this.renderMenuItems.bind(this)
+
+    //list approach
+    this.handleOpenCountryList = this.handleOpenCountryList.bind(this)
+    this.handleOpenProfessionList = this.handleOpenProfessionList.bind(this)
+    this.handleOpenEthnicityList = this.handleOpenEthnicityList.bind(this)
+
+    this.handleCloseList = this.handleCloseList.bind(this)
   }
 
   componentWillMount() {
@@ -192,26 +230,24 @@ class ProfileSettings extends React.Component {
     this.setState({ helpExpanded: !this.state.helpExpanded });
   }
 
-  handleCountryChange(e){
-    let value =e.target.value
-    console.log('hitting country!!!', value)
-
-    this.setState({country: value});
+  handleCountryChange(value){
+      this.setState({country: value, countryAnchor: null});
   }
 
-  handleEthnicityChange(e){
-    let value = e.target.value
-    console.log('hitting ethnicity!!!', value, ethnicity_list[value], ethnicity_list[value.toString()])
-    
-
-    this.setState({ethnicity: value});
+  handleEthnicityChange(value){
+    if(value===null){
+      this.setState({ethnicity: value , ethnicityAnchor: null});
+    }else{
+      this.setState({ethnicity: parseInt(value) , ethnicityAnchor: null});
+    }
   }
 
-  handleProfessionChange(e){
-    let value = e.target.value
-    console.log('hitting profession!!!', value)
-
-    this.setState({profession: value});
+  handleProfessionChange(value){
+    if(value===null){
+      this.setState({profession: value , professionAnchor: null});
+    }else{
+      this.setState({profession: parseInt(value) , professionAnchor: null});
+    }  
   }
 
   updateMaleCheckBox() {
@@ -310,10 +346,11 @@ class ProfileSettings extends React.Component {
       }
     });
   }
+
   profileUpdateSubmit(){
     let {age, ethnicity, profession, gender, country, religion} = this.state;
 
-    this.props.profileToUpdate({age, ethnicity, profession, gender, country, religion})
+    this.props.profileUpdate({age, ethnicity, profession, gender, country, religion})
     .then((profile)=>{
       this.handleUpdatedSnackBarRequest()
       this.handleUpdateAlert()
@@ -352,14 +389,14 @@ class ProfileSettings extends React.Component {
     });
   }
 
-  renderMenuItems(list){
+  renderMenuItems(list, handleChangeMethod){
     let {classes} = this.props
     return Object.keys(list).map((key, i)=>{
-      console.log(key, list[key])
         return (<MenuItem
         key={i}
         value={key}
         style={{...classes.text}}
+        onClick={event => handleChangeMethod(key)}
         >
         {list[key]}
         </MenuItem>
@@ -368,19 +405,26 @@ class ProfileSettings extends React.Component {
   }
 
 
+  handleOpenCountryList (e) {
+    this.setState({ countryAnchor: e.currentTarget });
+  };
+
+  handleOpenProfessionList (e) {
+    this.setState({ professionAnchor: e.currentTarget });
+  };
+
+  handleOpenEthnicityList (e) {
+    this.setState({ ethnicityAnchor: e.currentTarget });
+  };
+
+
+  handleCloseList(){
+    this.setState({ countryAnchor: null, professionAnchor: null, ethnicityAnchor: null });
+  }
+
+
+
   render() {
-    const actions = [<Button
-      label="Cancel"
-      primary={true}
-      onClick={this.handleUpdateAlert}
-    />,
-    <Button
-      label="Update Information"
-      primary={true}
-      onClick={this.profileUpdateSubmit}
-    />]
-
-
     const underlineFocus = {
       borderBottomColor: '#3AB08F',
     }
@@ -412,16 +456,12 @@ class ProfileSettings extends React.Component {
               Cancel
             </Button>
             </div>
-            <div className={classes.container}>
-
-            <Button 
-              onClick={this.profileUpdateSubmit} 
-              autoFocus
-              className={classes.button}
-            >
-              Update Profile
-            </Button>
-            </div>
+            <FeedBackSubmitButton
+            classes={classes}
+            submitClick={this.profileUpdateSubmit}
+            buttonTitle={"Update Profile"}
+            Loading={this.props.Loading}
+            />
           </DialogActions>
         </Dialog>
 
@@ -558,80 +598,49 @@ class ProfileSettings extends React.Component {
               </Toolbar>
             </CardContent>
             <Divider/>
-            <CardContent className={classes.cardContent}>
-              <Toolbar className={classes.cardContent}>
-                <Typography variant="subheading" component="h3" style={{marginRight:15}}>
-                    Country
-                </Typography>
-                <FormControl className={classes.formControl}>
-                  <InputLabel htmlFor="age-simple">Country</InputLabel>
-                  <Select
-                    autoWidth={true}
-                    value={this.state.country}
-                    onChange={this.handleCountryChange}
-                    MenuProps={MenuProps}
-                  >
-                    <MenuItem
-                      value={null}
-                      style={{...classes.text}}
-                      >
-                      None
-                      </MenuItem>
-                   {this.renderMenuItems(country_list)}
-                  </Select>
-                </FormControl>
-              </Toolbar>
-            </CardContent>
+            <MenuListSelect
+            // list, listTitle, handleListItemClick, selectedItem, anchorEl, handleCloseList,
+            listTitle={'Country'}
+            list={country_list}
+            handleOpenList={this.handleOpenCountryList}
+            selectedItem={this.state.country ? country_list[this.state.country] :'null'}
+            anchorEl={this.state.countryAnchor}
+            handleCloseList={this.handleCloseList}
+            renderMenuItems={this.renderMenuItems}
+            changeListValue={this.handleCountryChange}
+            />
             <Divider/>
-            <CardContent className={classes.cardContent}>
-              {/* <Toolbar className={classes.cardContent}> */}
-                <Typography variant="subheading" component="h3" style={{marginRight:15}}>
-                    Profession
-                </Typography>
-                <FormControl className={classes.formControl}>
-                  <InputLabel htmlFor="age-simple">Profession</InputLabel>
-                  <Select
-                    autoWidth={true}
-                    value={this.state.profession}
-                    onChange={this.handleProfessionChange}
-                    MenuProps={MenuProps}
-                  >
-                    <MenuItem
-                      value={null}
-                      style={{...classes.text}}
-                      >
-                      None
-                      </MenuItem>
-                   {this.renderMenuItems(profession_list)}
-                  </Select>
-                </FormControl>
-              {/* </Toolbar> */}
-            </CardContent>
+            <MenuListSelect
+            // list, listTitle, handleListItemClick, selectedItem, anchorEl, handleCloseList,
+            listTitle={'Profession'}
+            list={profession_list}
+            handleOpenList={this.handleOpenProfessionList}
+            selectedItem={this.state.profession ? profession_list[this.state.profession] :'null'}
+            anchorEl={this.state.professionAnchor}
+            handleCloseList={this.handleCloseList}
+            renderMenuItems={this.renderMenuItems}
+            changeListValue={this.handleProfessionChange}
+            />
             <Divider/>
-            <CardContent className={classes.cardContent}>
-              <Toolbar className={classes.cardContent}>
-                <Typography variant="subheading" component="h3" style={{marginRight:15}}>
-                    Ethnicity
-                </Typography>
-                <FormControl className={classes.formControl}>
-                  <InputLabel htmlFor="age-simple">Ethnicity</InputLabel>
-                  <Select
-                    autoWidth={true}
-                    value={ this.state.ethnicity}
-                    onChange={this.handleEthnicityChange}
-                    MenuProps={MenuProps}
-                  >
-                    <MenuItem
-                      value={null}
-                      style={{...classes.text}}
-                    >
-                    None
-                    </MenuItem>
-                   {this.renderMenuItems(ethnicity_list)}
-                  </Select>
-                </FormControl>
-              </Toolbar>
-            </CardContent>
+            <MenuListSelect
+            // list, listTitle, handleListItemClick, selectedItem, anchorEl, handleCloseList,
+            listTitle={'Ethnicity'}
+            list={ethnicity_list}
+            handleOpenList={this.handleOpenEthnicityList}
+            selectedItem={this.state.ethnicity ? ethnicity_list[this.state.ethnicity] :'null'}
+            anchorEl={this.state.ethnicityAnchor}
+            handleCloseList={this.handleCloseList}
+            renderMenuItems={this.renderMenuItems}
+            changeListValue={this.handleEthnicityChange}
+            />
+
+
+
+                
+
+
+        <Divider/>
+          
             <Divider/>
             <CardContent className={classes.container}>
             <div className={classes.buttonContainer}>
@@ -677,11 +686,12 @@ class ProfileSettings extends React.Component {
 }
 
 export const mapStateToProps = state => ({
-  userProfile: state.userProfile
+  userProfile: state.userProfile,
+  Loading: state.Loading,
 })
 
 export const mapDispatchToProps = dispatch => ({
-  profileToUpdate: (profile)=> dispatch(profileUpdate(profile)),
+  profileUpdate: (profile)=> dispatch(profileUpdate(profile)),
 })
 
 

@@ -23,17 +23,20 @@ import red from '@material-ui/core/colors/red';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Delete from '@material-ui/icons/Delete';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import Button from '@material-ui/core/Button';
 
 
 const styles = theme =>({
     container: theme.overrides.MuiPaper.root,
-    cardHeader:theme.overrides.PollCard.cardHeader
+    cardHeader:theme.overrides.PollCard.cardHeader,
+    deleteButton: theme.overrides.MuiIcon
 })
 
-const PublicPollCard = ({question, subject, author_username, created_at, classes, theme, }) =>
+
+const UserPollCard = ({question, subject, author_username, created_at, classes, theme, pollActions }) =>
 <div className={classes.container}>
  <Paper square elevation={2} className={classes.container}>
     <Link to={{
@@ -44,13 +47,9 @@ const PublicPollCard = ({question, subject, author_username, created_at, classes
         >
             <Card>
             <CardHeader
-            // action={
-            //   <IconButton>
-            //     <MoreVertIcon />
-            //   </IconButton>
-            // }
-            className={classes.cardHeader}
-          />
+                action={pollActions}
+                className={classes.cardHeader}
+            />
             <CardContent>
                 <Typography variant="headline" component="h1">
                    "{question}"
@@ -69,17 +68,8 @@ const PublicPollCard = ({question, subject, author_username, created_at, classes
     </Paper>
 </div>
 
-PublicPollCard.propTypes = {
-    classes: PropTypes.object.isRequired,
-    // theme: PropTypes.object.isRequired,
-    author_username: PropTypes.string.isRequired,
-    created_at: PropTypes.string.isRequired,
-    subject: PropTypes.string.isRequired,
-    question: PropTypes.string.isRequired,
-  };
-
 
 export default compose(
     withRouter,
     withStyles(styles, {withTheme:true}),
-)(PublicPollCard);
+)(UserPollCard);

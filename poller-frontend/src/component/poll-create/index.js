@@ -10,7 +10,6 @@ import {
   } from '../../action/user-polls-actions.js'
   
   
-
   import classnames from 'classnames';
   import PropTypes from 'prop-types';
 
@@ -48,8 +47,30 @@ import {
   import Toolbar from '@material-ui/core/Toolbar';
   import FormControlLabel from '@material-ui/core/FormControlLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
-  
-  
+import UserPollCard from '../user-poll-card'
+import LoadingHOC from '../loading'
+import {MyPolls} from '../my-polls'
+
+
+const FeedBackMyPolls = LoadingHOC(MyPolls);
+
+const SubmitButton = ({...props}) =>{
+  return (
+    <div className={props.classes.buttonContainer}>
+      <Button 
+      variant="outlined"
+      onClick={props.submitClick} 
+      className={props.classes.button}
+      >
+      {props.buttonTitle}
+      </Button>
+    </div>
+  )
+}
+
+
+
+const FeedBackSubmitButton = LoadingHOC(SubmitButton)
   
 
   const styles = theme => ({
@@ -129,9 +150,14 @@ class PollCreatePage extends React.Component {
         pollCreateSuccessMessage:'Poll has been created!',
         openPollDeleteSuccess:false,
         pollDeleteSuccessMessage:'Poll has been deleted!',
+        unknownErrorMessage:'Unknown Error has Occurred...',
         pollDeleteAlert: false,
         pollToDelete: null,
         helpExpanded:false,
+        unknownError: false,
+        //loading
+        pollSubmitLoad:false,
+        MyPollsLoad:false
     }
   this.handleHelpExpand = this.handleHelpExpand.bind(this)
    this.pollSubmit = this.pollSubmit.bind(this)
@@ -142,6 +168,7 @@ class PollCreatePage extends React.Component {
    this.handlePollCreateSuccess = this.handlePollCreateSuccess.bind(this)
    this.handlePollClear = this.handlePollClear.bind(this)
    this.handleMaxPollReached = this.handleMaxPollReached.bind(this)
+   this.handleUnknownError = this.handleUnknownError.bind(this)
    this.renderPoll = this.renderPoll.bind(this)
    this.handlePollDeleteSuccess = this.handlePollDeleteSuccess.bind(this)
    this.handlePollDeleteAlert = this.handlePollDeleteAlert.bind(this)
@@ -151,7 +178,14 @@ class PollCreatePage extends React.Component {
   }
 
   componentWillMount() {
-    this.props.pollsFetch();
+    this.setState({MyPollsLoad:true})
+    this.props.pollsFetch()
+    .then(res => {
+      this.setState({MyPollsLoad:false})
+  })
+  .catch(err => {
+    this.setState({MyPollsLoad:false})
+  })
     console.log(this.props.history)
   }
 
@@ -164,7 +198,7 @@ class PollCreatePage extends React.Component {
   }
 
   handleQuestionChange(e){
-    if (e.target.value.length < 100){
+    if (e.target.value.length < 150){
       this.setState({pollQuestion: e.target.value, questionError:false})
     }else {
       this.setState({questionError:true})
@@ -292,17 +326,36 @@ class PollCreatePage extends React.Component {
       if (poll.pollQuestion.length < 10){
           this.handleQuestionValidationError();
           return;
-      } else {
-        this.props.pollSend(poll)
-        .then((res)=>{
-            this.handlePollClear()
-            this.handlePollCreateSuccess()
-        })
-        .catch(err=>{
-            this.handleMaxPollReached();
-        })
       }
+      this.setState({pollSubmitLoad:true})
+      this.props.pollSend(poll)
+      .then((res)=>{
+          console.log('this is the response', res)
+          this.handlePollClear()
+          this.handlePollCreateSuccess()
+          this.setState({pollSubmitLoad:false})
+      })
+      .catch(err=>{
+        let status = err.toString().slice(-3)
+        console.log('this is the error 2 ', )
+        if (status.includes('550')){
+          this.handleMaxPollReached();
+          this.setState({pollSubmitLoad:false})
+        } else {
+          this.handleUnknownError();
+          this.setState({pollSubmitLoad:false})
+        }
+      })
   }
+
+  handleUnknownError(){
+    this.setState((oldState)=>{
+      return {
+        unknownError: !oldState.unknownError,
+      }
+    });
+  }
+
 
   render() {
     // const pollDeleteActions = [<FlatButton
@@ -320,6 +373,38 @@ class PollCreatePage extends React.Component {
     console.log('this is the poll create page state', this.state, this.props)
     return (
         <div>
+          <Dialog
+            open={this.state.pollDeleteAlert}
+            modal={false}
+        >
+          <DialogTitle id="alert-dialog-title">"Are you sure?"</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this poll? You cannot undo this.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+          <div className={classes.container}>
+            <Button 
+              onClick={this.handlePollDeleteAlert} 
+              className={classes.button}
+            >
+              Cancel
+            </Button>
+            </div>
+            <div className={classes.container}>
+
+            <Button 
+              onClick={this.handleSubmitPollDelete} 
+              autoFocus
+              className={classes.button}
+            >
+              Delete Poll
+            </Button>
+            </div>
+          </DialogActions>
+        </Dialog>
+          
           <Paper className={classes.container}>
           <Card>
             <CardActions 
@@ -370,7 +455,7 @@ class PollCreatePage extends React.Component {
                 <FormControl fullWidth>
                   <InputLabel >{this.state.subjectError ? this.state.subjectErrorText : "Subject"}</InputLabel>
                   <Input
-                    error={this.state.subjectError}
+                    // error={this.state.subjectError}
                     // label={this.state.subjectError ? this.state.subjectErrorText : null}
                     multiline={true}
                     id="adornment-amount"
@@ -389,71 +474,51 @@ class PollCreatePage extends React.Component {
                 <FormControl fullWidth>
                   <InputLabel >{this.state.questionError ? this.state.questionErrorText : "Question"}</InputLabel>
                   <Input
-                    error={this.state.questionError}
+                    // error={this.state.questionError}
                     // label={this.state.subjectError ? this.state.subjectErrorText : null}
                     multiline={true}
                     id="adornment-amount"
                     value={this.state.pollQuestion}
                     onChange={this.handleQuestionChange}
+                    rows={6}
+                    rowsMax="6"
+
                   />
                 </FormControl>
               </Toolbar>
             </CardContent>
+            <CardContent className={classes.container}>
+              <FeedBackSubmitButton
+                classes={classes}
+                submitClick={this.pollSubmit}
+                buttonTitle={'Submit Poll'}
+                Loading={this.state.pollSubmitLoad}
+              />
+            </CardContent>
           </Card>
+        </Paper>
+        <Paper className={classes.container}>
+          <CardContent className={classes.cardHeader}>
+            <Typography variant="headline" component="h1" className={classes.cardHeader}>
+              Poll Create
+            </Typography>
+          </CardContent>
+          <Divider/>
+          <div className="list">
+            <FeedBackMyPolls
+            Loading={this.state.MyPollsLoad}
+            userPolls={this.props.userPolls}
+            />
+          </div>
         </Paper>
 
 
-
-
-        {/* <Card style={{marginBottom:15}}>
-            <CardText style={MaterialStyles.title}>Poll Create</CardText>
-            <CardText style={MaterialStyles.text}>
-            Post a question here! You can post up to three questions for people to vote on!
-          </CardText>
-            <CardMedia style={{margin:10}}>
-              <CardText style={MaterialStyles.text}>Subject:</CardText>
-              <Paper zDepth={1} style={{marginBotton:10}}>
-                  <TextField onChange={this.handleSubjectChange} value={this.state.pollSubject} hintText="Subject" fullWidth={true} style={MaterialStyles.text} underlineShow={false} multiLine={false} rows={1} rowsMax={1} maxLength="20" />
-              </Paper>
-              <CardText style={MaterialStyles.text}>Question:</CardText>
-              <Paper zDepth={1} style={{marginBotton:10}}>
-                  <TextField onChange={this.handleQuestionChange} value={this.state.pollQuestion} hintText="Question" fullWidth={true} style={MaterialStyles.text} underlineShow={false} multiLine={true} rows={3} rowsMax={3} maxLength="100"/>
-              </Paper>
-            </CardMedia>
-            <RaisedButton
-                style={{ margin: 20 }}
-                label="Create Poll"
-                type="submit"
-                onClick={this.pollSubmit}
-            />
-        </Card>
-        <Paper style={{margin:'auto'}} zDepth={1}>
-          <Dialog
-                title="Are You Sure?"
-                actions={pollDeleteActions}
-                modal={false}
-                open={this.state.pollDeleteAlert}
-              >
-                Are you sure you want to delete this poll? You cannot undo this.
-          </Dialog>
-        <Card>
-          <CardText style={MaterialStyles.title}> My Polls </CardText>
-          {this.props.userPolls!==[] ?
-          this.props.userPolls.map((poll, key)=>{
-            return this.renderPoll(poll)
-          }) :
-          <CardText> You don't have any polls... </CardText>
-          }
-
-          </Card>
-        </Paper> */}
          <Snackbar
           open={this.state.openSubjectValidationError}
           message={this.state.subjectValidationErrorMessage}
           action={null}
           autoHideDuration={this.state.snackBarDuration}
-          onActionClick={this.handleSubjectValidationError}
-          onRequestClose={this.handleSubjectValidationError}
+          onClose={this.handleSubjectValidationError}
         />
 
          <Snackbar
@@ -461,8 +526,7 @@ class PollCreatePage extends React.Component {
           message={this.state.questionValidationErrorMessage}
           action={null}
           autoHideDuration={this.state.snackBarDuration}
-          onActionClick={this.handleQuestionValidationError}
-          onRequestClose={this.handleQuestionValidationError}
+          onClose={this.handleQuestionValidationError}
         />
 
          <Snackbar
@@ -470,24 +534,28 @@ class PollCreatePage extends React.Component {
           message={this.state.pollCreateSuccessMessage}
           action={null}
           autoHideDuration={this.state.snackBarDuration}
-          onActionClick={this.handlePollCreateSuccess}
-          onRequestClose={this.handlePollCreateSuccess}
+          onClose={this.handlePollCreateSuccess}
         />
         <Snackbar
           open={this.state.openMaxPollReached}
           message={this.state.maxPollReachedMessage}
           action={null}
           autoHideDuration={this.state.snackBarDuration}
-          onActionClick={this.handleMaxPollReached}
-          onRequestClose={this.handleMaxPollReached}
+          onClose={this.handleMaxPollReached}
         />
         <Snackbar
           open={this.state.openPollDeleteSuccess}
           message={this.state.pollDeleteSuccessMessage}
           action={null}
           autoHideDuration={this.state.snackBarDuration}
-          onActionClick={this.handlePollDeleteSuccess}
-          onRequestClose={this.handlePollDeleteSuccess}
+          onClose={this.handlePollDeleteSuccess}
+        />
+        <Snackbar
+          open={this.state.unknownError}
+          message={this.state.unknownErrorMessage}
+          action={null}
+          autoHideDuration={this.state.snackBarDuration}
+          onClose={this.handleUnknownError}
         />
       </div>
     )
@@ -497,7 +565,8 @@ class PollCreatePage extends React.Component {
 export const mapStateToProps = state => ({
     loggedIn: state.loggedIn,
     userProfile: state.userProfile,
-    userPolls: state.userPolls
+    userPolls: state.userPolls,
+    Loading: state.Loading
   })
   
   export const mapDispatchToProps = dispatch => ({

@@ -1,15 +1,18 @@
+const mainColor = '#0A0208'
+const secondaryColor = '#616161'
+
 module.exports = {
   pollerTheme:{
     palette: {
       primary: {
         light: '#0A0208',
-        main: '#0A0208',
+        main: mainColor,
         dark: '#0A0208',
         contrastText: '#fff',
       },
       secondary: {
         light: '#616161',
-        main: '#616161',
+        main: secondaryColor,
         dark: '#616161',
         contrastText: '#000',
       }
@@ -47,10 +50,10 @@ module.exports = {
             display: 'flex',
             flexWrap: 'wrap',
             textAlign:'center',
-            margin: 20,
             
           },
           button: {
+            textAlign:'center',
             margin:15,
             textAlign: 'center',
             backgroundColor: '#fff',
@@ -67,6 +70,19 @@ module.exports = {
             },
           },
         },
+      },
+      MuiMenu:{
+        borderColor: mainColor,
+      },
+      MuiListItem:{
+        // backgroundColor: theme.palette.primary.main,
+        // color:theme.palette.secondary.main,
+        title: { width:'30%'},
+        container:{
+          width: '70%',
+          maxWidth: 500,
+        },
+        border: '1px black solid',
       },
       MuiSelectField: {
         width: 250,
@@ -87,6 +103,20 @@ module.exports = {
         fontSize: 20,
         fontFamily: "Play",
         backgroundColor: '#000',
+      },
+      PollCard:{
+        cardHeader: {
+          backgroundColor: mainColor,
+          fontSize:30,
+          height:5,
+          display: 'flex',
+          alignItems: 'center',
+        }
+      },
+      MuiIcon:{
+        root:{
+        },
+        colorPrimary: secondaryColor,
       }
     }
   },

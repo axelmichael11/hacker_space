@@ -14,7 +14,7 @@ import '../../style/index.scss'
 import {getPublicPolls, fetchPublicPolls} from '../../action/public-poll-actions.js'
 
 import LoginPage from '../login'
-import Loading from '../loading'
+import {Loading} from '../loading'
 import { withStyles } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import AdvancedList from '../infinite-scroll'

@@ -9,15 +9,15 @@ export const pollSend = (poll) => (dispatch, getState) => {
         .send(poll)
         .then(res => {
           console.log('this is the status', res.status)
-          if (res.status >=550){
-            throw new Error(res.status)
+          if (res.status === 200){
+            return res.status 
           }
-          return parsed
-        })
-        .catch(err => {
-          if (err.status == 550){
+          if (res.status===550){
             throw new Error(550)
           }
+        })
+        .catch(err=>{
+          console.log('this is the rror', err)
         })
   }
 
@@ -30,14 +30,11 @@ export const pollSend = (poll) => (dispatch, getState) => {
         .send(poll)
         .then(res => {
           console.log('this is the response', res.status, res)
-          if (res.status >=500){
-            throw new Error(res.status)
-          }
+
           return res
         })
         .catch(err => {
-          if (err.status == 550){
-            throw new Error(550)
-          }
+          console.log('this is the error', err)
+          return err
         })
   }

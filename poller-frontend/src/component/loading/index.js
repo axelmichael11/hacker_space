@@ -4,9 +4,12 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import purple from '@material-ui/core/colors/purple';
+import Button from '@material-ui/core/Button';
+
 
 const styles =theme=>({
-  
+  buttonContainer: theme.overrides.MuiButton.root.container,
+    button: theme.overrides.MuiButton.root.button,
 })
 
 const Loading = (props) => {
@@ -18,10 +21,40 @@ const Loading = (props) => {
   );
 };
 
-Loading.propTypes = {
-  // classes: PropTypes.object.isRequired,
-};
 
-export default compose(
-  withStyles(styles, {withTheme:true})
-)(Loading)
+const WithLoading =  (loadingCondition) => (Component) => (props) => {
+  return (
+    <div>
+    {loadingCondition(props) ? <Loading/> : <Component {...props}/>}
+    </div>
+  )
+}
+
+
+const SubmitButton = ({...props}) =>{
+  return (
+    <div className={props.classes.buttonContainer}>
+      <Button 
+      variant="outlined"
+      onClick={props.submitClick} 
+      className={props.classes.button}>
+      {props.buttonTitle}
+      </Button>
+    </div>
+  )
+}
+
+const loadingCondition = props =>
+  props.Loading;
+
+const LoadingHOC = compose(
+withStyles(styles, {withTheme:true}),
+WithLoading(loadingCondition)
+);
+
+export default LoadingHOC
+
+
+
+
+
