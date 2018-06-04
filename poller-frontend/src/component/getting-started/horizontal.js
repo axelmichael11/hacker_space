@@ -49,16 +49,9 @@ const tutorialSteps = [
 ];
 
 const styles = theme => ({
-    signUp:{
-        maxWidth: 600,
-    flexGrow: 1,
-    marginTop:20,
-    },
-  root: {
-      margin:'auto',
-    maxWidth: 600,
-    flexGrow: 1,
-  },
+  container: theme.overrides.MuiPaper,
+  containerDiv: theme.overrides.MuiPaper.root,
+
   headingText:{
     color: theme.palette.primary.contrastText,
     fontFamily: theme.typography.fontFamily,
@@ -77,21 +70,7 @@ const styles = theme => ({
     marginBottom: 10,
     backgroundColor: theme.palette.primary.main,
   },
-  header: {
-    display: 'flex',
-    alignItems: 'center',
-    height: 40,
-    paddingLeft: theme.spacing.unit * 2,
-    marginBottom: 10,
-    backgroundColor: theme.palette.primary.main,
-  },
-  img: {
-    height: 255,
-    maxWidth: 400,
-    overflow: 'hidden',
-    width: '100%',
-  },
-
+  
   button: theme.overrides.MuiButton
 });
 
@@ -125,13 +104,12 @@ class GettingStartedPage extends React.Component {
   render() {
     const { classes, theme } = this.props;
     const { activeStep } = this.state;
-
     const maxSteps = tutorialSteps.length;
-    console.log('THEMES', classes, theme)
+
     return (
-      <div className={classes.root}>
-        <div>
-        <Paper square elevation={2} className={classes.root}>
+      <div className={classes.containerDiv}>
+        <div >
+        <Paper square elevation={2} className={classes.container}>
         <Paper square elevation={0} className={classes.header}>
           <Typography variant="subheading" className={classes.headingText}> {tutorialSteps[activeStep].label} </Typography>
         </Paper>
@@ -166,7 +144,7 @@ class GettingStartedPage extends React.Component {
         />
         </Paper>
       </div>
-      <Paper square elevation={2} className={classes.signUp}>
+      <Paper square elevation={2} className={classes.root}>
       <Typography variant="subheading">Sign Up Now!</Typography>
       <AuthLockButton/>
     </Paper>
@@ -184,5 +162,4 @@ GettingStartedPage.propTypes = {
   export default compose(
     withRouter,
     withStyles(styles, { withTheme: true }),
-    
   )(GettingStartedPage)

@@ -1,5 +1,6 @@
 
 const superagent = require('superagent');
+import {loadingOn, loadingOff} from './loading-actions'
 
 
 const fetchUserPolls = (polls) => {
@@ -25,6 +26,7 @@ export const pollDelete = (poll) => (dispatch, getState) => {
         .then(res => {
           let parsed = JSON.parse(res.text)
           dispatch(deleteUserPoll(parsed.created_at))
+          return parsed
         })
         .catch(err => {
           if (err.status == 550){
@@ -35,6 +37,7 @@ export const pollDelete = (poll) => (dispatch, getState) => {
 
   export const pollsFetch = (poll) => (dispatch, getState) => {
     let { auth0Token } = getState();
+    // dispatch(loadingOn())
     return superagent.get(`${__API_URL__}/api/poll`)
         .set('Authorization',`Bearer ${auth0Token}`)
         .set('accept', 'application/json')
@@ -42,10 +45,14 @@ export const pollDelete = (poll) => (dispatch, getState) => {
         .then(res => {
             let parsed = JSON.parse(res.text)
             dispatch(fetchUserPolls(parsed))
+            // dispatch(loadingOff())
+            return parsed
             console.log('poll retrieve!!',parsed)
         })
         .catch(err => {
+            dispatch(loadingOff())
             console.log(err)
+            throw new Error(err)
         })
     }
 

@@ -19,6 +19,13 @@ import { login, logout } from '../../action/auth-actions.js'
 
 import Button from '@material-ui/core/Button';
 
+
+const styles = theme => ({
+  container: theme.overrides.MuiButton.root.container,
+  button: theme.overrides.MuiButton.root.button,
+})
+
+
 class AuthLockButton extends React.Component {
   constructor(props) {
     super(props)
@@ -120,5 +127,5 @@ export const mapStateToProps = state => ({
   export default compose(
     withRouter,
     connect(mapStateToProps, mapDispatchToProps),
-    withStyles(MaterialStyles.flat_button_2)
+    withStyles(styles)
   )(AuthLockButton)
