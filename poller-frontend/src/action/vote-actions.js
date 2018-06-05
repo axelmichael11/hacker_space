@@ -9,8 +9,6 @@ const fetchVote = (poll) => {
 
 export const fetchVoteHistory = (poll) => (dispatch, getState) => {
     let { auth0Token } = getState();
-
-    dispatch(loadingOn())
     console.log('thiis the DATAAAAAA', poll)
     return superagent.post(`${__API_URL__}/api/votes`)
     .set('Authorization', `Bearer ${auth0Token}`)
@@ -23,7 +21,7 @@ export const fetchVoteHistory = (poll) => (dispatch, getState) => {
         return parsed
       })
       .catch(err => {
-        console.log('this is the error', err)
+        console.log('this is the error', err, err.status)
         if (err.status == 401){
           throw new Error(401)
         }
@@ -33,8 +31,6 @@ export const fetchVoteHistory = (poll) => (dispatch, getState) => {
 
 export const castVote = (voteData) => (dispatch, getState) => {
   let { auth0Token } = getState();
-
-  dispatch(loadingOn())
   console.log('thiis the DATAAAAAA', voteData)
   return superagent.post(`${__API_URL__}/api/castvote`)
   .set('Authorization', `Bearer ${auth0Token}`)

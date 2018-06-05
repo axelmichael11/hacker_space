@@ -30,20 +30,6 @@ const WithLoading =  (loadingCondition) => (Component) => (props) => {
   )
 }
 
-
-const SubmitButton = ({...props}) =>{
-  return (
-    <div className={props.classes.buttonContainer}>
-      <Button 
-      variant="outlined"
-      onClick={props.submitClick} 
-      className={props.classes.button}>
-      {props.buttonTitle}
-      </Button>
-    </div>
-  )
-}
-
 const loadingCondition = props =>
   props.Loading;
 

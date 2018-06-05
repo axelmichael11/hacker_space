@@ -60,13 +60,13 @@ import {
   CardText,
 } from 'material-ui/Card'
 
+
 class PollVotePage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       openVoteConfirmAlert:false,
-      alreadyVoted: this.props.alreadyVoted
-
+      vote:null,
     }
     this.handleConfirmYesVoteAlert = this.handleConfirmYesVoteAlert.bind(this)
     this.handleSubmitVote = this.handleSubmitVote.bind(this)
@@ -75,7 +75,7 @@ class PollVotePage extends React.Component {
   }
 
   componentWillMount() {
-    console.log('this.props.history on the public poll page', this.props.match)
+    console.log('this.props.history on the vote  poll page', this.props.match)
   }
 
 
@@ -115,20 +115,12 @@ class PollVotePage extends React.Component {
     .then((result)=>{
       console.log('this is the result', result)
       if (result.status==200){
-        this.setState({alreadyVoted:true,
-        pollResults: result
-        })
-        this.props.setDataAfterVote(result)
-        this.props.castAlreadyVoted()
-        this.props.loadingOff()
+        this.props.successOnCastVote(result)
       }
     })
     .catch(err=>{
       console.log('this si the errro', err)
-        this.setState({alreadyVoted:false,
-          pollResults: null
-          })
-      this.props.loadingOff();
+      this.props.errorOnCastVote()
   })
   }
 
@@ -198,9 +190,9 @@ class PollVotePage extends React.Component {
           </Card>
           </Card>
         </MuiThemeProvider>
-    )
+      )
+    }
   }
-}
 
 export const mapStateToProps = state => ({
   loggedIn: state.loggedIn,
