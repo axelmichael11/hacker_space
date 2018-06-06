@@ -113,6 +113,7 @@ module.exports = {
       PollCard:{
         cardHeader:{
           root:{
+            height:35,
             fontFamily: appFonts,
             color:secondaryColor,
             backgroundColor: primaryColor,

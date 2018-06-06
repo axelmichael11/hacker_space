@@ -218,7 +218,7 @@ class PollVotePage extends React.Component {
             classes={classes}
             submitClick={this.handleSubmitVote}
             buttonTitle={"Submit Vote"}
-            Loading={this.props.Loading}
+            Loading={this.state.castVoteLoad}
             />
           </DialogActions>
         </Dialog>

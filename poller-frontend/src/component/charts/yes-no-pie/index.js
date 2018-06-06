@@ -1,18 +1,29 @@
 import React from 'react'
-
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import Paper from 'material-ui/Paper'
-
-import {VictoryPie, VictoryLegend, VictoryTooltip, VictoryLabel} from 'victory'
-import AppBar from 'material-ui/AppBar'
-
-import '../../../style/index.scss'
-import Chip from 'material-ui/Chip';
-
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import MaterialStyles from '../../../style/material-ui-style'
+import {  compose, branch, renderComponent } from 'recompose'
+import classnames from 'classnames';
 import NoVotes from './no-votes'
 
+
+import {VictoryPie, VictoryLegend, VictoryTooltip, VictoryLabel} from 'victory'
+
+import '../../../style/index.scss'
+
+import MaterialStyles from '../../../style/material-ui-style'
+
+
+import Paper from '@material-ui/core/Paper';
+import Chip from '@material-ui/core/Chip';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Collapse from '@material-ui/core/Collapse';
+
+import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 class PieResults extends React.Component {
   constructor(props) {
@@ -46,12 +57,8 @@ renderYesPie(){
   return (
     <div className="yes-no-pie">
 
-      <CardText style={{...MaterialStyles.title,display:'inline-block', 
-                  padding: "0px", 
-                  marginBottom:10, 
-                  marginTop:10 }}
-                          > Yes Votes </CardText>
-                      
+      <Typography variant="subheading" component="h3"> Yes Votes </Typography>
+
       {this.props.totalsData.yesVotes === 0 ? <NoVotes/> :
         <VictoryPie
          labelComponent={
@@ -83,13 +90,10 @@ renderYesPie(){
 
 renderNoPie(){
   console.log('this.props on NO PIE', this.props)
+  
   return (
     <div className="yes-no-pie"> 
-      <CardText style={{...MaterialStyles.title,display:'inline-block', 
-                  padding: "0px", 
-                  marginBottom:10, 
-                  marginTop:10 }}
-                          > No Votes </CardText>
+      <Typography variant="subheading" component="h3"> No Votes </Typography>
 
       {this.props.totalsData.noVotes === 0 ? <NoVotes/> :
         <VictoryPie
@@ -135,29 +139,47 @@ renderLegendKey(){
 
   render(){
     console.log('yes-no pie charts', this.props, this.state)
+    let {classes} = this.props
       return(
         <div>
-           <Card  style={{maxWidth: 1000, margin: 'auto', marginBottom: 15, textAlign:'center'}}>
-            <AppBar
-              style={{...MaterialStyles.appBarTitle, margin:'auto' }}
-              title={this.props.title}
-              showMenuIconButton={false}
-            />
-            <CardMedia>
-              <div className="yes-no-pie-container">
-               {this.renderYesPie()}  
-                {this.renderNoPie()}
-              </div>
-              <div>
-              <Paper style={MaterialStyles.legendStyle}>
-                   {this.renderLegendKey()}
-                </Paper>
-                </div>
-            </CardMedia>    
+          <Card>
+            <CardActions 
+              disableActionSpacing
+              onClick={()=> this.props.handleDataExpand(this.props.expandedState)}
+            >
+                <Typography className={this.props.classes.text}>
+                  {this.props.title}
+                </Typography>
+                
+                <IconButton
+                  className={classnames(this.props.classes.expand, {
+                    [this.props.classes.expandOpen]: this.props.dataExpanded,
+                  })}
+                  // onClick={this.handleExpandClick}
+                  aria-expanded={this.props.dataExpanded}
+                  aria-label="Show more"
+                >
+                  <ExpandMoreIcon />
+                </IconButton>
+              </CardActions>
+            <Collapse in={this.props.dataExpanded} timeout="auto" unmountOnExit>
+              <CardContent>
+                  <Typography className={this.props.classes.text}>
+                  <div className="yes-no-pie-container">
+                    {this.renderYesPie()}  
+                    {this.renderNoPie()}
+                 </div>
+                </Typography>
+              </CardContent>
+            </Collapse>
           </Card>
         </div>
       )
   }
 }
 
-export default PieResults
+
+export default compose(
+  // connect(mapStateToProps, mapDispatchToProps),
+  // withStyles(styles, {withTheme:true}),
+)(PieResults);
