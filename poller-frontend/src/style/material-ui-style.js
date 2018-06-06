@@ -83,9 +83,9 @@ module.exports = {
       MuiListItem:{
         // backgroundColor: theme.palette.primary.main,
         // color:theme.palette.secondary.main,
-        title: { width:'30%'},
+        title: { width:'50%'},
         container:{
-          width: '70%',
+          width: '50%',
           maxWidth: 500,
         },
         border: '1px black solid',
@@ -132,6 +132,7 @@ module.exports = {
             backgroundColor: primaryColor,
           },
           textAlign:'center',
+          margin:0,
         },
       },
       MuiCheckbox: {

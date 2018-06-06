@@ -54,7 +54,7 @@ class PollLandingContainer extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: false,
+      pageLoading: false,
       alreadyVoted:null,
       pollData:null,
       helpExpanded: false,
@@ -63,7 +63,6 @@ class PollLandingContainer extends React.Component {
       pollResultsHelpText: "These are the results of how people have voted based on age, gender, religious affiliation, ethnicity, and profession! Perhaps some interesting trends are being discovered!"
     }
     this.handleHelpExpand = this.handleHelpExpand.bind(this)
-
     this.successOnCastVote = this.successOnCastVote.bind(this)
     this.errorOnCastVote = this.errorOnCastVote.bind(this)
   }
@@ -73,7 +72,7 @@ class PollLandingContainer extends React.Component {
     let {created_at, author_username} = this.props.location.state
     
     let voteData = Object.assign({},{created_at, author_username})
-    this.setState({loading:true})
+    this.setState({pageLoading:true})
     this.props.fetchVoteHistory(voteData)
     .then((result)=>{
       console.log('RESULT', result, result.status)
@@ -81,7 +80,7 @@ class PollLandingContainer extends React.Component {
         this.setState({
         alreadyVoted:true,
         pollData: result,
-        loading:false,
+        pageLoading:false,
         error:false,
         })
       }
@@ -95,7 +94,7 @@ class PollLandingContainer extends React.Component {
         this.setState({
           alreadyVoted:false,
           pollData: null,
-          loading:false,
+          pageLoading:false,
           error:false,
           page:null,
           })
@@ -108,10 +107,10 @@ class PollLandingContainer extends React.Component {
   }
 
   successOnCastVote(pollData){
-    this.setState({alreadyVoted:true, loading: false, error: false, pollData: pollData})
+    this.setState({alreadyVoted:true, error: false, pollData: pollData})
   }
   errorOnCastVote(){
-    this.setState({alreadyVoted:null, loading: false, error: true, pollData: null})
+    this.setState({alreadyVoted:null, error: true, pollData: null})
   }
 
   
@@ -129,7 +128,7 @@ class PollLandingContainer extends React.Component {
           helpText={this.state.alreadyVoted ? this.state.pollResultsHelpText: this.state.castVoteHelpText}
         />
         <PollPage
-        Loading={this.state.loading}
+        Loading={this.state.pageLoading}
         pollData={this.state.pollData}
         alreadyVoted={this.state.alreadyVoted}
         error={this.state.error}

@@ -2,7 +2,10 @@
 import React from 'react'
 import Auth0Lock from 'auth0-lock'
 import { connect } from 'react-redux'
-import { Link, Route } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
+import {recompose, compose} from 'recompose'
+import { withStyles } from '@material-ui/core/styles';
+
 import {Loading} from '../loading'
 import {
   castVote
@@ -17,48 +20,96 @@ import * as util from '../../lib/util.js'
 
 
 //Style
-import MaterialStyles from '../../style/material-ui-style'
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';import InputLabel from '@material-ui/core/InputLabel';
+import Button from '@material-ui/core/Button';
 
-import AppBar from 'material-ui/AppBar'
+import Input from '@material-ui/core/Input';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import Divider from '@material-ui/core/Divider';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import Checkbox from '@material-ui/core/Checkbox';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardMedia from '@material-ui/core/CardMedia';
+import MenuList from '@material-ui/core/MenuList';
+import Snackbar from '@material-ui/core/Snackbar';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import DropDownArrowIcon from '@material-ui/icons/ArrowDropDown'
+import IconButton from '@material-ui/core/IconButton';
+import Collapse from '@material-ui/core/Collapse';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Avatar from '@material-ui/core/Avatar';
+import TextField from '@material-ui/core/TextField';
+import Toolbar from '@material-ui/core/Toolbar';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Menu from '@material-ui/core/Menu';
+import ProfileCategory from './profile-category'
+import CardMenu from '../card-menu'
 
-import SwapVert from 'material-ui/svg-icons/action/swap-vert'
-import Assessment from 'material-ui/svg-icons/action/assessment'
-import ThumbDown from 'material-ui/svg-icons/action/thumb-down'
-import ThumbUp from 'material-ui/svg-icons/action/thumb-up'
-// import Pencil from 'marterial-ui/svg-icons/editor/mode_edit'
-// import PieChart from 'marterial-ui/svg-icons/editor/pie_chart'
-// import PieChartOutlined from 'marterial-ui/svg-icons/editor/pie_chart_outlined'
+import LoadingHOC from '../loading'
+const styles = theme =>({
+  container: theme.overrides.MuiPaper,
+  text: theme.typography.text,
+  listContainer: theme.overrides.MuiListItem.container,
+  listItem:theme.overrides.MuiListItem,
+  buttonContainer: theme.overrides.MuiButton.root.container,
+  button: theme.overrides.MuiButton.root.button,
+  cardHeader:theme.overrides.PollCard.cardHeader,
 
 
-// import UpArrow from 'marterial-ui/svg-icons/navigation/arrow-upward'
-// import DownArrow from 'marterial-ui/svg-icons/navigation/arrow-downward'
+})
 
-import FlatButton from 'material-ui/FlatButton'
-import FontAwesome from 'react-fontawesome' 
-import Dialog from 'material-ui/Dialog';
 
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
-import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import ContentFilter from 'material-ui/svg-icons/content/filter-list';
-import FileFileDownload from 'material-ui/svg-icons/file/file-download';
-import {withRouter} from 'react-router-dom'
-import {
-    fetchVoteHistory
-} from '../../action/vote-actions'
-import {
-  Card,
-  CardActions,
-  CardHeader,
-  CardMedia,
-  CardTitle,
-  CardText,
-} from 'material-ui/Card'
+const VoteButtons = ({...props}) =>{
+  return (
+    <div className={props.classes.buttonContainer}>
+      <Button 
+      variant="outlined"
+      onClick={props.handleConfirmYesVoteAlert} 
+      className={props.classes.button}
+      >
+      YES
+      </Button>
+      <Button 
+      variant="outlined"
+      onClick={props.handleConfirmNoVoteAlert} 
+      className={props.classes.button}
+      >
+      NO
+      </Button>
+    </div>
+  )
+}
+
+const SubmitButton = ({...props}) =>{
+  return (
+    <div className={props.classes.buttonContainer}>
+      <Button 
+      variant="outlined"
+      onClick={props.submitClick} 
+      className={props.classes.button}
+      >
+      {props.buttonTitle}
+      </Button>
+    </div>
+  )
+}
+
+const FeedBackSubmitButton = LoadingHOC(SubmitButton)
+
 
 
 class PollVotePage extends React.Component {
@@ -67,6 +118,7 @@ class PollVotePage extends React.Component {
     this.state = {
       openVoteConfirmAlert:false,
       vote:null,
+      castVoteLoad: false,
     }
     this.handleConfirmYesVoteAlert = this.handleConfirmYesVoteAlert.bind(this)
     this.handleSubmitVote = this.handleSubmitVote.bind(this)
@@ -111,85 +163,98 @@ class PollVotePage extends React.Component {
     let {vote} = this.state
     let voteData = Object.assign({}, {...this.props.userProfile, ...this.props.location.state, vote})
     console.log('hitting the handleSubmitVote:::', voteData)
+    this.setState({castVoteLoad:true})
     this.props.castVote(voteData)
     .then((result)=>{
       console.log('this is the result', result)
       if (result.status==200){
         this.props.successOnCastVote(result)
+        this.setState({castVoteLoad:false})
+
       }
     })
     .catch(err=>{
       console.log('this si the errro', err)
       this.props.errorOnCastVote()
+      this.setState({castVoteLoad:false})
+
   })
   }
 
   render() {
     console.log('poll vote page', this.props, this.state)
-
-    const confirmVoteActions = [<FlatButton
-      label="Cancel"
-      primary={true}
-      onClick={this.handleCancelVote}
-    />,
-    <FlatButton
-      label="Submit Vote"
-      primary={true}
-      onClick={this.handleSubmitVote}
-    />]
+    let {classes} = this.props
+    let {subject, author_username, question } = this.props.location.state
 
     return (
-      <MuiThemeProvider>
-        <Dialog
-          title="Confirming Your Vote"
-          actions={confirmVoteActions}
-          modal={false}
-          open={this.state.openVoteConfirmAlert}
-          onRequestClose={this.handleOpenVoteConfirmAlert}
+
+      <div>
+         <Dialog
+            open={this.state.openVoteConfirmAlert}
+            modal={false}
         >
-          Are you sure you want to submit your vote? Remember,
-          how your demographic information information is filled out now
-          will be submitted when answering the question...
-        </Dialog>
-        <Card  style={{maxWidth: 450, margin: 'auto'}}>
-            <AppBar
-            style={{...MaterialStyles.title, margin:'auto' }}
-              title={'Question:'}
-              showMenuIconButton={false}
+          <DialogTitle id="alert-dialog-title">"Are you sure?"</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+            You are about to submit this demographic information for the question!
+            <ProfileCategory
+              value={this.props.userProfile.age}
+              category={"Age"}
+              // classes={classes}
             />
-          <CardMedia>
-            <CardText style={{...MaterialStyles.title,display:'inline-block'}}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+          <div className={classes.container}>
+
+            <Button 
+              onClick={this.handleCancelVote} 
+              className={classes.button}
             >
-              "<CardText style={{...MaterialStyles.title,display:'inline-block'}}>
-                  {this.props.location.state.question}
-                </CardText>
-              "
-            </CardText>
-          </CardMedia>
+              Cancel
+            </Button>
+            </div>
+            <FeedBackSubmitButton
+            classes={classes}
+            submitClick={this.handleSubmitVote}
+            buttonTitle={"Submit Vote"}
+            Loading={this.props.Loading}
+            />
+          </DialogActions>
+        </Dialog>
+
+
+        <Paper square elevation={2} className={classes.container}>
+            <Card>
             <CardHeader
-              title={this.props.location.state.subject}
-              subtitle={'Posted By: '+this.props.location.state.author_username}
-              style={MaterialStyles.title}
+                action={<CardMenu/>} //REPORT POST FEATURE
+                className={classes.cardHeader}
             />
-         
-          <Card>
-            <FlatButton
-              label="YES"
-              primary={true}
-              value={'yes'}
-              onClick={this.handleConfirmYesVoteAlert}
-              style={{...MaterialStyles.voteButtons, color:'#4CAF50'}}
-            />
-            <FlatButton
-              label="NO"
-              value={'no'}
-              primary={true}
-              onClick={this.handleConfirmNoVoteAlert}
-              style={{...MaterialStyles.voteButtons, color:'#D32F2F'}}
-            />
-          </Card>
-          </Card>
-        </MuiThemeProvider>
+            
+            <CardContent>
+                <Typography variant="headline" component="h1">
+                   "{question}"
+                </Typography>
+            </CardContent>
+            <CardContent>
+                <Typography variant="subheading" component="p">
+                    {subject}
+                </Typography>
+                <Typography variant="subheading" component="p">
+                    {'Posted By: '+author_username}
+                </Typography>
+            </CardContent>
+            </Card>
+        </Paper>
+        <Paper square elevation={2} className={classes.container}>
+          <VoteButtons
+          handleConfirmNoVoteAlert={this.handleConfirmNoVoteAlert}
+          handleConfirmYesVoteAlert={this.handleConfirmYesVoteAlert}
+          classes={classes}
+
+          />
+        </Paper>
+      </div>
       )
     }
   }
@@ -206,4 +271,8 @@ export const mapDispatchToProps = dispatch => ({
     loadingOff: ()=>dispatch(loadingOff())
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PollVotePage))
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+withStyles(styles, {withTheme:true}),
+withRouter,
+)(PollVotePage);

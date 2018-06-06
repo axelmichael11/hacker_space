@@ -11,19 +11,8 @@ import _ from 'lodash'
 import Paper from 'material-ui/Paper'
 
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import {
-    Step,
-    Stepper,
-    StepButton,
-    StepContent,
-  } from 'material-ui/Stepper';
-import RaisedButton from 'material-ui/RaisedButton';
-import MaterialStyles from '../../style/material-ui-style'
-import AppBar from 'material-ui/AppBar'
-import '../../style/index.scss'
 
 import {fetchPolls} from '../../action/public-poll-actions.js'
 import LoginPage from '../login'
