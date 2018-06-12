@@ -8,7 +8,6 @@ const fetchPublicPolls = (polls) => {
 
 export const getPublicPolls = () => (dispatch, getState) => {
     let { auth0Token } = getState();
-    dispatch(loadingOn())
 
     return superagent.get(`${__API_URL__}/api/explore`)
     .set('Authorization', `Bearer ${auth0Token}`)
@@ -16,8 +15,7 @@ export const getPublicPolls = () => (dispatch, getState) => {
         let parsed = JSON.parse(res.text)
         console.log(parsed)
         dispatch(fetchPublicPolls(parsed))
-
-        dispatch(loadingOff())
+        return parsed;
     })
     .catch(err => {
         if (err.status == 550){

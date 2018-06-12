@@ -54,8 +54,9 @@ import {
 const styles = theme =>({
   container: theme.overrides.MuiPaper.root,
   cardHeader:theme.overrides.PollCard.cardHeader,
-  text: theme.typography.text,
+  typography: theme.typography.text,
   expand: {
+    color:theme.palette.secondary.main,
     transform: 'rotate(0deg)',
     transition: theme.transitions.create('transform', {
       duration: theme.transitions.duration.shortest,
@@ -100,6 +101,11 @@ class PollResultsPage extends React.Component {
       religionCategories: this.generateCategories(this.props.pollData.yes_data.religion_data, this.props.pollData.no_data.religion_data),
       //expanded state
       dataExpandedAge:false,
+      dataExpandedEthnicity: false,
+      dataExpandedReligion: false,
+      dataExpandedCountry: false,
+      dataExpandedGender: false,
+      dataExpandedProfession:false,
     }
     this.handleDataExpand = this.handleDataExpand.bind(this)
   }
@@ -169,12 +175,15 @@ class PollResultsPage extends React.Component {
       <div>
                 <Paper square elevation={2} className={classes.container}>
             <Card>
-            <CardHeader
-                // action={pollActions}
-                className={classes.cardHeader}
-                // title={'Total Votes'}
-            />
-          <TotalVotesGraph totalVotesData={this.state.pollData.totals_data} />
+         
+          <TotalVotesGraph 
+          totalVotesData={this.state.pollData.totals_data} 
+          poll={this.props.poll}
+          />
+          </Card>
+          </Paper>
+
+          
           <PieResults title={'Age'}
           totalsData={this.props.pollData.totals_data} 
           yesData={this.state.yesAgeData} 
@@ -187,23 +196,29 @@ class PollResultsPage extends React.Component {
           handleDataExpand={this.handleDataExpand}
           expandedState="dataExpandedAge"
           />
-
-          {/*  <PieResults title={'Country'}
-          totalsData={this.props.pollData.totals_data} 
-          yesData={this.state.yesCountryData} 
-          noData={this.state.noCountryData} 
-          categories={Object.keys(this.state.countryCategories)}
-          colorCategories= {this.state.countryCategories}
-          labelSentence={" are from "}
-          />
-
-         <PieResults title={'Gender'}
+          <PieResults title={'Gender'}
           totalsData={this.props.pollData.totals_data} 
           yesData={this.state.yesGenderData} 
           noData={this.state.noGenderData} 
           categories={Object.keys(this.state.genderCategories)}
           colorCategories= {this.state.genderCategories}
           labelSentence={" are of gender "}
+          classes={classes}
+          dataExpanded={this.state.dataExpandedGender}
+          handleDataExpand={this.handleDataExpand}
+          expandedState="dataExpandedGender"
+          />
+          <PieResults title={'Country'}
+          totalsData={this.props.pollData.totals_data} 
+          yesData={this.state.yesCountryData} 
+          noData={this.state.noCountryData} 
+          categories={Object.keys(this.state.countryCategories)}
+          colorCategories= {this.state.countryCategories}
+          labelSentence={" are from "}
+          classes={classes}
+          dataExpanded={this.state.dataExpandedCountry}
+          handleDataExpand={this.handleDataExpand}
+          expandedState="dataExpandedCountry"
           />
 
           <PieResults title={'Profession'}
@@ -213,6 +228,10 @@ class PollResultsPage extends React.Component {
           categories={Object.keys(this.state.professionCategories)}
           colorCategories= {this.state.professionCategories}
           labelSentence={" have a profession of "}
+          classes={classes}
+          dataExpanded={this.state.dataExpandedProfession}
+          handleDataExpand={this.handleDataExpand}
+          expandedState="dataExpandedProfession"
           />
           <PieResults title={'Ethnicity'}
           totalsData={this.props.pollData.totals_data} 
@@ -221,6 +240,10 @@ class PollResultsPage extends React.Component {
           categories={Object.keys(this.state.ethnicityCategories)}
           colorCategories= {this.state.ethnicityCategories}
           labelSentence={" are of "}
+          classes={classes}
+          dataExpanded={this.state.dataExpandedEthnicity}
+          handleDataExpand={this.handleDataExpand}
+          expandedState="dataExpandedEthnicity"
           />
           <PieResults title={'Religion'}
           totalsData={this.props.pollData.totals_data} 
@@ -229,9 +252,11 @@ class PollResultsPage extends React.Component {
           categories={Object.keys(this.state.religionCategories)}
           colorCategories= {this.state.religionCategories}
           labelSentence={" are "}
-          /> */}
-          </Card>
-          </Paper>
+          classes={classes}
+          dataExpanded={this.state.dataExpandedReligion}
+          handleDataExpand={this.handleDataExpand}
+          expandedState="dataExpandedReligion"
+          />
 
       </div>
     )
@@ -240,7 +265,6 @@ class PollResultsPage extends React.Component {
 
 export const mapStateToProps = state => ({
   loggedIn: state.loggedIn,
-  Loading: state.Loading
 })
 
 export const mapDispatchToProps = dispatch => ({

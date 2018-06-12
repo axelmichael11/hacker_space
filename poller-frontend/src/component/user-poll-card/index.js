@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import Date from 'datejs'
 
 import { Link, withRouter } from 'react-router-dom'
 import Auth0Lock from 'auth0-lock'
@@ -36,7 +36,7 @@ const styles = theme =>({
 })
 
 
-const UserPollCard = ({question, subject, author_username, created_at, classes, theme, pollActions, poll }) =>
+const UserPollCard = ({classes, theme, pollActions, poll }) =>
 <div className={classes.container}>
  <Paper square elevation={2} className={classes.container}>
             <Card>
@@ -45,22 +45,25 @@ const UserPollCard = ({question, subject, author_username, created_at, classes, 
                 className={classes.cardHeader}
             />
             <Link to={{
-            pathname:`/poll/${author_username}/${created_at}`,
-            state: {question, subject, author_username, created_at }
+            pathname:`/poll/${poll.author_username}/${poll.created_at}`,
+            state: poll,
             }}
             style={{ textDecoration: 'none' }}
             >
             <CardContent>
-                <Typography variant="headline" component="h1">
-                   "{question}"
+                <Typography variant="display2">
+                   "{poll.question}"
                 </Typography>
             </CardContent>
             <CardContent>
-                <Typography variant="subheading" component="p">
-                    {subject}
+            <Typography variant="subheading" component="p">
+                    Poll Expiration: {poll.expiration} hours
                 </Typography>
                 <Typography variant="subheading" component="p">
-                    {'Posted By: '+author_username}
+                    {poll.subject}
+                </Typography>
+                <Typography variant="subheading" component="p">
+                    {'Author: '+poll.author_username}
                 </Typography>
             </CardContent>
             </Link>

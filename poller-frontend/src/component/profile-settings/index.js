@@ -62,10 +62,14 @@ import LoadingHOC from '../loading'
 
 import MaterialStyles from '../../style/material-ui-style'
 
+import HelpTab from '../help-feature'
+
 
 const SubmitButton = ({...props}) =>{
   return (
-    <div className={props.classes.buttonContainer}>
+    <div 
+    // className={props.classes.buttonContainer}
+    >
       <Button 
       variant="outlined"
       onClick={props.submitClick} 
@@ -87,8 +91,8 @@ const styles = theme => ({
   },
   listContainer: theme.overrides.MuiListItem.container,
   listItem:theme.overrides.MuiListItem,
-  buttonContainer: theme.overrides.MuiButton.root.container,
-  button: theme.overrides.MuiButton.root.button,
+  // buttonContainer: theme.overrides.MuiButton.root.container,
+  button: theme.overrides.MuiButton,
  
   text: theme.typography.text,
   expand: {
@@ -110,6 +114,9 @@ const styles = theme => ({
   formControl: {
     margin: theme.spacing.unit,
     minWidth: 120,
+  },
+  expandMoreIcon:{
+    colorPrimary: theme.palette.secondary.main
   }
 });
 const ITEM_HEIGHT = 48;
@@ -157,6 +164,16 @@ class ProfileSettings extends React.Component {
       professionAnchor:null,
       ethnicityAnchor:null,
 
+       //help text
+    helpExpanded:false,
+    helpText:`Update your profile information if you want this information to be anonomysously submitted when
+    answering questions! None of these fields are required,
+    and no demographic information specific to you is shown in the results of a poll.
+    These can be updated as often as necessary. Why not make this app a little more interesting?`,
+
+    //loading
+    updateLoading: false
+
     }
     this.handleHelpExpand = this.handleHelpExpand.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -189,7 +206,7 @@ class ProfileSettings extends React.Component {
 
   
   handleUpdateAlert(){
-    this.setState({profileUpdateAlert: !this.state.profileUpdateAlert});
+    this.setState({profileUpdateAlert: !this.state.profileUpdateAlert });
   };
 
   handleAgeChange(e) {
@@ -334,7 +351,7 @@ class ProfileSettings extends React.Component {
 
   profileUpdateSubmit(){
     let {age, ethnicity, profession, gender, country, religion} = this.state;
-
+    this.setState({updateLoading:true})
     this.props.profileUpdate({age, ethnicity, profession, gender, country, religion})
     .then((profile)=>{
       this.handleUpdatedSnackBarRequest()
@@ -363,6 +380,7 @@ class ProfileSettings extends React.Component {
     this.setState((oldState)=>{
       return {
         updatedOpen: !oldState.updatedOpen,
+        updateLoading:false,
       }
     });
   }
@@ -370,6 +388,7 @@ class ProfileSettings extends React.Component {
     this.setState((oldState)=>{
       return {
         updateErrorOpen: !oldState.updateErrorOpen,
+        updateLoading:false,
       }
     });
   }
@@ -445,45 +464,17 @@ class ProfileSettings extends React.Component {
             classes={classes}
             submitClick={this.profileUpdateSubmit}
             buttonTitle={"Update Profile"}
-            Loading={this.props.Loading}
+            Loading={this.state.updateLoading}
             />
           </DialogActions>
         </Dialog>
 
-
-        <Paper className={classes.container}>
-          <Card>
-            <CardActions 
-              disableActionSpacing
-              onClick={this.handleHelpExpand}
-            >
-                <Typography className={classes.text}>
-                  Help
-                </Typography>
-                
-                <IconButton
-                  className={classnames(classes.expand, {
-                    [classes.expandOpen]: this.state.helpExpanded,
-                  })}
-                  // onClick={this.handleExpandClick}
-                  aria-expanded={this.state.helpExpanded}
-                  aria-label="Show more"
-                >
-                  <ExpandMoreIcon />
-                </IconButton>
-              </CardActions>
-            <Collapse in={this.state.helpExpanded} timeout="auto" unmountOnExit>
-              <CardContent>
-                  <Typography className={classes.text}>
-                Update your profile information if you want this information to be anonomysously submitted when
-                  answering questions! None of these fields are required,
-                  and no demographic information specific to you is shown in the results of a poll.
-                  These can be updated as often as necessary. Why not make this app a little more interesting?
-                </Typography>
-              </CardContent>
-            </Collapse>
-          </Card>
-        </Paper>
+        <HelpTab
+          helpExpanded={this.state.helpExpanded}
+          handleHelpExpand={this.handleHelpExpand}
+          classes={classes}
+          helpText={this.state.helpText}
+        />
 
         <form className={classes.container} noValidate onSubmit={this.handleSubmit} autoComplete="off">
         <Paper className={classes.container}>
@@ -622,17 +613,11 @@ class ProfileSettings extends React.Component {
             renderMenuItems={this.renderMenuItems}
             changeListValue={this.handleEthnicityChange}
             />
-
-
-
-                
-
-
-        <Divider/>
-          
             <Divider/>
             <CardContent className={classes.container}>
-            <div className={classes.buttonContainer}>
+            <div 
+            // className={classes.buttonContainer}
+            >
               <Button 
               variant="outlined"
               onClick={this.handleUpdateAlert} 
@@ -676,7 +661,7 @@ class ProfileSettings extends React.Component {
 
 export const mapStateToProps = state => ({
   userProfile: state.userProfile,
-  Loading: state.Loading,
+
 })
 
 export const mapDispatchToProps = dispatch => ({

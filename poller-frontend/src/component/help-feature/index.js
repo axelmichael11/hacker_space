@@ -10,6 +10,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 
+
+import MaterialStyles from '../../style/material-ui-style'
+
+
 import DialogTitle from '@material-ui/core/DialogTitle';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
@@ -57,6 +61,9 @@ const styles = theme => ({
     actions: {
       display: 'flex',
     },
+    expandMoreIcon:{
+        colorPrimary: theme.palette.secondary.main
+      }
 })
 
 
@@ -67,8 +74,10 @@ const Help = ({...props}) =>
             <CardActions 
               disableActionSpacing
               onClick={props.handleHelpExpand}
+              disableActionSpacing
+              className="help-card-actions"
             >
-                <Typography className={props.classes.text}>
+                <Typography className={props.classes.text} variant="title">
                   Help
                 </Typography>
                 
@@ -80,7 +89,7 @@ const Help = ({...props}) =>
                   aria-expanded={props.helpExpanded}
                   aria-label="Show more"
                 >
-                  <ExpandMoreIcon />
+                  <ExpandMoreIcon className={props.classes.expandMoreIcon}/>
                 </IconButton>
               </CardActions>
             <Collapse in={props.helpExpanded} timeout="auto" unmountOnExit>

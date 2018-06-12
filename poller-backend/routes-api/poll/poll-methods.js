@@ -45,7 +45,7 @@ poll.postPoll = (req, res) => {
     .then(user=>{
       validation.validateUid(user)
       .then(user=>{
-        query.getPollsQuery(res, user)
+        query.getPollsQuery(res, user, 72)
       })
       .catch(err=>console.log(err))
     })

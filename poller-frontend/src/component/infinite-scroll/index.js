@@ -28,18 +28,21 @@ import '../../style/index.scss'
 import {fetchPolls} from '../../action/public-poll-actions.js'
 import LoginPage from '../login'
 
-import PublicPoll from '../public-poll-card'
+import UserPollCard from '../user-poll-card'
+import CardMenu from '../card-menu'
 
+
+import Loader from '../loading/loader'
 const List = ({ list }) => 
     <div className="list">
-    {list.map(poll => <div className="list-row" key={poll.objectID}>
-        <PublicPoll 
-        author_username={poll.author_username} 
-        created_at={poll.created_at}
-        subject={poll.subject}
-        question={poll.question}
+    {list.map(poll => 
+      <div className="list-row" key={poll.objectID}>
+        <UserPollCard
+          pollActions={<CardMenu poll={poll}/>}
+          poll={poll}
+          // classes={props.classes}
         />
-    </div>)}
+      </div>)}
   </div>
 
 
@@ -47,7 +50,7 @@ const Loading = (props) => {
   const { classes } = props;
   return (
     <div>
-      <CircularProgress style={{ color: "#000" }} thickness={7} size={50}/>
+      <CircularProgress style={{ color: "#000", textAlign:'center', margin:'auto' }} thickness={7} size={50}/>
     </div>
   );
 };
@@ -82,7 +85,7 @@ const withLoading = (conditionFn) => (Component) => (props) => {
     <Component {...props} />
 
     <div className="interactions">
-      {conditionFn(props) && <Loading/>}
+      {conditionFn(props) && <Loader/>}
     </div>
   </div>
   )
@@ -97,8 +100,8 @@ const withInfiniteScroll =(conditionFn) => (Component) =>
    constructor(props) {
         super(props);
         this.state={
-          scrollY : window.scrollY,
-          innerHeight: window.innerHeight,
+          scrollY : document.scrollY,
+          innerHeight: document.innerHeight,
 
         }
         this.onScroll = this.onScroll.bind(this);
@@ -109,15 +112,18 @@ const withInfiniteScroll =(conditionFn) => (Component) =>
       }
 
     componentDidMount() {
-      
-      window.addEventListener('scroll',  _.throttle(this.onScroll, 500), false);
+      console.log("hiting component DID MOUNT")
+      window.addEventListener('scroll',  _.throttle(this.onScroll, 500), true);
     }
 
     componentWillUnmount() {
-      window.removeEventListener('scroll', _.throttle(this.onScroll, 500), false);
+      console.log("hiting component WILL UNMOUNT")
+      window.removeEventListener('scroll', this.onScroll, true );
     }
 
     onScroll(){
+      console.log("hiting onscroll methoD")
+
         conditionFn(this.props) && this.props.fetchPolls();
       }
 
@@ -129,6 +135,7 @@ const withInfiniteScroll =(conditionFn) => (Component) =>
 
   const infiniteScrollCondition = props =>
   (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
+  && props.onExplorePage
   && props.list.length
   && !props.Loading
   && !props.error;

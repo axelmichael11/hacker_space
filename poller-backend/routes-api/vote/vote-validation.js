@@ -176,7 +176,7 @@ vote.categorizeAge = function(age){
 }
 
 
-vote.formatSendData = function(yes_data_array, no_data_array, voteCount){
+vote.formatSendData = function(yes_data_array, no_data_array, voteCount, expiration){
 
     let isZero = (voteCount ===0);
     let data = {};
@@ -186,7 +186,7 @@ vote.formatSendData = function(yes_data_array, no_data_array, voteCount){
     data.totals_data.yesVotes = isZero ? 0 : (data.yes_data.totalVotes/voteCount)*100;
     data.totals_data.noVotes = isZero ? 0 : (data.no_data.totalVotes/voteCount)*100;
     data.totals_data.totalVotes = voteCount;
-
+    data.expiration = expiration;
     console.log('this is the DATA TO SEND', data)
     return data
 }

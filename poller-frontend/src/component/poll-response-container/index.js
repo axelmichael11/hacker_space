@@ -84,7 +84,6 @@ class PollResponseContainer extends React.Component {
 
 export const mapStateToProps = state => ({
   loggedIn: state.loggedIn,
-  Loading: state.Loading
 })
 
 export const mapDispatchToProps = dispatch => ({

@@ -59,14 +59,8 @@ const withPaginated = (conditionFn) => (Component)  => (props) =>
         conditionFn(props) &&
         <div>
           <div>
-            Something went wrong...
+            Something went wrong... Log out Please
           </div>
-          <button
-            type="button"
-            onClick={props.fetchPolls}
-          >
-            Try Again
-          </button>
         </div>
       }
     </div>
@@ -90,7 +84,6 @@ const renderVotePage =(conditionFn) => (Component) => (props) => {
     console.log('hitting the rendervoteresults!')
       return (
           <div>
-               {/* <Component {...props}/> */}
           {conditionFn(props) && <PollResultsPage {...props}/>}
           </div>
          )
@@ -119,7 +112,7 @@ const renderVotePage =(conditionFn) => (Component) => (props) => {
 
 
 
-  const PollPage = compose(
+  const RenderPollPage = compose(
     branch(
         (props)=>props.Loading,
         renderComponent(Loading)
@@ -132,6 +125,11 @@ const renderVotePage =(conditionFn) => (Component) => (props) => {
         && !props.error,
         renderComponent(PollResultsPage)
     ),
+    branch(
+        (props)=>
+        !props.Loading && props.error,
+        renderComponent(withPaginated)
+    )
   )(PollVotePage);
 
-export default PollPage
+export default RenderPollPage

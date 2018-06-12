@@ -48,10 +48,11 @@ const ResponsiveDialog = ({...props}) => {
           <DialogActions>
             <div className={classes.root}>
                 <List component="nav">
-                    {props.dialogActions.map((option)=> option)}
-                <ListItem button onClick={props.handleClose}>
+                    {/* {props.dialogActions.map((option)=> option)} */}
+                    <ListItem button onClick={props.handleClose}>
                         <ListItemText inset primary="Cancel" />
                 </ListItem>
+               {/* <DialogSubmitButton/> */}
             </List>
             </div>
           </DialogActions>
@@ -64,7 +65,7 @@ ResponsiveDialog.propTypes = {
 //   fullScreen: PropTypes.bool.isRequired,
 dialogTitle: PropTypes.string.isRequired,
 dialogContent: PropTypes.string.isRequired,
-dialogActions:PropTypes.array.isRequired,
+// dialogActions:PropTypes.array.isRequired,
 dialogOpen: PropTypes.bool.isRequired,
 handleClose: PropTypes.func.isRequired,
 

@@ -65,17 +65,19 @@ const styles = theme =>({
   text: theme.typography.text,
   listContainer: theme.overrides.MuiListItem.container,
   listItem:theme.overrides.MuiListItem,
-  buttonContainer: theme.overrides.MuiButton.root.container,
-  button: theme.overrides.MuiButton.root.button,
+  // buttonContainer: theme.overrides.MuiButton.root.container,
+  button: theme.uniqueStyles.MuiVoteButton,
   cardHeader:theme.overrides.PollCard.cardHeader,
-
+  stretchedButtons: theme.uniqueStyles.dialogStretchedButtons,
 
 })
 
 
 const VoteButtons = ({...props}) =>{
   return (
-    <div className={props.classes.buttonContainer}>
+    <div 
+    // className={props.classes.buttonContainer}
+    >
       <Button 
       variant="outlined"
       onClick={props.handleConfirmYesVoteAlert} 
@@ -96,7 +98,9 @@ const VoteButtons = ({...props}) =>{
 
 const SubmitButton = ({...props}) =>{
   return (
-    <div className={props.classes.buttonContainer}>
+    <div 
+    // className={props.classes.buttonContainer}
+    >
       <Button 
       variant="outlined"
       onClick={props.submitClick} 
@@ -184,7 +188,8 @@ class PollVotePage extends React.Component {
   render() {
     console.log('poll vote page', this.props, this.state)
     let {classes} = this.props
-    let {subject, author_username, question } = this.props.location.state
+    let {subject, author_username, question, expiration } = this.props.location.state
+    let poll = {subject, author_username, question, expiration};
 
     return (
 
@@ -205,7 +210,7 @@ class PollVotePage extends React.Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-          <div className={classes.container}>
+          <div className={classes.stretchedButtons}>
 
             <Button 
               onClick={this.handleCancelVote} 
@@ -227,7 +232,7 @@ class PollVotePage extends React.Component {
         <Paper square elevation={2} className={classes.container}>
             <Card>
             <CardHeader
-                action={<CardMenu/>} //REPORT POST FEATURE
+                action={<CardMenu poll={poll}/>} //REPORT POST FEATURE
                 className={classes.cardHeader}
             />
             
@@ -239,6 +244,9 @@ class PollVotePage extends React.Component {
             <CardContent>
                 <Typography variant="subheading" component="p">
                     {subject}
+                </Typography>
+                <Typography variant="subheading" component="p">
+                    Poll Expiration: {expiration} hours
                 </Typography>
                 <Typography variant="subheading" component="p">
                     {'Posted By: '+author_username}
@@ -261,7 +269,6 @@ class PollVotePage extends React.Component {
 
 export const mapStateToProps = state => ({
   loggedIn: state.loggedIn,
-  Loading: state.Loading,
   userProfile: state.userProfile
 })
 

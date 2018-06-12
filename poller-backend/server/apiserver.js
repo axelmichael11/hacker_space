@@ -83,8 +83,20 @@ app.use(require('../routes-api/profile'));
 app.use(require('../routes-api/poll'));
 app.use(require('../routes-api/explore'));
 app.use(require('../routes-api/vote'));
+app.use(require('../routes-api/report'));
+
 // require('../routes-api/vote-routes.js')(app, Client, checkJwt);
 
+
+//delete old polls
+const updatePollTask = require('../database/cron-jobs').updatePolls;
+
+const deleteReportedPolls = require('../database/cron-jobs').deleteReportedPolls;
+
+
+deleteReportedPolls.start();
+
+updatePollTask.start();
 
 app.use(function(err, req, res, next){
   console.error(err.stack);

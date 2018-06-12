@@ -11,13 +11,15 @@ const env = {
 
 
 module.exports = {
-    getExploreQueries : (res)=> {
+    getExploreQueries : (res ,expirationDate)=> {
         Client.query(`
-                SELECT question, subject, author_username, created_at
+                SELECT question, subject, author_username, created_at, 
+                (($1)-EXTRACT(hour from (now() - date))) as expiration
                 FROM polls
                 ORDER BY random()
                 LIMIT 10;
                 `,
+                [expirationDate],
                 function(err, success) {
                     if (success){
                         if (success.rows[0]){

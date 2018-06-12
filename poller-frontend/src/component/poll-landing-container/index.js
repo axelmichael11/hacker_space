@@ -16,7 +16,7 @@ import {fetchVoteHistory} from '../../action/vote-actions'
 
 import * as util from '../../lib/util.js'
 
-import PollPage from '../render-poll-page'
+import RenderPollPage from '../render-poll-page'
 
 
 
@@ -25,7 +25,7 @@ import PollPage from '../render-poll-page'
 
 
 //HOC
-// const RenderPollPage = PollPage()
+// const RenderRenderPollPage = RenderPollPage()
 
 
 import HelpTab from '../help-feature'
@@ -47,6 +47,9 @@ const styles = theme => ({
   actions: {
     display: 'flex',
   },
+  expandMoreIcon:{
+    colorPrimary: theme.palette.secondary.main
+  }
 })
 
 
@@ -127,9 +130,10 @@ class PollLandingContainer extends React.Component {
           classes={classes}
           helpText={this.state.alreadyVoted ? this.state.pollResultsHelpText: this.state.castVoteHelpText}
         />
-        <PollPage
+        <RenderPollPage
         Loading={this.state.pageLoading}
         pollData={this.state.pollData}
+        poll={this.props.location.state}
         alreadyVoted={this.state.alreadyVoted}
         error={this.state.error}
         successOnCastVote={this.successOnCastVote}

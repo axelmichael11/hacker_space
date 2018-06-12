@@ -51,11 +51,14 @@ import UserPollCard from '../user-poll-card'
 import LoadingHOC from '../loading'
 import {MyPolls} from '../my-polls'
 
+import HelpTab from '../help-feature'
 
 
 const SubmitButton = ({...props}) =>{
   return (
-    <div className={props.classes.buttonContainer}>
+    <div 
+    // className={props.classes.buttonContainer}
+    >
       <Button 
       variant="outlined"
       onClick={props.submitClick} 
@@ -78,8 +81,8 @@ const FeedBackMyPolls = LoadingHOC(MyPolls);
     ageSelect:{
       marginLeft: 15,
     },
-    buttonContainer: theme.overrides.MuiButton.root.container,
-    button: theme.overrides.MuiButton.root.button,
+    // buttonContainer: theme.overrides.MuiButton.root.container,
+    button: theme.overrides.MuiButton,
    
     text: theme.typography.text,
     expand: {
@@ -95,6 +98,10 @@ const FeedBackMyPolls = LoadingHOC(MyPolls);
     actions: {
       display: 'flex',
     },
+    expandMoreIcon:{
+      colorPrimary: theme.palette.secondary.main
+    },
+
     cardHeader:theme.overrides.PollCard.cardHeader,
     cardContent:theme.overrides.PollCard.cardContent,
     formControl: {
@@ -136,7 +143,10 @@ class PollCreatePage extends React.Component {
         pollCreateLoad:false,
         MyPollsLoad:false,
         pollDeleteLoad:false,
-
+        // help
+        helpText: `Represent yourself! None of these fields are required,
+        and no demographic information specific to you is shown in the results of a poll.
+        These can be updated as often as necessary. Why not make this app a little more interesting?`
     }
   this.handleHelpExpand = this.handleHelpExpand.bind(this)
    this.handlePollSubmitCreate = this.handlePollSubmitCreate.bind(this)
@@ -309,6 +319,7 @@ class PollCreatePage extends React.Component {
         console.log('this is the error 2 ', )
         if (status.includes('550')){
           this.handleMaxPollReached();
+          this.setState({pollCreateLoad:false })
         } else {
           this.handleUnknownError();
           this.setState({pollCreateLoad:false,  pollDeleteAlert:false})
@@ -361,40 +372,13 @@ class PollCreatePage extends React.Component {
             </div>
           </DialogActions>
         </Dialog>
-          
-          <Paper className={classes.container}>
-          <Card>
-            <CardActions 
-              disableActionSpacing
-              onClick={this.handleHelpExpand}
-            >
-                <Typography className={classes.text}>
-                  Help
-                </Typography>
-                
-                <IconButton
-                  className={classnames(classes.expand, {
-                    [classes.expandOpen]: this.state.helpExpanded,
-                  })}
-                  // onClick={this.handleExpandClick}
-                  aria-expanded={this.state.helpExpanded}
-                  aria-label="Show more"
-                >
-                  <ExpandMoreIcon />
-                </IconButton>
-              </CardActions>
-            <Collapse in={this.state.helpExpanded} timeout="auto" unmountOnExit>
-              <CardContent>
-                  <Typography className={classes.text}>
-                Update your profile information if you want this information to be anonomysously submitted when
-                  answering questions! None of these fields are required,
-                  and no demographic information specific to you is shown in the results of a poll.
-                  These can be updated as often as necessary. Why not make this app a little more interesting?
-                </Typography>
-              </CardContent>
-            </Collapse>
-          </Card>
-        </Paper>
+
+        <HelpTab
+          helpExpanded={this.state.helpExpanded}
+          handleHelpExpand={this.handleHelpExpand}
+          classes={classes}
+          helpText={this.state.helpText}
+        />
 
         <Paper className={classes.container}>
         <Card>
@@ -525,7 +509,6 @@ export const mapStateToProps = state => ({
     loggedIn: state.loggedIn,
     userProfile: state.userProfile,
     userPolls: state.userPolls,
-    Loading: state.Loading
   })
   
   export const mapDispatchToProps = dispatch => ({

@@ -30,26 +30,38 @@
 }
 
 .yes-no-pie-container {
-    position: relative;
+    display:block;
+    // position: relative;
     white-space: normal;
     vertical-align: top;
+    width:'100%';
+    // border: 1px blue dashed;
 }
 
 .yes-no-pie {
     font-family: 'Play', sans-serif;
     font-size: 2em;
-    display: inline-block;
-    width: '50%';
+    display:inline-block;
+    width: 50%;
+    max-width: 50%;
+    vertical-align: top;
+    // border: 1px red dashed;
+}
+
+.no-data {
+    font-family: 'Play', sans-serif;
+    font-size: 2em;
+    display: block;
+    width: 50%;
     vertical-align: top;
     white-space: nowrap;
-
+    // border: 1px green dashed;
 }
 
 .yes-no-pies-legend {
     font-family: 'Play', sans-serif;
     font-size: 2em;
     margin: 0 auto;
-    
 }
 
 .no-votes{
@@ -63,5 +75,21 @@
 .endless-scroller {
     height:700px; 
     overflow:auto;
+}
+
+.category-card-actions {
+    height: 3em;
+}
+
+.help-card-actions{
+    height:2em;
+}
+
+.user-card-header {
+    height: 3em;
+}
+
+.yes-no-votes-title{
+    font-size: 3em;
 }
 

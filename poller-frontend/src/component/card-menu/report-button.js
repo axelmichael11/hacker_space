@@ -8,8 +8,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 import MenuItem from '@material-ui/core/MenuItem';
 import ReportIcon from '@material-ui/icons/report'
-import ResponsiveDialog from './card-option-dialog'
-
+import ResponsiveDialog from './responsive-dialog'
+import {reportPoll} from '../../action/report-poll-actions'
 
 import LoadingHOC from '../loading'
 
@@ -25,33 +25,15 @@ const styles = theme => ({
     },
   });
 
-
-const SubmitReportButton = ({...props}) =>{
-  return (
-    <div className={props.classes.buttonContainer}>
-     <ListItem button className={props.classes.button} onClick={props.onClick}>
-        <ListItemIcon>
-            {props.buttonIcon}
-        </ListItemIcon>
-        <ListItemText inset primary={props.buttonTitle}/>
-    </ListItem>
-    </div>
-  )
-}
-
-const FeedBackReportButton = LoadingHOC(SubmitReportButton)
-
 class ReportButton extends React.Component{
     constructor(props) {
         super(props)
         this.state = {
-            reportDialog:false,
             reportLoading:false,
         }
+        this.reportPoll = this.reportPoll.bind(this)
       }
-      handleClickOpen(){
-        this.setState({ reportDialog: true });
-      };
+    
     
       handleClose(){
         this.setState({ reportDialog: false });
@@ -60,41 +42,37 @@ class ReportButton extends React.Component{
       reportPoll(){
           console.log('report POlL!!')
           this.setState({ reportLoading: true });
+          this.props.reportPoll(this.props.poll)
+          .then((res)=>{
+              console.log(res)
+              this.setState({ reportLoading: false });
+
+            })
+          .catch((err)=>{
+              console.log(err)
+              this.setState({ reportLoading: false });
+
+            })
       }
 
+
     render(){
-        console.log('this.PROPS on the pollcreate button', this.context, this.props.history)
+        console.log('this.PROPS on the pollcreate button', this.props)
         let {classes} = this.props
-        const dialogActions = [
-            <FeedBackReportButton
-            onClick={this.reportPoll}
-                buttonTitle="I Find this Offensive, Please Report"
-                buttonIcon={<ReportIcon/>}
-                classes={classes}
-                Loading={this.state.reportLoading}
-            />
-        ]
         return (
             <div>
-                <ResponsiveDialog
-                dialogTitle={"Report This Poll"}
-                dialogContent={"Is this poll offensive? Please report if so and we will review this shortly! Sorry for the material :("}
-                dialogActions={dialogActions}
-                dialogOpen={this.state.reportDialog}
-                handleClose={this.handleClose}
-                />
-                <MenuItem onClick={()=>this.handleClickOpen()}>Report Poll</MenuItem>
+                <MenuItem onClick={this.props.handleOpenReportDialog}>Report Poll</MenuItem>
            </div>
         )
     }
 }
 
 export const mapStateToProps = state => ({
-    loggedIn: state.loggedIn,
     userProfile: state.userProfile,
 })
 
 export const mapDispatchToProps = dispatch => ({
+    reportPoll: ()=>dispatch(reportPoll())
 })
 
 

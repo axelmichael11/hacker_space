@@ -24,14 +24,7 @@ import '../../style/index.scss'
 
 const styles = theme=> ({
   container: theme.overrides.MuiPaper,
-  middle_icon: {
-    display:'center',
-    margin:'auto',
-    width: 50,
-    height: 50,
-    textAlign: 'center',
-    position: 'relative'
-  }
+ 
 })
 class LoginPage extends React.Component {
   constructor(props) {
@@ -50,17 +43,9 @@ class LoginPage extends React.Component {
       <div>
           <Paper elevation={2} className={classes.container}>
             <p id="title">Poller</p>
-
-            <div id="parent">
-                <Face className={classes.middle_icon}/>
-            </div>
-
             <NavigateGettingStartedButton/>
           </Paper>
-
-          <Paper elevation={2} className={classes.container}>
             <AuthLockButton style={{margin: 15}}/>
-          </Paper>
       </div>
     )
   }

@@ -74,16 +74,19 @@ module.exports = {
         }
         })
     },
-    getPollsQuery: (res,user)=>{
+    getPollsQuery: (res,user, expirationDate)=>{
         Client.query(`
-        SELECT question, subject, author_username, created_at from polls WHERE author_id=($1)
+        SELECT question, subject, author_username, created_at,
+        (($2)-EXTRACT(hour from (now() - date))) as expiration
+        from polls WHERE author_id=($1)
          `,
         [
           user[`${env.uid}`],
+          expirationDate,
         ],
         function(err, success) {
           if (success) {
-            console.log('this is success from db', success)
+            console.log('this is success from POLLLLLLLLS DB', success)
             res.status(200).send(success.rows)
           } else {
             if (err) {

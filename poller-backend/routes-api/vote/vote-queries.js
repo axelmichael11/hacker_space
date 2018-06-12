@@ -14,12 +14,13 @@ module.exports = {
     getVotes : (res, user, voteData)=> {
 
         Client.query(`
-                SELECT cardinality(votes) as count, array_yes_data, array_no_data
+                SELECT cardinality(votes) as count, array_yes_data, array_no_data, 
+                (72-EXTRACT(hour from (now() - date))) as expiration
                 FROM polls
                 WHERE author_username=($2) 
                 AND created_at=($1) 
                 AND ($3) = ANY(votes)
-                GROUP BY polls.array_yes_data, polls.array_no_data, cardinality(polls.votes);
+                GROUP BY polls.array_yes_data, polls.array_no_data, cardinality(polls.votes),  (72-EXTRACT(hour from (now() - date)));
               `,
               [
                 voteData.created_at,
@@ -30,7 +31,7 @@ module.exports = {
                 if (success) {
                   console.log('this is success from db', success)
                   if (success.rows[0]) {
-                      let data = vollValidate.formatSendData(success.rows[0].array_yes_data, success.rows[0].array_no_data, success.rows[0].count)
+                      let data = vollValidate.formatSendData(success.rows[0].array_yes_data, success.rows[0].array_no_data, success.rows[0].count, success.rows[0].expiration)
                     res.status(200).send(data)
                   }
                     res.status(401).send()

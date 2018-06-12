@@ -44,20 +44,33 @@ class ExplorePage extends React.Component {
     super(props)
     this.state = {
       polls: this.props.publicPolls,
-      Loading:this.props.Loading,
-      error: this.props.error,
+      onExplorePage:false,
+      exploreLoading:false,
+      exploreError: false,
     }
     this.fetchPolls = this.fetchPolls.bind(this)
   }
 
   componentWillMount(){
     if (this.props.publicPolls.length===0){
+      this.setState({exploreLoading:true, onExplorePage:true})
       this.fetchPolls()
     }
   }
 
+  componentWillUnmount(){
+    this.setState({onExplorePage:false})
+  }
+
   fetchPolls(){
     this.props.getPublicPolls()
+    .then((res)=>{
+      console.log(res)
+      this.setState({exploreLoading:false, exploreError:false})
+    })
+    .catch((err)=>{
+      this.setState({exploreLoading:false, exploreError: true})
+    })
   }
 
 
@@ -67,25 +80,22 @@ class ExplorePage extends React.Component {
     return (
         // <div className="endless-scroller">
         <div>
-          <Typography variant="headline"> Explore </Typography>
-            
             <AdvancedList
               list={this.props.publicPolls}
-              error={this.state.error}
-              Loading={this.props.Loading}
+              error={this.state.exploreError}
+              Loading={this.state.exploreLoading}
               page={this.state.page}
               fetchPolls={this.fetchPolls}
+              onExplorePage={this.state.onExplorePage}
               />
-      </div>
-    )
+        </div>
+      )
+    }
   }
-}
 
 export const mapStateToProps = state => ({
     loggedIn: state.loggedIn,
     publicPolls: state.publicPolls,
-    Loading: state.Loading,
-    error: state.error,
   })
   
   export const mapDispatchToProps = dispatch => ({
@@ -100,9 +110,4 @@ export default compose(
   withStyles(styles, {withTheme:true}),
   connect(mapStateToProps, mapDispatchToProps),
 )(ExplorePage);
-
-
-
-// export default connect(mapStateToProps, mapDispatchToProps)(ExplorePage)
-
 

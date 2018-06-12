@@ -12,7 +12,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
 
-import {VictoryBar, VictoryContainer, VictoryChart, VictoryAxis} from 'victory'
+import {VictoryBar, VictoryContainer, VictoryChart, VictoryAxis, VictoryLabel} from 'victory'
 import MaterialStyles from '../../../style/material-ui-style'
 import Typography from '@material-ui/core/Typography';
 
@@ -45,14 +45,14 @@ class TotalVotesGraph extends React.Component {
 
   render(){
       console.log('total bar GRAPH DATA!', this.state, this.props)
-      let {classes} = this.props
+      let {classes, poll} = this.props
       return(
           <div>
-                      <Typography variant="subheading" component="p">
-                      Total Votes: {this.props.totalVotesData.totalVotes}
-                      </Typography>
-                   
-
+            <CardContent>
+                <Typography variant="display2">
+                   "{poll.question}"
+                </Typography>
+            </CardContent>
                   <VictoryChart
                     domainPadding={{ x: 100 }}
                   >
@@ -79,10 +79,26 @@ class TotalVotesGraph extends React.Component {
                           duration: 2000,
                           onLoad: { duration: 1000 }
                         }}
-          
+                        barRatio={1}
+                        // labelComponent={ <VictoryLabel dy={30}/>}
                         // containerComponent={<VictoryContainer responsive={false}/>}
                     />
                     </VictoryChart>
+                    <CardContent>
+    
+                    <Typography variant="subheading">
+                      Votes: {this.props.totalVotesData.totalVotes}
+                    </Typography>
+                    <Typography variant="subheading">
+                       Poll Expiration: {poll.expiration} hours
+                    </Typography>
+                    <Typography variant="subheading">
+                       {poll.subject}
+                    </Typography>
+                    <Typography variant="subheading">
+                      {'Author: '+poll.author_username}
+                    </Typography>
+                    </CardContent>
                     
           </div>
       )
