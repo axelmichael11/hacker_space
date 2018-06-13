@@ -17,6 +17,31 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ReportIcon from '@material-ui/icons/report'
+import LoadingHOC from '../loading'
+import {MyPolls} from '../my-polls'
+
+import HelpTab from '../help-feature'
+
+
+const SubmitButton = ({...props}) =>{
+  return (
+    <div 
+    // className={props.classes.buttonContainer}
+    >
+      <Button 
+      variant="outlined"
+      onClick={props.submitClick} 
+      className={props.classes.button}
+      >
+      {props.dialogSubmitText}
+      </Button>
+    </div>
+  )
+}
+
+
+
+const FeedBackSubmitButton = LoadingHOC(SubmitButton)
 
 const styles = theme => ({
     root: {
@@ -30,13 +55,12 @@ const styles = theme => ({
 
 const ResponsiveDialog = ({...props}) => {
     // const { fullScreen } = props;
-
+   
+  
     return (
       <div>
         <Dialog
-        //   fullScreen={fullScreen}
           open={props.dialogOpen}
-        //   onClose={this.handleClose}
           aria-labelledby="responsive-dialog-title"
         >
           <DialogTitle > {props.dialogTitle}</DialogTitle>
@@ -46,20 +70,29 @@ const ResponsiveDialog = ({...props}) => {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <div className={classes.root}>
-                <List component="nav">
-                    {/* {props.dialogActions.map((option)=> option)} */}
-                    <ListItem button onClick={props.handleClose}>
-                        <ListItemText inset primary="Cancel" />
-                </ListItem>
-               {/* <DialogSubmitButton/> */}
-            </List>
+               <div className={props.classes.container}>
+            <Button 
+              onClick={props.handleClose} 
+              className={props.classes.button}
+            >
+              Cancel
+            </Button>
             </div>
+            <div className={props.classes.container}>
+
+            <FeedBackSubmitButton
+                classes={props.classes}
+                submitClick={props.submitClick}
+                dialogSubmitText={props.dialogSubmitText}
+                Loading={props.submitLoading}
+              />
+            </div>
+           
           </DialogActions>
         </Dialog>
       </div>
     );
-}
+  }
 
 ResponsiveDialog.propTypes = {
 //   fullScreen: PropTypes.bool.isRequired,
@@ -75,7 +108,7 @@ handleClose: PropTypes.func.isRequired,
 export default compose(
     // These are both single-argument HOCs
     // connect(mapStateToProps, mapDispatchToProps),
-    withMobileDialog,
+    // withMobileDialog(),
     withStyles(styles)
   )(ResponsiveDialog)
 

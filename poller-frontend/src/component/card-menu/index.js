@@ -17,7 +17,7 @@ import * as util from '../../lib/util.js'
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Menu from '@material-ui/core/Menu';
-import ResponsiveDialog from './responsive-dialog'
+// import ResponsiveDialog from './responsive-dialog'
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -50,63 +50,12 @@ const FeedBackReportButton = LoadingHOC(SubmitReportButton)
 const styles= {
 
 }
-class CardMenu extends React.Component{
-    constructor(props, context) {
-        super(props, context)
-        this.state = {
-          anchorEl: null,
-          // dialogs
-          reportDialog: false,
-
-        }
-        this.handleMenu = this.handleMenu.bind(this)
-        this.handleClose = this.handleClose.bind(this)
-        this.handleOpenReportDialog = this.handleOpenReportDialog.bind(this)
-      }
-
-      handleMenu(event){
-        this.setState({ anchorEl: event.currentTarget });
-      };
-     
-      handleClose(){
-        this.setState({ anchorEl: null, reportDialog: false });
-      };
-
-      handleOpenReportDialog(){
-        this.setState({ reportDialog: true });
-      }
-
-
-
-
-      
-
-
-    render(){
-        console.log('this.PROPS on the Card MENu', this.state, this.props)
-         const { anchorEl } = this.state;
+const CardMenu = ({...props}) => {
+        console.log('PROPS on the Card MENu',props)
+         const { anchorEl } = props;
          const open = Boolean(anchorEl);
-        
         return (
             <div>
-               <ResponsiveDialog
-                dialogTitle={"Report This Poll"}
-                dialogContent={"Is this poll offensive? Please report if so and we will review this shortly! Sorry for the material :("}
-                // DialogSubmitButton={FeedBackReportButton}
-                dialogOpen={this.state.reportDialog}
-                handleClose={this.handleClose}
-                submitText="Report Poll"
-                />
-
-                  <IconButton
-                //   aria-owns={open ? 'menu-appbar' : null}
-                //   aria-haspopup="true"
-                  onClick={this.handleMenu}
-                  color="inherit"
-                >
-                  <MoreVertIcon />
-                </IconButton>
-
                 <Menu
                   id="menu-appbar"
                   anchorEl={anchorEl}
@@ -119,26 +68,26 @@ class CardMenu extends React.Component{
                     horizontal: 'right',
                   }}
                   open={open}
-                  onClose={this.handleClose}
+                  onClose={props.handleClose}
                 >
-                  <ReportButton poll={this.props.poll} handleOpenReportDialog={this.handleOpenReportDialog}/>
+                {props.renderMenuButtons()}
                 </Menu>
 
            </div>
         )
     }
+
+
+
+CardMenu.propTypes = {
+  renderMenuButtons: PropTypes.func.isRequired,
+  handleClose: PropTypes.func.isRequired,
+  anchorEl: PropTypes.isRequired
 }
 
-export const mapStateToProps = state => ({
-    userProfile: state.userProfile,
-})
-
-export const mapDispatchToProps = dispatch => ({
-})
 
 export default compose(
   // These are both single-argument HOCs
-  connect(mapStateToProps, mapDispatchToProps),
   withStyles(styles)
 )(CardMenu)
 

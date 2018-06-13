@@ -8,7 +8,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import MenuItem from '@material-ui/core/MenuItem';
 import ReportIcon from '@material-ui/icons/report'
-import ResponsiveDialog from './responsive-dialog'
+// import ResponsiveDialog from './responsive-dialog'
 import {reportPoll} from '../../action/report-poll-actions'
 
 import LoadingHOC from '../loading'

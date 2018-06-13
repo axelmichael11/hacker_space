@@ -57,11 +57,12 @@ const UserPollCard = ({classes, theme, pollActions, poll }) =>
             </CardContent>
             <CardContent>
             <Typography variant="subheading" component="p">
-                    Poll Expiration: {poll.expiration} hours
-                </Typography>
-                <Typography variant="subheading" component="p">
                     {poll.subject}
                 </Typography>
+            <Typography variant="subheading" component="p">
+                    Poll Expiration: {poll.expiration} hours
+                </Typography>
+               
                 <Typography variant="subheading" component="p">
                     {'Author: '+poll.author_username}
                 </Typography>

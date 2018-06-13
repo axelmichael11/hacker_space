@@ -88,14 +88,12 @@ app.use(require('../routes-api/report'));
 // require('../routes-api/vote-routes.js')(app, Client, checkJwt);
 
 
-//delete old polls
+//CRON JOBS
 const updatePollTask = require('../database/cron-jobs').updatePolls;
-
 const deleteReportedPolls = require('../database/cron-jobs').deleteReportedPolls;
 
-
+//CRON JOBS ON
 deleteReportedPolls.start();
-
 updatePollTask.start();
 
 app.use(function(err, req, res, next){

@@ -29,17 +29,25 @@ import {fetchPolls} from '../../action/public-poll-actions.js'
 import LoginPage from '../login'
 
 import UserPollCard from '../user-poll-card'
-import CardMenu from '../card-menu'
 
+import IconButton from '@material-ui/core/IconButton';
+import NotInterested from '@material-ui/icons/NotInterested';
 
 import Loader from '../loading/loader'
-const List = ({ list }) => 
+const List = ({ ...props }) =>
     <div className="list">
-    {list.map(poll => 
+    {props.list.map((poll, key) => 
       <div className="list-row" key={poll.objectID}>
         <UserPollCard
-          pollActions={<CardMenu poll={poll}/>}
+          pollActions={<IconButton
+            onClick={()=> props.openReportDialog( poll)}
+            >
+            <NotInterested 
+            style={{color:'#fff'}}
+            />
+            </IconButton>}
           poll={poll}
+          key={key}
           // classes={props.classes}
         />
       </div>)}
@@ -108,12 +116,12 @@ const withInfiniteScroll =(conditionFn) => (Component) =>
         } 
 
       componentWillMount(){
-        console.log('infinite scroll component!', this.state, this.props)
+        console.log('infinite scroll component!', this.state, this.props);
       }
 
     componentDidMount() {
       console.log("hiting component DID MOUNT")
-      window.addEventListener('scroll',  _.throttle(this.onScroll, 500), true);
+      window.addEventListener('scroll',  this.onScroll, true);
     }
 
     componentWillUnmount() {
@@ -122,10 +130,12 @@ const withInfiniteScroll =(conditionFn) => (Component) =>
     }
 
     onScroll(){
-      console.log("hiting onscroll methoD")
+      console.log("hiting onscroll methoD", conditionFn(this.props))
 
-        conditionFn(this.props) && this.props.fetchPolls();
+      if (conditionFn(this.props)){
+       _.throttle(this.props.fetchPolls(), 200)
       }
+    }
 
     render() {
       console.log('INFINITE SCROLL', window.innerHeight, window.pageYOffset,'>=', document.body.offsetHeight, )
@@ -135,13 +145,13 @@ const withInfiniteScroll =(conditionFn) => (Component) =>
 
   const infiniteScrollCondition = props =>
   (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
-  && props.onExplorePage
   && props.list.length
   && !props.Loading
   && !props.error;
 
   const loadingCondition = props =>
   props.Loading;
+
 
   const paginatedCondition = props =>
    !props.Loading && props.error;
