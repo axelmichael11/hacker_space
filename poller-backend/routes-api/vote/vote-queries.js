@@ -14,14 +14,8 @@ module.exports = {
     getVotes : (res, user, voteData)=> {
 
         Client.query(`
-                SELECT cardinality(votes) as count, array_yes_data, array_no_data, 
-                (72-EXTRACT(hour from (now() - date))) as expiration
-                FROM polls
-                WHERE author_username=($2) 
-                AND created_at=($1) 
-                AND ($3) = ANY(votes)
-                GROUP BY polls.array_yes_data, polls.array_no_data, cardinality(polls.votes),  (72-EXTRACT(hour from (now() - date)));
-              `,
+                select unnest(votes) from polls where created_at=($1) AND author_username=($2);
+                `,
               [
                 voteData.created_at,
                 voteData.author_username,

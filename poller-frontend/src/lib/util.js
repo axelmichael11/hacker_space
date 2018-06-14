@@ -16,3 +16,7 @@ export const logError = (...args) =>
           return false;
         }
     };
+
+    export const handleThen = function(res, ...args){
+      console.log('these are the arguments', res, ...args, )
+    }

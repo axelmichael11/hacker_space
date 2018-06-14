@@ -11,18 +11,7 @@ import _ from 'lodash'
 import Paper from 'material-ui/Paper'
 
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
-import {
-    Step,
-    Stepper,
-    StepButton,
-    StepContent,
-  } from 'material-ui/Stepper';
-import RaisedButton from 'material-ui/RaisedButton';
-import MaterialStyles from '../../style/material-ui-style'
-import AppBar from 'material-ui/AppBar'
 import '../../style/index.scss'
 
 import {fetchPolls} from '../../action/public-poll-actions.js'
@@ -32,17 +21,26 @@ import UserPollCard from '../user-poll-card'
 
 import IconButton from '@material-ui/core/IconButton';
 import NotInterested from '@material-ui/icons/NotInterested';
-
 import Loader from '../loading/loader'
+import Error from '../error'
+import { Button } from '@material-ui/core';
+import ResponsiveDialog from '../dialog'
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+
+
 const List = ({ ...props }) =>
     <div className="list">
+    
     {props.list.map((poll, key) => 
       <div className="list-row" key={poll.objectID}>
         <UserPollCard
           pollActions={<IconButton
-            onClick={()=> props.openReportDialog( poll)}
+            onClick={(event)=> {
+              props.handleOpenCardMenu(event)
+              props.setPoll(poll)
+            }}
             >
-            <NotInterested 
+            <MoreVertIcon 
             style={{color:'#fff'}}
             />
             </IconButton>}
@@ -53,16 +51,6 @@ const List = ({ ...props }) =>
       </div>)}
   </div>
 
-
-const Loading = (props) => {
-  const { classes } = props;
-  return (
-    <div>
-      <CircularProgress style={{ color: "#000", textAlign:'center', margin:'auto' }} thickness={7} size={50}/>
-    </div>
-  );
-};
-
 const withPaginated = (conditionFn) => (Component) => (props) =>
   <div>
     <Component {...props} />
@@ -71,15 +59,7 @@ const withPaginated = (conditionFn) => (Component) => (props) =>
       {
         conditionFn(props) &&
         <div>
-          <div>
-            Something went wrong...
-          </div>
-          <button
-            type="button"
-            onClick={props.fetchPolls}
-          >
-            Try Again
-          </button>
+          <Error/>
         </div>
       }
     </div>
@@ -87,13 +67,12 @@ const withPaginated = (conditionFn) => (Component) => (props) =>
 
 
 const withLoading = (conditionFn) => (Component) => (props) => {
-  console.log('HITTING LOADING COMPONENT', conditionFn, Component, props, )
   return(
     <div>
     <Component {...props} />
 
     <div className="interactions">
-      {conditionFn(props) && <Loader/>}
+      {conditionFn(props) && <Loader start={Date.now()} timeError={props.throwError}/>}
     </div>
   </div>
   )

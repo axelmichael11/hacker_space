@@ -8,15 +8,15 @@ module.exports = {
         cronTime:'* 0 0-23 * * 0-7', 
         onTick: function(){
             Client.query(`
-            with polls_to_delete as (
-                select array(select id from polls where date < (now() - interval '3 DAY')) as polls, author_id 
-                from polls 
-                group by author_id
-            ),
-            deleted as ( delete from polls where date < (now() - interval '3 DAY'))
-            update poller_data set polls_id = array_subtract(polls_id, polls_to_delete.polls) 
-            from polls_to_delete
-            where poller_data.id=polls_to_delete.author_id;
+                with polls_to_delete as (
+                    select array(select id from polls where date < (now() - interval '3 DAY')) as polls, author_id 
+                    from polls 
+                    group by author_id
+                ),
+                deleted as ( delete from polls where date < (now() - interval '3 DAY'))
+                update poller_data set polls_id = array_subtract(polls_id, polls_to_delete.polls) 
+                from polls_to_delete
+                where poller_data.id=polls_to_delete.author_id;
                 `,
                 function(err, success) {
                     if (err) {
@@ -36,11 +36,11 @@ module.exports = {
         onTick: function(){
         Client.query(`
         with polls_to_delete as (
-            select array(select id from polls where cardinality(report) => 10) as polls, author_id 
+            select array(select id from polls where cardinality(report) > 9) as polls, author_id 
             from polls 
             group by author_id
         ),
-        deleted as ( delete from polls where cardinality(report) => 10)
+        deleted as ( delete from polls where cardinality(report) > 9)
 
         update poller_data set polls_id = array_subtract(polls_id, polls_to_delete.polls) 
         from polls_to_delete

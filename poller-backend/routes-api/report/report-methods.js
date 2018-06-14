@@ -12,13 +12,13 @@ const report = {}
 
   report.reportPoll = (req, res) => {
     let token = validation.checkForToken(req.headers.authorization)
-    let voteData = reportValidation.validateCastVoteData(req.body)
+    let voteData = reportValidation.validateReportPollData(req.body)
     auth_0.getAuthProfile(token)
     .then(user=>{
       validation.validateUid(user)
       .then(user=>{
-        console.log('hitting query stage', voteData )
-        query.reportPost(res, user, voteData)
+        console.log('hitting query stage', voteData, user )
+        query.reportPoll(res, user, voteData)
       })
       .catch(err=>console.log(err))
     })

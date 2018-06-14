@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { Link, Route } from 'react-router-dom'
 import classnames from 'classnames';
 
-import PollResponseContainer from '../poll-response-container'
 import {compose} from 'recompose'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -65,12 +64,29 @@ class PollLandingContainer extends React.Component {
       castVoteHelpText:"Cast your Vote! Remember, however you have set your profile information is how your vote data will be submitted! Represent yourself in the answer!",
       pollResultsHelpText: "These are the results of how people have voted based on age, gender, religious affiliation, ethnicity, and profession! Perhaps some interesting trends are being discovered!"
     }
+    this.fetchVoteData = this.fetchVoteData.bind(this)
     this.handleHelpExpand = this.handleHelpExpand.bind(this)
     this.successOnCastVote = this.successOnCastVote.bind(this)
     this.errorOnCastVote = this.errorOnCastVote.bind(this)
+    this.throwError = this.throwError.bind(this)
   }
 
   componentWillMount() {
+    this.fetchVoteData()
+  }
+  
+  handleHelpExpand(){
+    this.setState({ helpExpanded: !this.state.helpExpanded });
+  }
+
+  successOnCastVote(pollData){
+    this.setState({alreadyVoted:true, error: false, pollData: pollData})
+  }
+  errorOnCastVote(){
+    this.setState({alreadyVoted:null, error: true, pollData: null})
+  }
+
+  fetchVoteData(){
     console.log('POLL LANDING CONTAINER::::', this.props.location.state)
     let {created_at, author_username} = this.props.location.state
     
@@ -85,6 +101,7 @@ class PollLandingContainer extends React.Component {
         pollData: result,
         pageLoading:false,
         error:false,
+        timer: 0,
         })
       }
     })
@@ -101,21 +118,28 @@ class PollLandingContainer extends React.Component {
           error:false,
           page:null,
           })
-        }
+        } 
+        // else {
+        //   this.setState({
+        //     alreadyVoted:false,
+        //     pollData: null,
+        //     pageLoading:false,
+        //     error:true,
+        //     page:null,
+        //     })
+        //   }
     })
   }
-  
-  handleHelpExpand(){
-    this.setState({ helpExpanded: !this.state.helpExpanded });
-  }
 
-  successOnCastVote(pollData){
-    this.setState({alreadyVoted:true, error: false, pollData: pollData})
+  throwError(){
+    this.setState({
+      alreadyVoted:false,
+      pollData: null,
+      pageLoading:false,
+      error:true,
+      page:null,
+      })
   }
-  errorOnCastVote(){
-    this.setState({alreadyVoted:null, error: true, pollData: null})
-  }
-
   
 
 
@@ -138,6 +162,9 @@ class PollLandingContainer extends React.Component {
         error={this.state.error}
         successOnCastVote={this.successOnCastVote}
         errorOnCastVote={this.errorOnCastVote}
+        errorTry={this.fetchVoteData}
+        start={Date.now()}
+        timeError={this.throwError}
         />
       </div>
     )

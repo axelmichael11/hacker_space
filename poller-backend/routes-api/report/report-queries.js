@@ -16,10 +16,10 @@ module.exports = {
           UPDATE polls 
           SET report = array_append(report, ($1)) 
           WHERE polls.author_username=($3)
-          AND polls.created_at=($1);      
+          AND polls.created_at=($2);      
               `,
               [
-                reportData.nickname,
+                user[`${env.uid}`],
                 reportData.created_at,
                 reportData.author_username,
               ],

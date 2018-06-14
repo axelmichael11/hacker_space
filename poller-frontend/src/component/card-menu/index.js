@@ -28,23 +28,8 @@ import ReportButton from './report-button.js'
 // import MyPollsButton from './poll-create-button.js'
 import LoadingHOC from '../loading'
 
+import MenuList from '@material-ui/core/MenuList';
 
-const SubmitReportButton = ({...props}) =>{
-  return (
-    <div 
-    // className={props.classes.buttonContainer}
-    >
-     <ListItem button className={props.classes.button} onClick={props.onClick}>
-        <ListItemIcon>
-            {props.buttonIcon}
-        </ListItemIcon>
-        <ListItemText inset primary={props.buttonTitle}/>
-    </ListItem>
-    </div>
-  )
-}
-
-const FeedBackReportButton = LoadingHOC(SubmitReportButton)
 
 
 const styles= {
@@ -57,7 +42,13 @@ const CardMenu = ({...props}) => {
         return (
             <div>
                 <Menu
-                  id="menu-appbar"
+                  id="card-menu"
+                  PaperProps={{
+                    style: {
+                      height: 70,
+                      width: 200,
+                    },
+                  }}
                   anchorEl={anchorEl}
                   anchorOrigin={{
                     vertical: 'top',

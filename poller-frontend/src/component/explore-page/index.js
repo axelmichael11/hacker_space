@@ -22,26 +22,18 @@ import ResponsiveDialog from '../dialog'
 import CardMenu from '../card-menu'
 import MenuItem from '@material-ui/core/MenuItem';
 import {reportPoll} from '../../action/report-poll-actions'
+import {handleThen} from '../../lib/util'
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import NotInterested from '@material-ui/icons/NotInterested';
 
 
 const styles = theme =>({
-
+  button: theme.overrides.MuiButton,
+  menuItem: theme.overrides.MuiMenuItem,
+  // primary: {},
+  // icon: {},
 })
-
-
-const applyUpdateResult = (result) => (prevState) => ({
-  hits: [...prevState.hits, ...result.hits],
-  page: result.page,
-  isError: false,
-  isLoading: false,
-});
-
-const applySetResult = (result) => (prevState) => ({
-  hits: result.hits,
-  page: result.page,
-  isError: false,
-  isLoading: false,
-});
 
 class ExplorePage extends React.Component {
   constructor(props) {
@@ -73,6 +65,8 @@ class ExplorePage extends React.Component {
 
       //card menu
       anchorEl: null,
+      pollMenuFocus:null,
+
 
     }
 
@@ -84,6 +78,8 @@ class ExplorePage extends React.Component {
     this.handleCloseCardMenu = this.handleCloseCardMenu.bind(this)
     this.renderMenuButtons = this.renderMenuButtons.bind(this)
     this.reportPoll = this.reportPoll.bind(this)
+    this.throwError = this.throwError.bind(this)
+    this.setPoll = this.setPoll.bind(this)
   }
 
   componentWillMount(){
@@ -97,16 +93,17 @@ class ExplorePage extends React.Component {
   }
 
   fetchPolls(){
-    this.setState({exploreLoading:true, })
+    this.setState({exploreLoading:true, exploreError:false })
     this.props.getPublicPolls()
     .then((res)=>{
       console.log(res)
-      this.setState({exploreLoading:false, })
+      this.setState({exploreLoading:false })
     })
     .catch((err)=>{
-      this.setState({exploreLoading:false,})
+      this.setState({exploreLoading:false, exploreError:true})
     })
   }
+
   handleCloseDialog(){
     this.setState({
       dialogOpen:false,
@@ -137,12 +134,14 @@ class ExplorePage extends React.Component {
   }
 
   openReportDialog(poll){
+    console.log('hitting open report dialog')
+
     this.setState({
-      pollToReport: poll,
       dialogTitle: this.state.reportTitle,
       dialogContent: this.state.reportContent,
       dialogSubmitText: this.state.submitReportText,
       dialogOpen: true,
+      anchorEl:null,
     })
   }
   
@@ -151,29 +150,49 @@ class ExplorePage extends React.Component {
   };
 
   handleCloseCardMenu(){
-    this.setState({ anchorEl: null, reportDialog: false });
+    this.setState({ anchorEl: null, reportDialog: false, pollMenuFocus:null });
   };
+
   renderMenuButtons(){
+    console.log('hitting render menu buttons')
     return (
-      <MenuItem onClick={this.openReportDialog}
+      <MenuItem onClick={this.openReportDialog} className={this.props.classes.menuItem}
       >
-      Report Poll</MenuItem>
+        <ListItemIcon style={{display:'inline-block'}}>
+            <NotInterested />
+          </ListItemIcon>
+        <ListItemText style={{display:'inline-block'}} inset primary="Report Poll" />
+      </MenuItem>
     )
   }
+
 
   reportPoll(){
     console.log('report POlL!!')
     this.setState({ dialogLoading: true });
-    this.props.reportPoll(this.props.poll)
+    this.props.reportPoll(this.state.pollMenuFocus)
     .then((res)=>{
         console.log(res)
-        this.setState({ dialogLoading: false });
-
+        handleThen(res, 
+          {status:200, 
+          state: { exploreLoading:false, 
+            exploreError:true,
+            dialogOpen:false,
+          },
+        })
       })
     .catch((err)=>{
         console.log(err)
         this.setState({ dialogLoading: false });
       })
+}
+
+throwError(){
+  this.setState({exploreLoading: false, exploreError:true})
+}
+
+setPoll(poll){
+  this.setState({pollMenuFocus: poll})
 }
 
 
@@ -197,13 +216,23 @@ class ExplorePage extends React.Component {
                 classes={classes}
                 />
 
+                <CardMenu
+                  anchorEl={this.state.anchorEl}
+                  renderMenuButtons={this.renderMenuButtons}
+                  handleClose={this.handleCloseCardMenu}
+                />
+
             <AdvancedList
               list={this.props.publicPolls}
               error={this.state.exploreError}
               Loading={this.state.exploreLoading}
               page={this.state.page}
               fetchPolls={this.fetchPolls}
-              openReportDialog={this.openReportDialog}
+              handleOpenCardMenu={this.handleOpenCardMenu}
+              classes={classes}
+              errorTry={this.fetchPolls}
+              throwError={this.throwError}
+              setPoll={this.setPoll}
               />
         </div>
       )

@@ -74,13 +74,28 @@ module.exports = {
 
     },
     overrides: {
-      
+      MuiCardMenu:{
+        height: 65
+      },
+
+      MuiMenuItem: {
+        backgroundColor: secondaryColor,
+        color:primaryColor,
+        display:'inline',
+        fontFamily: [
+          'Play',
+          'Roboto',
+          'Arial',
+          'sans-serif',
+        ].join(','),
+      },
+
       MuiButton: { 
         textAlign:'center',
             margin:15,
             textAlign: 'center',
-            backgroundColor: '#fff',
-            color:"#000",
+            backgroundColor: secondaryColor,
+            color:primaryColor,
             fontFamily: [
               'Play',
               'Roboto',

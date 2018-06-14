@@ -23,3 +23,5 @@ report.validateReportPollData = function(incomingReportPollData){
     console.log('he0re is the reportData function,', reportData)
     return reportData
 }
+
+module.exports = report;

@@ -23,16 +23,9 @@ import PublicPoll from '../public-poll-card'
 import LoadingHOC from '../loading'
 import PollVotePage from '../poll-vote-page'
 import PollResultsPage from '../poll-results-page'
+import Loader from '../loading/loader'
+import Error from '../error'
 
-
-const Loading = (props) => {
-    const { classes } = props;
-    return (
-      <div>
-        <CircularProgress style={{ color: "#000" }} thickness={7} size={50}/>
-      </div>
-    );
-  };
 
 
   const withLoading = (conditionFn) => (Component)  => (props) => {
@@ -42,7 +35,7 @@ const Loading = (props) => {
       <div className="interactions">
         <Component {...props} />
 
-        {conditionFn(props) && <Loading/>}
+        {conditionFn(props) && <Loader/>}
       </div>
     </div>
     )
@@ -51,21 +44,20 @@ const Loading = (props) => {
 
 
 
-const withPaginated = (conditionFn) => (Component)  => (props) =>
-  <div>
+const WithPaginated = (props) => {
+
+  return (  <div>
 
     <div className="interactions">
-      {
-        conditionFn(props) &&
         <div>
           <div>
             Something went wrong... Log out Please
           </div>
         </div>
-      }
     </div>
   </div>
-
+  )
+}
 
 
 
@@ -115,7 +107,7 @@ const renderVotePage =(conditionFn) => (Component) => (props) => {
   const RenderPollPage = compose(
     branch(
         (props)=>props.Loading,
-        renderComponent(Loading)
+        renderComponent(Loader)
     ),
     branch(
         (props) =>
@@ -128,7 +120,7 @@ const renderVotePage =(conditionFn) => (Component) => (props) => {
     branch(
         (props)=>
         !props.Loading && props.error,
-        renderComponent(withPaginated)
+        renderComponent(Error)
     )
   )(PollVotePage);
 
