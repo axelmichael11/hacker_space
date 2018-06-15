@@ -51,39 +51,39 @@ module.exports = {
         validatedPoll.created_at,
         ],
         function(err, success) {
-        if (success) {
-            if (success.rows[0]){
-            console.log('SUCCESS', success.rows[0])
-            let pollToDelete = pollValidate.formatPollDeleteSend(success.rows[0])
-            res.status(200).json(pollToDelete)
-            }
-            if (success.rowCount==0){
-            console.log('success, not returning anything', success)
-            res.status(401).json({message:'poll was not found'})
-            } 
-            // else {
-            // console.log('success', success)
-            // res.status(500).json({error:'Internal server error'})
-            // }
-        } 
-        else {
-            if (err.name =='error') {
-            console.log('err.name', err)
-            res.status(500).send({error: err.name})
-            }
-        }
+        // if (success) {
+        //     if (success.rows[0]){
+        //     console.log('SUCCESS', success.rows[0])
+        //     let pollToDelete = pollValidate.formatPollDeleteSend(success.rows[0])
+        //     res.status(200).json(pollToDelete)
+        //     }
+        //     if (success.rowCount==0){
+        //     console.log('success, not returning anything', success)
+        //     res.status(401).json({message:'poll was not found'})
+        //     } 
+        // } 
+        // else {
+        //     if (err.name =='error') {
+        //     console.log('err.name', err)
+        //     res.status(500).send({error: err.name})
+        //     }
+        // }
+            res.status(500).send('sup')
         })
     },
-    getPollsQuery: (res,user)=>{
+    getPollsQuery: (res,user, expirationDate)=>{
         Client.query(`
-        SELECT question, subject, author_username, created_at from polls WHERE author_id=($1)
+        SELECT question, subject, author_username, created_at,
+        (($2)-EXTRACT(hour from (now() - date))) as expiration
+        from polls WHERE author_id=($1)
          `,
         [
           user[`${env.uid}`],
+          expirationDate,
         ],
         function(err, success) {
           if (success) {
-            console.log('this is success from db', success)
+            console.log('this is success from POLLLLLLLLS DB', success)
             res.status(200).send(success.rows)
           } else {
             if (err) {

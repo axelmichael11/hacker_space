@@ -84,7 +84,7 @@ class NavBar extends React.Component {
           <AppBar position="static" className={classes.appBar}>
           <Toolbar>
          
-            <Typography variant="title" color="inherit" style={{flex: 1}}>
+            <Typography variant="display1" color="inherit" style={{flex: 1}}>
               Poller
             </Typography>
             <NavMenu/>

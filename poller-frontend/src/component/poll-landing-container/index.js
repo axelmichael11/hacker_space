@@ -1,122 +1,170 @@
 //packages
 import React from 'react'
-import Auth0Lock from 'auth0-lock'
 import { connect } from 'react-redux'
 import { Link, Route } from 'react-router-dom'
-import {Loading} from '../loading'
-import PollResponseContainer from '../poll-response-container'
+import classnames from 'classnames';
 
+import {compose} from 'recompose'
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import {loadingOff} from '../../action/loading-actions'
 
 //Methods
+import {fetchVoteHistory} from '../../action/vote-actions'
 
 
 import * as util from '../../lib/util.js'
-//These will be used, to store id of the user in the database...
+
+import RenderPollPage from '../render-poll-page'
+
 
 
 
 //Style
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-
-import AppBar from 'material-ui/AppBar'
 
 
+//HOC
+// const RenderRenderPollPage = RenderPollPage()
 
-import FlatButton from 'material-ui/FlatButton'
-import FontAwesome from 'react-fontawesome' 
 
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
-import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import ContentFilter from 'material-ui/svg-icons/content/filter-list';
-import FileFileDownload from 'material-ui/svg-icons/file/file-download';
-import {withRouter} from 'react-router-dom'
-import {
-    fetchVoteHistory
-} from '../../action/vote-actions'
-import {
-  Card,
-  CardActions,
-  CardHeader,
-  CardMedia,
-  CardTitle,
-  CardText,
-} from 'material-ui/Card'
+import HelpTab from '../help-feature'
+
+
+const styles = theme => ({
+  container: theme.overrides.MuiPaper,
+  text: theme.typography.text,
+  expand: {
+    transform: 'rotate(0deg)',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+    marginLeft: 'auto',
+  },
+  expandOpen: {
+    transform: 'rotate(180deg)',
+  },
+  actions: {
+    display: 'flex',
+  },
+  expandMoreIcon:{
+    colorPrimary: theme.palette.secondary.main
+  }
+})
+
 
 class PollLandingContainer extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      loading: true,
-      alreadyVoted:false,
-      pollData:null
+      pageLoading: false,
+      alreadyVoted:null,
+      pollData:null,
+      helpExpanded: false,
+      error:false,
+      castVoteHelpText:"Cast your Vote! Remember, however you have set your profile information is how your vote data will be submitted! Represent yourself in the answer!",
+      pollResultsHelpText: "These are the results of how people have voted based on age, gender, religious affiliation, ethnicity, and profession! See for yourself how people are voting!"
     }
-    this.fetchPollInfo = this.fetchPollInfo.bind(this)
-    this.castAlreadyVoted = this.castAlreadyVoted.bind(this)
-    this.setDataAfterVote = this.setDataAfterVote.bind(this)
+    this.fetchVoteData = this.fetchVoteData.bind(this)
+    this.handleHelpExpand = this.handleHelpExpand.bind(this)
+    this.successOnCastVote = this.successOnCastVote.bind(this)
+    this.errorOnCastVote = this.errorOnCastVote.bind(this)
+    this.throwError = this.throwError.bind(this)
   }
 
   componentWillMount() {
+    this.fetchVoteData()
+  }
+  
+  handleHelpExpand(){
+    this.setState({ helpExpanded: !this.state.helpExpanded });
+  }
+
+  successOnCastVote(pollData){
+    this.setState({alreadyVoted:true, error: false, pollData: pollData})
+  }
+  errorOnCastVote(){
+    this.setState({alreadyVoted:null, error: true, pollData: null})
+  }
+
+  fetchVoteData(){
     console.log('POLL LANDING CONTAINER::::', this.props.location.state)
     let {created_at, author_username} = this.props.location.state
+    
     let voteData = Object.assign({},{created_at, author_username})
+    this.setState({pageLoading:true})
     this.props.fetchVoteHistory(voteData)
     .then((result)=>{
       console.log('RESULT', result, result.status)
       if (result.status==200){
-        this.setState({alreadyVoted:true,
+        this.setState({
+        alreadyVoted:true,
         pollData: result,
+        pageLoading:false,
+        error:false,
+        timer: 0,
         })
-        this.props.loadingOff()
       }
     })
     .catch(err=>{
-      console.log('this si the errro', err)
-        this.setState({alreadyVoted:false,
-          pollData: null
-          })
-      this.props.loadingOff();
-  })
-  }
-
-  setDataAfterVote(results){
-    this.setState({
-      pollData: results
+      console.log('this si the errro', err.status);
+      if (err.status===500) {
+        this.setState({
+          alreadyVoted:false,
+          pollData: null,
+          pageLoading:false,
+          error:true,
+          page:null,
+        });
+      }
+      if (err.status===401){
+        this.setState({
+          alreadyVoted:false,
+          pollData: null,
+          pageLoading:false,
+          error:false,
+          page:null,
+        });
+      }
+      //only for 500 and 401 errors
     })
   }
 
-  castAlreadyVoted(){
-    this.setState({alreadyVoted:true})
+  throwError(){
+    this.setState({
+      alreadyVoted:false,
+      pollData: null,
+      pageLoading:false,
+      error:true,
+      page:null,
+      })
   }
-
-  fetchPollInfo(){
-    console.log(this.state, 'state on the poll landing containter')
-      return (
-          this.props.Loading ? <Loading/> :
-          <PollResponseContainer 
-          setDataAfterVote={this.setDataAfterVote} 
-          castAlreadyVoted={this.castAlreadyVoted} 
-          pollData={this.state.pollData} 
-          alreadyVoted={this.state.alreadyVoted}/>
-      )
-  }
-
-
-
-
+  
 
 
   render() {
-    console.log('NAVBAR', this.props)
+    console.log('poll landing container', this.props, this.state)
+    let {classes} = this.props
     return (
-      <div className="login-box">
-        {
-           this.fetchPollInfo()
-        }
+      <div >
+        <HelpTab
+          helpExpanded={this.state.helpExpanded}
+          handleHelpExpand={this.handleHelpExpand}
+          classes={classes}
+          helpText={this.state.alreadyVoted ? this.state.pollResultsHelpText: this.state.castVoteHelpText}
+        />
+        <RenderPollPage
+        Loading={this.state.pageLoading}
+        pollData={this.state.pollData}
+        poll={this.props.location.state}
+        alreadyVoted={this.state.alreadyVoted}
+        error={this.state.error}
+        successOnCastVote={this.successOnCastVote}
+        errorOnCastVote={this.errorOnCastVote}
+        errorTry={this.fetchVoteData}
+        start={Date.now()}
+        timeError={this.throwError}
+        throwGeneralError={ this.throwError}
+        />
       </div>
     )
   }
@@ -129,7 +177,11 @@ export const mapStateToProps = state => ({
 
 export const mapDispatchToProps = dispatch => ({
     fetchVoteHistory: (poll) => dispatch(fetchVoteHistory(poll)),
-    loadingOff: () => dispatch(loadingOff())
+    loadingOff: () => dispatch(loadingOff()),
+    handleThen:(res) => dispatch(handleThen(res))
 })
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(PollLandingContainer))
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+    withStyles(styles, {withTheme:true}),
+    )(PollLandingContainer);

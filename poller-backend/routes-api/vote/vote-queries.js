@@ -8,19 +8,25 @@ const env = {
 };
 
 
+// SELECT cardinality(votes) as count, array_yes_data, array_no_data
+// FROM polls
+// WHERE author_username=($2) 
+// AND created_at=($1) 
+// AND ($3) = ANY(votes)
+// GROUP BY polls.array_yes_data, polls.array_no_data, cardinality(polls.votes);
 
 
 module.exports = {
     getVotes : (res, user, voteData)=> {
 
-        Client.query(`
+        Client.query(`       
                 SELECT cardinality(votes) as count, array_yes_data, array_no_data
                 FROM polls
                 WHERE author_username=($2) 
                 AND created_at=($1) 
                 AND ($3) = ANY(votes)
                 GROUP BY polls.array_yes_data, polls.array_no_data, cardinality(polls.votes);
-              `,
+                `,
               [
                 voteData.created_at,
                 voteData.author_username,
@@ -30,7 +36,7 @@ module.exports = {
                 if (success) {
                   console.log('this is success from db', success)
                   if (success.rows[0]) {
-                      let data = vollValidate.formatSendData(success.rows[0].array_yes_data, success.rows[0].array_no_data, success.rows[0].count)
+                      let data = vollValidate.formatSendData(success.rows[0].array_yes_data, success.rows[0].array_no_data, success.rows[0].count, success.rows[0].expiration)
                     res.status(200).send(data)
                   }
                     res.status(401).send()
@@ -83,9 +89,8 @@ castNoVote = (res,user,voteData)=>{
       if (success.rows.length >0) {
         let data = vollValidate.formatSendData(success.rows[0].array_yes_data, success.rows[0].array_no_data, success.rows[0].count)
         res.status(200).send(data)
-      }
-      if (success.rows.length = 0){
-        res.status(401).send(success.rows[0])
+      }else {
+        res.status(404).send('no poll was found! this was deleted previously')
       }
     } else {
       if (err) {
@@ -119,13 +124,12 @@ castYesVote = (res,user,voteData)=>{
               ],
               function(err, success) {
                 if (success) {
-                  console.log('this is success from db', (success.rows.length> 0), success.rows[0])
+                  console.log('this is success from db', success, (success.rows.length> 0), success.rows[0])
                   if (success.rows.length >0) {
                     let data = vollValidate.formatSendData(success.rows[0].array_yes_data, success.rows[0].array_no_data, success.rows[0].count)
                     res.status(200).send(data)
-                  }
-                  if (success.rows.length = 0){
-                    res.status(204).send('no content found')
+                  }else {
+                    res.status(404).send('no poll was found! this was deleted previously')
                   }
                 } else {
                   if (err) {

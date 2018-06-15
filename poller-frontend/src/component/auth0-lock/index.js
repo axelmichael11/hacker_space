@@ -21,8 +21,8 @@ import Button from '@material-ui/core/Button';
 
 
 const styles = theme => ({
-  container: theme.overrides.MuiButton.root.container,
-  button: theme.overrides.MuiButton.root.button,
+  container: theme.overrides.MuiButton.container,
+  button: theme.overrides.MuiButton,
 })
 
 

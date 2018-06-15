@@ -30,10 +30,6 @@ module.exports = {
         'Arial',
         'sans-serif',
       ].join(','),
-      title:{
-        fontFamily:"Play",
-        fontSize: 25,
-      },
       text:{
         fontFamily:"Play",
         fontSize: 15,
@@ -41,29 +37,65 @@ module.exports = {
       headline:{
         fontFamily:"Play",
         fontSize: 30,
+        textAlign:'center'
+      },
+      display2:{
+        fontFamily:"Play",
+        // fontSize: 30,
+        textAlign:'center'
       },
       subheading:{
-        display:'inline-block',
+        // margin:'auto',
+        display:'block',
         fontFamily:"Play",
-        fontSize: 15,
+        // textAlign: 'center'
+      },
+
+      title:{
+        color:secondaryColor,
+        backgroundColor: primaryColor,
+        // margin:'auto',
+      },
+      
+      display1:{
+        color:secondaryColor,
+        backgroundColor: primaryColor,
+      },
+
+      display3:{
+        fontFamily: [
+          'Play',
+          'Roboto',
+          'Arial',
+          'sans-serif',
+        ].join(','),
+        margin:'auto'
       }
+
     },
     overrides: {
-      MuiButton: { // Name of the component ⚛️ / style shee
-        root: {
-          container: {
-            textAlign:'center',
-            display: 'flex',
-            flexWrap: 'wrap',
-            textAlign:'center',
-            
-          },
-          button: {
-            textAlign:'center',
+      MuiCardMenu:{
+        height: 65
+      },
+
+      MuiMenuItem: {
+        backgroundColor: secondaryColor,
+        color:primaryColor,
+        display:'inline',
+        fontFamily: [
+          'Play',
+          'Roboto',
+          'Arial',
+          'sans-serif',
+        ].join(','),
+      },
+
+      MuiButton: { 
+        textAlign:'center',
             margin:15,
             textAlign: 'center',
-            backgroundColor: '#fff',
-            color:"#000",
+            backgroundColor: secondaryColor,
+            color:primaryColor,
             fontFamily: [
               'Play',
               'Roboto',
@@ -74,8 +106,17 @@ module.exports = {
               backgroundColor: '#000',
               color:'#fff'
             },
-          },
-        },
+            margin:'auto',
+            display: 'flex',
+            flexWrap: 'wrap',
+            textAlign:'center',
+            container:{
+              margin:'auto',
+              display: 'flex',
+              flexWrap: 'wrap',
+              textAlign:'center',
+              margin:20
+            }
       },
       MuiMenu:{
         borderColor: primaryColor,
@@ -83,9 +124,9 @@ module.exports = {
       MuiListItem:{
         // backgroundColor: theme.palette.primary.main,
         // color:theme.palette.secondary.main,
-        title: { width:'30%'},
+        title: { width:'50%'},
         container:{
-          width: '70%',
+          width: '50%',
           maxWidth: 500,
         },
         border: '1px black solid',
@@ -112,11 +153,6 @@ module.exports = {
       },
       PollCard:{
         cardHeader:{
-          root:{
-            fontFamily: appFonts,
-            color:secondaryColor,
-            backgroundColor: primaryColor,
-          },
           textAlign:'center',
           fontFamily: appFonts,
           color: secondaryColor,
@@ -131,7 +167,8 @@ module.exports = {
             fontFamily:appFonts,
             backgroundColor: primaryColor,
           },
-          textAlign:'center',
+          // textAlign:'center',
+          margin:0,
         },
       },
       MuiCheckbox: {
@@ -148,151 +185,85 @@ module.exports = {
         },
         colorPrimary: secondaryColor,
       },
-    }
-  },
 
-  
-  text:{
-    fontFamily: [
-      'Play',
-      'Roboto',
-      'Arial',
-      'sans-serif',
-    ].join(','),
-    fontSize: 15,
-    color:'#000'
-  },
-  title:{
-    marginBottom:15,
-    fontFamily: [
-      'Play',
-      'Roboto',
-      'Arial',
-      'sans-serif',
-    ].join(','),
-    fontSize: 35,
-    color:'#000'
-  },
-  container_paper: theme => ({
-      root: theme.mixins.gutters({
-        maxWidth: 450, 
+
+      MuiCardActions:{
+       root:{
+        maxWidth: 600, 
         margin: 'auto',
-        marginBottom:20,
-        paddingTop: 16,
-        marginTop: theme.spacing.unit * 3,
-      }),
-    }),
-    flat_button: theme => ({
-      container: {
-        display: 'flex',
-        flexWrap: 'wrap',
-      },
-      button: {
-        margin: theme.spacing.unit,
-        marginBottom:15,
-        textAlign: 'center',
-        backgroundColor: '#000',
-        color:"#fff",
-        borderColor: '#000',
-        fontFamily: [
-          'Play',
-          'Roboto',
-          'Arial',
-          'sans-serif',
-        ].join(','),
-        '&:hover': {
-          backgroundColor: '#808080',
-        },
-      },
-    }),
-    flat_button_2: theme => ({
-      container: {
-        textAlign:'center',
-        display: 'flex',
-        flexWrap: 'wrap',
-      },
-      button: {
-        margin: theme.spacing.unit,
-        marginBottom:15,
-        textAlign: 'center',
-        backgroundColor: '#fff',
-        color:"#000",
-        fontFamily: [
-          'Play',
-          'Roboto',
-          'Arial',
-          'sans-serif',
-        ].join(','),
-        '&:hover': {
-          backgroundColor: '#000',
-          color:'#fff'
-        },
-      },
-    }),
-    navBar:{
-      navBar:{
-        fontSize: 20,
-        fontFamily: "Play",
-        backgroundColor: '#000',
-      },
-      root:{
         flexGrow: 1,
+        backgroundColor:primaryColor,
+        color:secondaryColor,
+        }
       },
-      flex:{
-        flex:1
-      },
+      MuiCollapse:{
+        root:{
+            backgroundColor:secondaryColor,
+            color:primaryColor,
+          },
+        container:{
+          maxWidth: 600, 
+          margin: 'auto',
+          // marginBottom:20,
+          flexGrow: 1,
+          // margin:5
+        },
+        wrapperInner:{
+          display:"inline-block"
+        }
+      }
     },
-    getting_started_page: theme => ({
-      root: {
-        width: '90%',
-      },
-      paper_root: theme.mixins.gutters({
-        maxWidth: 450, 
-        margin: 'auto',
-        marginBottom:20,
-        paddingTop: 16,
-        marginTop: theme.spacing.unit * 3,
-      }),
-      button: {
-        marginRight: theme.spacing.unit,
-      },
-      instructions: {
-        marginTop: theme.spacing.unit,
-        marginBottom: theme.spacing.unit,
-      },
-    }),
 
-
-
-
-
-
-
-
-
-
-
-
+    uniqueStyles:{
+      MuiVoteButton:{ 
+        textAlign:'center',
+            margin:15,
+            textAlign: 'center',
+            backgroundColor: '#fff',
+            color:"#000",
+            fontFamily: [
+              'Play',
+              'Roboto',
+              'Arial',
+              'sans-serif',
+            ].join(','),
+            '&:hover': {
+              backgroundColor: '#000',
+              color:'#fff'
+            },
+            margin:'auto',
+            // display: 'flex',
+            width:'50%',
+            flexWrap: 'wrap',
+            textAlign:'center',
+            container:{
+              margin:'auto',
+              display: 'flex',
+              flexWrap: 'wrap',
+              textAlign:'center',
+              margin:20
+            }
+          },
+          dialogStretchedButtons:{
+            root:{
+              display:'block',
+            }
+          },
+          pie_hover_text:{
+            fontSize: 20,
+            fontFamily: "Play",
+            margin:'auto',
+            color:'white',
+            backgroundColor:'black'
+          },
+    },
+  },
     pie_hover_text:{
       fontSize: 20,
       fontFamily: "Play",
       margin:'auto',
       color:'white',
       backgroundColor:'black'
-    },
-    sub_title: {
-
-    },
-    appBarTitle:{
-      fontSize: 40,
-        fontFamily: "Play",
-        margin:'auto',
-        backgroundColor:'#000'
-    },
-    text: {
-        fontSize: 20,
-        fontFamily: "Play",
-        margin:'auto'
     },
     legendText:{
       fontSize: 10,
@@ -301,56 +272,4 @@ module.exports = {
       block: {
         maxWidth: 250,
       },
-      checkbox: {
-        color: primaryColor,
-        marginBottom: 16,
-        marginLeft: 10,
-        fontFamily: 'Play',
-        fontSize: 20,
-      },
-      selectFieldWidth: {
-        width: 250,
-        display:'inline-block',
-        margin:'auto',
-        fontFamily: 'Play',
-        fontSize: 20,
-      },
-      intro_container:{
-        maxWidth: 450, 
-        height:300,
-        margin: 'auto',
-        marginBottom:20
-      },
-      login_container:{
-        maxWidth: 450, 
-        margin: 'auto'
-      },
-      middle_icon: {
-        display:'center',
-        margin:'auto',
-        width: 50,
-        height: 50,
-        textAlign: 'center',
-        position: 'relative'
-      },
-      voteButtons:{
-        display:'center',
-        margin:'auto',
-        width: '50%',
-        fontSize: 20,
-        fontFamily: "Play"
-      },
-      legendStyle:{
-        maxWidth: 300,
-        margin: 'auto', 
-        marginBottom: 15, 
-        textAlign:'center',
-        position:'relative'
-      },
-      legendChip:{
-        marginTop:5,
-         marginBottom:5,  
-         fontFamily:'Play', 
-      position:'relative'
-    },
 }

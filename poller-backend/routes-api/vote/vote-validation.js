@@ -78,6 +78,7 @@ vote.reducedYesOrNoData = function(dataArray){
         acc.age_data['unknown age']=+1; 
     } else {
         let age = vote.categorizeAge(dataArray[i][0])
+        console.log('AGEEEE',age)
         acc.age_data[age]=+1
     }
     //country
@@ -146,33 +147,36 @@ vote.reducedYesOrNoData = function(dataArray){
 }
 
 vote.categorizeAge = function(age){
+    console.log('this is the AGEEEE', age)
+    let intAge = parseInt(age);
+
     let ageCategory;
-    if (0<age<=17){
+    if(0 < age && age < 18 ){
         ageCategory = '0-17';
     }
-    if (17<age<= 26 ) {
+    if ( 17 < age && age < 27 ) {
         ageCategory = '18-26';
     }
-    if (26<age<= 32 ) {
+    if ( 26 < age && age < 33  ) {
         ageCategory = '27-32';
     }
-    if (32<age<= 40 ) {
+    if ( 32 < age && age < 41  ) {
         ageCategory = '33-40';
     }
-    if (40<age<= 50 ) {
+    if ( 40 < age && age < 51 ) {
         ageCategory = '41-50';
     }
-    if (50<age<= 70 ) {
+    if ( 50 < age && age < 71 ) {
         ageCategory = '51-70';
     }
-    if (70<age) {
+    if (70 < intAge) {
         ageCategory = '71 and Older';
     }
     return ageCategory
 }
 
 
-vote.formatSendData = function(yes_data_array, no_data_array, voteCount){
+vote.formatSendData = function(yes_data_array, no_data_array, voteCount, expiration){
 
     let isZero = (voteCount ===0);
     let data = {};
@@ -182,7 +186,7 @@ vote.formatSendData = function(yes_data_array, no_data_array, voteCount){
     data.totals_data.yesVotes = isZero ? 0 : (data.yes_data.totalVotes/voteCount)*100;
     data.totals_data.noVotes = isZero ? 0 : (data.no_data.totalVotes/voteCount)*100;
     data.totals_data.totalVotes = voteCount;
-
+    data.expiration = expiration;
     console.log('this is the DATA TO SEND', data)
     return data
 }

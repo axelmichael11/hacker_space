@@ -51,11 +51,14 @@ import UserPollCard from '../user-poll-card'
 import LoadingHOC from '../loading'
 import {MyPolls} from '../my-polls'
 
+import HelpTab from '../help-feature'
 
 
 const SubmitButton = ({...props}) =>{
   return (
-    <div className={props.classes.buttonContainer}>
+    <div 
+    // className={props.classes.buttonContainer}
+    >
       <Button 
       variant="outlined"
       onClick={props.submitClick} 
@@ -78,8 +81,8 @@ const FeedBackMyPolls = LoadingHOC(MyPolls);
     ageSelect:{
       marginLeft: 15,
     },
-    buttonContainer: theme.overrides.MuiButton.root.container,
-    button: theme.overrides.MuiButton.root.button,
+    // buttonContainer: theme.overrides.MuiButton.root.container,
+    button: theme.overrides.MuiButton,
    
     text: theme.typography.text,
     expand: {
@@ -95,6 +98,10 @@ const FeedBackMyPolls = LoadingHOC(MyPolls);
     actions: {
       display: 'flex',
     },
+    expandMoreIcon:{
+      colorPrimary: theme.palette.secondary.main
+    },
+
     cardHeader:theme.overrides.PollCard.cardHeader,
     cardContent:theme.overrides.PollCard.cardContent,
     formControl: {
@@ -125,18 +132,33 @@ class PollCreatePage extends React.Component {
         snackBarDuration: 5000,
         openPollCreateSuccess:false,
         pollCreateSuccessMessage:'Poll has been created!',
-        openPollDeleteSuccess:false,
-        pollDeleteSuccessMessage:'Poll has been deleted!',
-        unknownErrorMessage:'Unknown Error has Occurred...',
+        //poll delete
+        pollDeleteLoad:false,
         pollDeleteAlert: false,
         pollToDelete: null,
-        helpExpanded:false,
+          //success
+          openPollDeleteSuccess:false,
+          pollDeleteSuccessMessage:'Poll has been deleted!',
+          //failure
+          pollDeleteErrorMessage:'Unable to delete Poll... Try again later',
+          openPollDeleteError:false,
+
+        unknownErrorMessage:'Unknown Error has Occurred... Try again later',
+        
+        
         unknownError: false,
+
+
         //loading
         pollCreateLoad:false,
         MyPollsLoad:false,
-        pollDeleteLoad:false,
+        
 
+        // help
+        helpExpanded:false,
+        helpText: `Represent yourself! None of these fields are required,
+        and no demographic information specific to you is shown in the results of a poll.
+        These can be updated as often as necessary. Why not make this app a little more interesting?`
     }
   this.handleHelpExpand = this.handleHelpExpand.bind(this)
    this.handlePollSubmitCreate = this.handlePollSubmitCreate.bind(this)
@@ -154,6 +176,7 @@ class PollCreatePage extends React.Component {
    this.handlePollDeleteSuccess = this.handlePollDeleteSuccess.bind(this)
    this.handlePollDeleteAlertOpen = this.handlePollDeleteAlertOpen.bind(this)
    this.handlePollDeleteAlertClose = this.handlePollDeleteAlertClose.bind(this)
+   this.handlePollDeleteError = this.handlePollDeleteError.bind(this)
 
    this.handleSubmitPollDelete = this.handleSubmitPollDelete.bind(this)
   }
@@ -221,6 +244,20 @@ class PollCreatePage extends React.Component {
     this.setState((oldState)=>{
       return {
         openPollDeleteSuccess: !oldState.openPollDeleteSuccess,
+        pollDeleteLoad:false,  
+        pollDeleteAlert:false, 
+        pollToDelete:null
+      }
+    });
+  }
+
+  handlePollDeleteError(){
+    this.setState((oldState)=>{
+      return {
+        openPollDeleteError: !oldState.openPollDeleteError,
+        pollDeleteLoad:false,  
+        pollDeleteAlert:false, 
+        pollToDelete:null
       }
     });
   }
@@ -257,11 +294,13 @@ class PollCreatePage extends React.Component {
     this.setState({pollDeleteLoad:true})
     this.props.pollDelete(this.state.pollToDelete)
     .then((res)=>{
-      console.log('this is the response', res)
+      if (res.status===200){
+        this.handlePollDeleteSuccess()
+      }
 
-      this.handlePollDeleteAlertClose()
-  })
+    })
   .catch(err=>{
+    console.log('this is the erorr on the poll delete ', err)
     let status = err.toString().slice(-3)
     console.log('this is the error 2 ', )
     if (status.includes('401')){
@@ -270,7 +309,7 @@ class PollCreatePage extends React.Component {
     }
     if (status.includes('501')){
       console.log('501 error ', )
-      this.handlePollDeleteAlertClose()
+      this.handle()
 
     } else {
       console.log('other error ', )
@@ -306,9 +345,10 @@ class PollCreatePage extends React.Component {
       })
       .catch(err=>{
         let status = err.toString().slice(-3)
-        console.log('this is the error 2 ', )
+        console.log('this is the error 2 ', err, status)
         if (status.includes('550')){
           this.handleMaxPollReached();
+          this.setState({pollCreateLoad:false })
         } else {
           this.handleUnknownError();
           this.setState({pollCreateLoad:false,  pollDeleteAlert:false})
@@ -320,6 +360,8 @@ class PollCreatePage extends React.Component {
     this.setState((oldState)=>{
       return {
         unknownError: !oldState.unknownError,
+        pollDeleteLoad: false,
+        pollCreateLoad:false,
       }
     });
   }
@@ -357,44 +399,18 @@ class PollCreatePage extends React.Component {
                 submitClick={this.handleSubmitPollDelete}
                 buttonTitle={'Delete Poll'}
                 Loading={this.state.pollDeleteLoad}
+                timeError={this.handleUnknownError}
               />
             </div>
           </DialogActions>
         </Dialog>
-          
-          <Paper className={classes.container}>
-          <Card>
-            <CardActions 
-              disableActionSpacing
-              onClick={this.handleHelpExpand}
-            >
-                <Typography className={classes.text}>
-                  Help
-                </Typography>
-                
-                <IconButton
-                  className={classnames(classes.expand, {
-                    [classes.expandOpen]: this.state.helpExpanded,
-                  })}
-                  // onClick={this.handleExpandClick}
-                  aria-expanded={this.state.helpExpanded}
-                  aria-label="Show more"
-                >
-                  <ExpandMoreIcon />
-                </IconButton>
-              </CardActions>
-            <Collapse in={this.state.helpExpanded} timeout="auto" unmountOnExit>
-              <CardContent>
-                  <Typography className={classes.text}>
-                Update your profile information if you want this information to be anonomysously submitted when
-                  answering questions! None of these fields are required,
-                  and no demographic information specific to you is shown in the results of a poll.
-                  These can be updated as often as necessary. Why not make this app a little more interesting?
-                </Typography>
-              </CardContent>
-            </Collapse>
-          </Card>
-        </Paper>
+
+        <HelpTab
+          helpExpanded={this.state.helpExpanded}
+          handleHelpExpand={this.handleHelpExpand}
+          classes={classes}
+          helpText={this.state.helpText}
+        />
 
         <Paper className={classes.container}>
         <Card>
@@ -450,6 +466,7 @@ class PollCreatePage extends React.Component {
                 submitClick={this.handlePollSubmitCreate}
                 buttonTitle={'Create Poll'}
                 Loading={this.state.pollCreateLoad}
+                timeError={this.handleUnknownError}
               />
             </CardContent>
           </Card>
@@ -495,6 +512,8 @@ class PollCreatePage extends React.Component {
           autoHideDuration={this.state.snackBarDuration}
           onClose={this.handlePollCreateSuccess}
         />
+
+
         <Snackbar
           open={this.state.openMaxPollReached}
           message={this.state.maxPollReachedMessage}
@@ -508,6 +527,14 @@ class PollCreatePage extends React.Component {
           action={null}
           autoHideDuration={this.state.snackBarDuration}
           onClose={this.handlePollDeleteSuccess}
+        />
+
+        <Snackbar
+          open={this.state.openPollDeleteError}
+          message={this.state.pollDeleteErrorMessage}
+          action={null}
+          autoHideDuration={this.state.snackBarDuration}
+          onClose={this.handlePollDeleteError}
         />
         <Snackbar
           open={this.state.unknownError}
@@ -525,7 +552,6 @@ export const mapStateToProps = state => ({
     loggedIn: state.loggedIn,
     userProfile: state.userProfile,
     userPolls: state.userPolls,
-    Loading: state.Loading
   })
   
   export const mapDispatchToProps = dispatch => ({

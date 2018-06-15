@@ -11,7 +11,6 @@ import Face from '@material-ui/icons/face'
 // import SwapVert from '@material-ui/icons/swap-vert'
 
 
-import FlatButton from 'material-ui/FlatButton';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
@@ -24,14 +23,7 @@ import '../../style/index.scss'
 
 const styles = theme=> ({
   container: theme.overrides.MuiPaper,
-  middle_icon: {
-    display:'center',
-    margin:'auto',
-    width: 50,
-    height: 50,
-    textAlign: 'center',
-    position: 'relative'
-  }
+ 
 })
 class LoginPage extends React.Component {
   constructor(props) {
@@ -50,17 +42,9 @@ class LoginPage extends React.Component {
       <div>
           <Paper elevation={2} className={classes.container}>
             <p id="title">Poller</p>
-
-            <div id="parent">
-                <Face className={classes.middle_icon}/>
-            </div>
-
             <NavigateGettingStartedButton/>
           </Paper>
-
-          <Paper elevation={2} className={classes.container}>
             <AuthLockButton style={{margin: 15}}/>
-          </Paper>
       </div>
     )
   }

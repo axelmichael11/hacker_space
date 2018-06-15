@@ -11,48 +11,47 @@ import _ from 'lodash'
 import Paper from 'material-ui/Paper'
 
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
-import {
-    Step,
-    Stepper,
-    StepButton,
-    StepContent,
-  } from 'material-ui/Stepper';
-import RaisedButton from 'material-ui/RaisedButton';
-import MaterialStyles from '../../style/material-ui-style'
-import AppBar from 'material-ui/AppBar'
 import '../../style/index.scss'
 
 import {fetchPolls} from '../../action/public-poll-actions.js'
 import LoginPage from '../login'
 
-import PublicPoll from '../public-poll-card'
+import UserPollCard from '../user-poll-card'
 
-const List = ({ list }) => 
+import IconButton from '@material-ui/core/IconButton';
+import NotInterested from '@material-ui/icons/NotInterested';
+import Loader from '../loading/loader'
+import Error from '../error'
+import { Button } from '@material-ui/core';
+import ResponsiveDialog from '../dialog'
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+
+
+const List = ({ ...props }) =>
     <div className="list">
-    {list.map(poll => <div className="list-row" key={poll.objectID}>
-        <PublicPoll 
-        author_username={poll.author_username} 
-        created_at={poll.created_at}
-        subject={poll.subject}
-        question={poll.question}
+    
+    {props.list.map((poll, key) => 
+      <div className="list-row" key={poll.objectID}>
+        <UserPollCard
+          pollActions={<IconButton
+            onClick={(event)=> {
+              props.handleOpenCardMenu(event)
+              props.setPoll(poll)
+            }}
+            >
+            <MoreVertIcon 
+            style={{color:'#fff'}}
+            />
+            </IconButton>}
+          poll={poll}
+          key={key}
+          // classes={props.classes}
         />
-    </div>)}
+      </div>)}
   </div>
 
-
-const Loading = (props) => {
-  const { classes } = props;
-  return (
-    <div>
-      <CircularProgress style={{ color: "#000" }} thickness={7} size={50}/>
-    </div>
-  );
-};
-
-const withPaginated = (conditionFn) => (Component) => (props) =>
+const withError = (conditionFn) => (Component) => (props) =>
   <div>
     <Component {...props} />
 
@@ -60,15 +59,7 @@ const withPaginated = (conditionFn) => (Component) => (props) =>
       {
         conditionFn(props) &&
         <div>
-          <div>
-            Something went wrong...
-          </div>
-          <button
-            type="button"
-            onClick={props.fetchPolls}
-          >
-            Try Again
-          </button>
+          <Error/>
         </div>
       }
     </div>
@@ -76,13 +67,12 @@ const withPaginated = (conditionFn) => (Component) => (props) =>
 
 
 const withLoading = (conditionFn) => (Component) => (props) => {
-  console.log('HITTING LOADING COMPONENT', conditionFn, Component, props, )
   return(
     <div>
     <Component {...props} />
 
     <div className="interactions">
-      {conditionFn(props) && <Loading/>}
+      {conditionFn(props) && <Loader start={Date.now()} timeError={props.throwError}/>}
     </div>
   </div>
   )
@@ -97,29 +87,34 @@ const withInfiniteScroll =(conditionFn) => (Component) =>
    constructor(props) {
         super(props);
         this.state={
-          scrollY : window.scrollY,
-          innerHeight: window.innerHeight,
+          scrollY : document.scrollY,
+          innerHeight: document.innerHeight,
 
         }
         this.onScroll = this.onScroll.bind(this);
         } 
 
       componentWillMount(){
-        console.log('infinite scroll component!', this.state, this.props)
+        console.log('infinite scroll component!', this.state, this.props);
       }
 
     componentDidMount() {
-      
-      window.addEventListener('scroll',  _.throttle(this.onScroll, 500), false);
+      console.log("hiting component DID MOUNT")
+      window.addEventListener('scroll',  this.onScroll, true);
     }
 
     componentWillUnmount() {
-      window.removeEventListener('scroll', _.throttle(this.onScroll, 500), false);
+      console.log("hiting component WILL UNMOUNT")
+      window.removeEventListener('scroll', this.onScroll, true );
     }
 
     onScroll(){
-        conditionFn(this.props) && this.props.fetchPolls();
+      console.log("hiting onscroll methoD", conditionFn(this.props))
+
+      if (conditionFn(this.props)){
+       _.throttle(this.props.fetchPolls(), 200)
       }
+    }
 
     render() {
       console.log('INFINITE SCROLL', window.innerHeight, window.pageYOffset,'>=', document.body.offsetHeight, )
@@ -136,11 +131,12 @@ const withInfiniteScroll =(conditionFn) => (Component) =>
   const loadingCondition = props =>
   props.Loading;
 
-  const paginatedCondition = props =>
+
+  const errorCondition = props =>
    !props.Loading && props.error;
 
   const AdvancedList = compose(
-    withPaginated(paginatedCondition),
+    withError(errorCondition),
     withInfiniteScroll(infiniteScrollCondition),
     withLoading(loadingCondition),
   )(List);

@@ -11,7 +11,7 @@ const explore = {}
 
 explore.getPolls = (req, res) => {
     let token = validation.checkForToken(req.headers.authorization)
-        query.getExploreQueries(res)
+        query.getExploreQueries(res, 72)
   }
 
 

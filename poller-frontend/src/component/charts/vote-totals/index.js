@@ -1,23 +1,36 @@
 import React from 'react'
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import Paper from 'material-ui/Paper'
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import AppBar from 'material-ui/AppBar'
+import {  compose, branch, renderComponent } from 'recompose'
 
-import {VictoryBar, VictoryContainer, VictoryChart, VictoryAxis} from 'victory'
+import Paper from '@material-ui/core/Paper';
+import { withStyles } from '@material-ui/core/styles';
+import classnames from 'classnames';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Collapse from '@material-ui/core/Collapse';
+
+import {VictoryBar, VictoryContainer, VictoryChart, VictoryAxis, VictoryLabel} from 'victory'
 import MaterialStyles from '../../../style/material-ui-style'
+import Typography from '@material-ui/core/Typography';
 
 // import '../../style/index.scss'
+
+
+const styles = theme =>({
+  container: theme.overrides.MuiPaper.root,
+  cardHeader:theme.overrides.PollCard.cardHeader,
+})
+
 
 class TotalVotesGraph extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
         data: this.getData(),
-        
     }
-
   }
 
 
@@ -32,18 +45,14 @@ class TotalVotesGraph extends React.Component {
 
   render(){
       console.log('total bar GRAPH DATA!', this.state, this.props)
-      const style = {
-        parent: { data: { fill: "black"}, margin: "2%", maxWidth: "100%" }
-      };
+      let {classes, poll} = this.props
       return(
           <div>
-              <Card  style={{maxWidth: 450, margin: 'auto', marginBottom: 15, textAlign:'center'}}>
-                    <AppBar
-                      style={{...MaterialStyles.appBarTitle, margin:'auto' }}
-                      title={'Vote Results'}
-                      showMenuIconButton={false}
-                    />
-                  <CardMedia>
+            <CardContent>
+                <Typography variant="display2">
+                   "{poll.question}"
+                </Typography>
+            </CardContent>
                   <VictoryChart
                     domainPadding={{ x: 100 }}
                   >
@@ -70,23 +79,34 @@ class TotalVotesGraph extends React.Component {
                           duration: 2000,
                           onLoad: { duration: 1000 }
                         }}
-          
+                        barRatio={1}
+                        // labelComponent={ <VictoryLabel dy={30}/>}
                         // containerComponent={<VictoryContainer responsive={false}/>}
                     />
                     </VictoryChart>
-                    <CardText style={{...MaterialStyles.title,display:'inline-block', padding: "0px", marginBottom:10, marginTop:10 }}
-                    >
-                    Total Votes: {this.props.totalVotesData.totalVotes}
-                    </CardText>
-                  </CardMedia>
-                  </Card>
+                    <CardContent>
+    
+                    <Typography variant="subheading">
+                      Votes: {this.props.totalVotesData.totalVotes}
+                    </Typography>
+                    <Typography variant="subheading">
+                       Poll Expiration: {poll.expiration} hours
+                    </Typography>
+                    <Typography variant="subheading">
+                       {poll.subject}
+                    </Typography>
+                    <Typography variant="subheading">
+                      {'Author: '+poll.author_username}
+                    </Typography>
+                    </CardContent>
+                    
           </div>
       )
   }
-
-
-
-
 }
 
-export default TotalVotesGraph
+
+export default compose(
+  // connect(mapStateToProps, mapDispatchToProps),
+  withStyles(styles, {withTheme:true}),
+)(TotalVotesGraph);

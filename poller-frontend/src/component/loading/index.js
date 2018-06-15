@@ -5,47 +5,25 @@ import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import purple from '@material-ui/core/colors/purple';
 import Button from '@material-ui/core/Button';
-
+import Loader from './loader'
 
 const styles =theme=>({
-  buttonContainer: theme.overrides.MuiButton.root.container,
-    button: theme.overrides.MuiButton.root.button,
+  
 })
 
-const Loading = (props) => {
-  const { classes } = props;
-  return (
-    <div>
-      <CircularProgress style={{ color: "#000" }} thickness={7} size={50}/>
-    </div>
-  );
-};
 
 
 const WithLoading =  (loadingCondition) => (Component) => (props) => {
   return (
     <div>
-    {loadingCondition(props) ? <Loading/> : <Component {...props}/>}
-    </div>
-  )
-}
-
-
-const SubmitButton = ({...props}) =>{
-  return (
-    <div className={props.classes.buttonContainer}>
-      <Button 
-      variant="outlined"
-      onClick={props.submitClick} 
-      className={props.classes.button}>
-      {props.buttonTitle}
-      </Button>
+    {loadingCondition(props) ? <Loader start={Date.now()}/> : <Component {...props}/>}
     </div>
   )
 }
 
 const loadingCondition = props =>
-  props.Loading;
+  props.Loading && !props.error;
+
 
 const LoadingHOC = compose(
 withStyles(styles, {withTheme:true}),

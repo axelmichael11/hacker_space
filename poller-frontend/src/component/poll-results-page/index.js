@@ -2,9 +2,10 @@
 import React from 'react'
 import Auth0Lock from 'auth0-lock'
 import { connect } from 'react-redux'
-import { Link, Route } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import {Loading} from '../loading'
 import PieResults from '../charts/yes-no-pie/index'
+import {  compose, branch, renderComponent } from 'recompose'
 
 
 import randomColor from 'randomcolor'; // import the script
@@ -21,54 +22,60 @@ import * as util from '../../lib/util.js'
 
 
 //Style
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 
-import AppBar from 'material-ui/AppBar'
-
-import FlatButton from 'material-ui/FlatButton'
-import FontAwesome from 'react-fontawesome' 
-
-import DropDownMenu from 'material-ui/DropDownMenu';
-import MenuItem from 'material-ui/MenuItem';
-import IconMenu from 'material-ui/IconMenu';
-import IconButton from 'material-ui/IconButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import ContentFilter from 'material-ui/svg-icons/content/filter-list';
-import FileFileDownload from 'material-ui/svg-icons/file/file-download';
+import Paper from '@material-ui/core/Paper';
+import { withStyles } from '@material-ui/core/styles';
+import classnames from 'classnames';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Collapse from '@material-ui/core/Collapse';
+import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
+import Typography from '@material-ui/core/Typography';
+import red from '@material-ui/core/colors/red';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import ShareIcon from '@material-ui/icons/Share';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Delete from '@material-ui/icons/Delete';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Button from '@material-ui/core/Button';
 
 
 import {
     fetchVoteHistory
 } from '../../action/vote-actions'
-import {
-  Card,
-  CardActions,
-  CardHeader,
-  CardMedia,
-  CardTitle,
-  CardText,
-} from 'material-ui/Card'
 
 
+
+const styles = theme =>({
+  container: theme.overrides.MuiPaper.root,
+  cardHeader:theme.overrides.PollCard.cardHeader,
+  typography: theme.typography.text,
+  expand: {
+    color:theme.palette.secondary.main,
+    transform: 'rotate(0deg)',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+    marginLeft: 'auto',
+  },
+  expandOpen: {
+    transform: 'rotate(180deg)',
+  },
+  actions: {
+    display: 'flex',
+  },
+})
 
 class PollResultsPage extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       pollData: this.props.pollData,
-      // yesReligionData: this.getYesReligionData(),
-      // noReligionData: this.getNoReligionData(),
-      // yesGenderData: this.getYesGenderData(),
-      // noGenderData: this.getNoGenderData(),
-      // noCountryData: this.getNoCountryData(),
-      // yesCountryData: this.getYesCountryData(),
-      // yesProfessionData: this.getYesProfessionData(),
-      // noProfessionData: this.getNoProfessionData(),
-      // yesEthnicityData: this.getYesEthnicityData(),
-      // noEthnicityData: this.getNoEthnicityData(),
-      // yesAgeData: this.getYesAgeData(),
-      // noAgeData: this.getNoAgeData(),
       noProfessionData: this.generatePieData(this.props.pollData.no_data.profession_data, profession_data),
       yesProfessionData: this.generatePieData(this.props.pollData.yes_data.profession_data, profession_data),
       professionCategories: this.generateCategories(this.props.pollData.yes_data.profession_data, this.props.pollData.no_data.profession_data, profession_data),
@@ -92,7 +99,15 @@ class PollResultsPage extends React.Component {
       noReligionData: this.generatePieData(this.props.pollData.no_data.religion_data),
       yesReligionData: this.generatePieData(this.props.pollData.yes_data.religion_data ),
       religionCategories: this.generateCategories(this.props.pollData.yes_data.religion_data, this.props.pollData.no_data.religion_data),
+      //expanded state
+      dataExpandedAge:false,
+      dataExpandedEthnicity: false,
+      dataExpandedReligion: false,
+      dataExpandedCountry: false,
+      dataExpandedGender: false,
+      dataExpandedProfession:false,
     }
+    this.handleDataExpand = this.handleDataExpand.bind(this)
   }
 
   generatePieData(data_object,  demographic_list){
@@ -137,6 +152,15 @@ class PollResultsPage extends React.Component {
     return categories
   }
 
+  handleDataExpand(value){
+    // let value= e.target.value
+    console.log('HANDLE DATA EXPAND', value)
+      this.setState(oldState=>{
+        return {
+        [value]: !oldState[value]
+      }
+    })
+  }
   
   
 
@@ -146,33 +170,20 @@ class PollResultsPage extends React.Component {
   
   render() {
     console.log('pollResultsPage!!!!!!!!!!!!!!',this.state, this.props)
+    let {classes} = this.props
     return (
       <div>
-        <MuiThemeProvider>
-        {/* <Card  style={{maxWidth: 450, margin: 'auto', marginBottom: 15 }}>
-                    <AppBar
-                      style={{...MaterialStyles.title, margin:'auto' }}
-                      title={"Question Asked..."}
-                      showMenuIconButton={false}
-                    />
-                  <CardMedia>
-                    <CardText style={{...MaterialStyles.title,display:'inline-block'}}
-                    >
-                      "<CardText style={{...MaterialStyles.title,display:'inline-block'}}>
-                          {poll.question}
-                        </CardText>
-                      "
-                    </CardText>
-                  </CardMedia>
-                  <Card>
-                    <CardHeader
-                      title={poll.subject}
-                      subtitle={'Posted By: '+poll.author_username}
-                      style={MaterialStyles.title}
-                    />
-                    </Card>
-                  </Card> */}
-          <TotalVotesGraph totalVotesData={this.state.pollData.totals_data} />
+                <Paper square elevation={2} className={classes.container}>
+            <Card>
+         
+          <TotalVotesGraph 
+          totalVotesData={this.state.pollData.totals_data} 
+          poll={this.props.poll}
+          />
+          </Card>
+          </Paper>
+
+          
           <PieResults title={'Age'}
           totalsData={this.props.pollData.totals_data} 
           yesData={this.state.yesAgeData} 
@@ -180,23 +191,34 @@ class PollResultsPage extends React.Component {
           categories={Object.keys(this.state.ageCategories)}
           colorCategories= {this.state.ageCategories}
           labelSentence={"have an age between"}
+          classes={classes}
+          dataExpanded={this.state.dataExpandedAge}
+          handleDataExpand={this.handleDataExpand}
+          expandedState="dataExpandedAge"
           />
-           <PieResults title={'Country'}
-          totalsData={this.props.pollData.totals_data} 
-          yesData={this.state.yesCountryData} 
-          noData={this.state.noCountryData} 
-          categories={Object.keys(this.state.countryCategories)}
-          colorCategories= {this.state.countryCategories}
-          labelSentence={" are from "}
-          />
-
-         <PieResults title={'Gender'}
+          <PieResults title={'Gender'}
           totalsData={this.props.pollData.totals_data} 
           yesData={this.state.yesGenderData} 
           noData={this.state.noGenderData} 
           categories={Object.keys(this.state.genderCategories)}
           colorCategories= {this.state.genderCategories}
           labelSentence={" are of gender "}
+          classes={classes}
+          dataExpanded={this.state.dataExpandedGender}
+          handleDataExpand={this.handleDataExpand}
+          expandedState="dataExpandedGender"
+          />
+          <PieResults title={'Country'}
+          totalsData={this.props.pollData.totals_data} 
+          yesData={this.state.yesCountryData} 
+          noData={this.state.noCountryData} 
+          categories={Object.keys(this.state.countryCategories)}
+          colorCategories= {this.state.countryCategories}
+          labelSentence={" are from "}
+          classes={classes}
+          dataExpanded={this.state.dataExpandedCountry}
+          handleDataExpand={this.handleDataExpand}
+          expandedState="dataExpandedCountry"
           />
 
           <PieResults title={'Profession'}
@@ -206,6 +228,10 @@ class PollResultsPage extends React.Component {
           categories={Object.keys(this.state.professionCategories)}
           colorCategories= {this.state.professionCategories}
           labelSentence={" have a profession of "}
+          classes={classes}
+          dataExpanded={this.state.dataExpandedProfession}
+          handleDataExpand={this.handleDataExpand}
+          expandedState="dataExpandedProfession"
           />
           <PieResults title={'Ethnicity'}
           totalsData={this.props.pollData.totals_data} 
@@ -214,6 +240,10 @@ class PollResultsPage extends React.Component {
           categories={Object.keys(this.state.ethnicityCategories)}
           colorCategories= {this.state.ethnicityCategories}
           labelSentence={" are of "}
+          classes={classes}
+          dataExpanded={this.state.dataExpandedEthnicity}
+          handleDataExpand={this.handleDataExpand}
+          expandedState="dataExpandedEthnicity"
           />
           <PieResults title={'Religion'}
           totalsData={this.props.pollData.totals_data} 
@@ -222,11 +252,12 @@ class PollResultsPage extends React.Component {
           categories={Object.keys(this.state.religionCategories)}
           colorCategories= {this.state.religionCategories}
           labelSentence={" are "}
+          classes={classes}
+          dataExpanded={this.state.dataExpandedReligion}
+          handleDataExpand={this.handleDataExpand}
+          expandedState="dataExpandedReligion"
           />
-          
-          
 
-        </MuiThemeProvider>
       </div>
     )
   }
@@ -234,10 +265,15 @@ class PollResultsPage extends React.Component {
 
 export const mapStateToProps = state => ({
   loggedIn: state.loggedIn,
-  Loading: state.Loading
 })
 
 export const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(PollResultsPage)
+// export default connect(mapStateToProps, mapDispatchToProps)(PollResultsPage)
+
+
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withStyles(styles, {withTheme:true}),
+)(PollResultsPage);
