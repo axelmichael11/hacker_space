@@ -14,12 +14,7 @@ export const reportPoll = (poll) => (dispatch, getState) => {
         .send(data)
         .then(res => {
           let parsed = JSON.parse(res.text)
-          dispatch(deleteUserPoll(parsed.created_at))
+
           return parsed
-        })
-        .catch(err => {
-          if (err.status == 550){
-            throw new Error(550)
-          } 
         })
   }

@@ -28,41 +28,40 @@ import Error from '../error'
 
 
 
-  const withLoading = (conditionFn) => (Component)  => (props) => {
-    console.log('HITTING LOADING COMPONENT', conditionFn, Component, props, )
-    return(
-      <div>  
-      <div className="interactions">
-        <Component {...props} />
-
-        {conditionFn(props) && <Loader/>}
-      </div>
-    </div>
-    )
-  }
-
-
-
-
-const WithPaginated = (props) => {
-
-  return (  <div>
+const withError = (conditionFn) => (Component) => (props) =>{
+  console.log('render error page!')
+  return(
+  <div>
+    <Component {...props} />
 
     <div className="interactions">
+      {
+        conditionFn(props) &&
         <div>
-          <div>
-            Something went wrong... Log out Please
-          </div>
+          <Error/>
         </div>
+      }
     </div>
   </div>
   )
 }
 
 
+const withLoading = (conditionFn) =>  (Component) => (props) => {
+  console.log('hitting with loading page!')
+  return(
+    <div>
+    <Component {...props} />
 
+    <div className="interactions">
+    <Component {...props}/>
+      {conditionFn(props) && <Loader start={Date.now()} timeError={props.throwError}/>}
+    </div>
+  </div>
+  )
+}
 
-const renderVotePage =(conditionFn) => (Component) => (props) => {
+const renderVotePage =(conditionFn) =>  (Component) => (props) => {
     console.log('hitting the renderVotePage!')
       return (
           <div>
@@ -72,10 +71,11 @@ const renderVotePage =(conditionFn) => (Component) => (props) => {
          )
   }
 
-  const renderVoteResults =(conditionFn) =>  (Component) => (props) => {
+  const renderVoteResults =(conditionFn) => (Component) =>  (props) => {
     console.log('hitting the rendervoteresults!')
       return (
           <div>
+            <Component {...props}/>
           {conditionFn(props) && <PollResultsPage {...props}/>}
           </div>
          )
@@ -96,9 +96,9 @@ const renderVotePage =(conditionFn) => (Component) => (props) => {
   && !props.error
 
   const loadingCondition = props =>
-  props.Loading;
+  props.Loading && !props.error;
 
-  const paginatedCondition = props =>
+  const withErrorCondition = props =>
    !props.Loading && props.error;
 
 
@@ -106,22 +106,25 @@ const renderVotePage =(conditionFn) => (Component) => (props) => {
 
   const RenderPollPage = compose(
     branch(
-        (props)=>props.Loading,
-        renderComponent(Loader)
-    ),
-    branch(
-        (props) =>
-        props.alreadyVoted
-        && props.pollData
-        && !props.Loading
-        && !props.error,
-        renderComponent(PollResultsPage)
-    ),
-    branch(
-        (props)=>
-        !props.Loading && props.error,
-        renderComponent(Error)
-    )
-  )(PollVotePage);
+      (props)=>props.Loading,
+      renderComponent(Loader)
+  ),
+  branch(
+      (props) =>
+      props.alreadyVoted
+      && props.pollData
+      && !props.Loading
+      && !props.error,
+      renderComponent(PollResultsPage)
+  ),
+  branch(
+    props =>
+    !props.alreadyVoted
+    && !props.pollData
+    && !props.Loading
+    && !props.error,
+      renderComponent(PollVotePage)
+  )
+  )(Error);
 
 export default RenderPollPage

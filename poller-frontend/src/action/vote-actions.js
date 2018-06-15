@@ -16,15 +16,9 @@ export const fetchVoteHistory = (poll) => (dispatch, getState) => {
     .then(res => {
         console.log('this is the response', res.status)
         let parsed = JSON.parse(res.text)
+        console.log("this is the parsed!!!",parsed)
         parsed.status=res.status
-
         return parsed
-      })
-      .catch(err => {
-        console.log('this is the error', err, err.status)
-        if (err.status == 401){
-          throw new Error(401)
-        }
       })
 }
 
@@ -40,10 +34,5 @@ export const castVote = (voteData) => (dispatch, getState) => {
         let parsed = JSON.parse(res.text)
         parsed.status=res.status
         return parsed
-    })
-    .catch(err => {
-      if (err.status == 401){
-        throw new Error(401)
-      }
     })
 }

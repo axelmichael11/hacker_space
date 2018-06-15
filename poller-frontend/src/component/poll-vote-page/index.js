@@ -58,6 +58,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Menu from '@material-ui/core/Menu';
 import ProfileCategory from './profile-category'
 import CardMenu from '../card-menu'
+import ResponsiveDialog from '../dialog'
+
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import NotInterested from '@material-ui/icons/NotInterested';
+
 
 import LoadingHOC from '../loading'
 const styles = theme =>({
@@ -123,11 +128,25 @@ class PollVotePage extends React.Component {
       openVoteConfirmAlert:false,
       vote:null,
       castVoteLoad: false,
+
+      castVoteError:false,
+      anchorEl:null,
+      pollMenuFocus:null,
+      snackBarDuration: 4000,
+
+      //poll has been deleted...
+      pollNotFoundMessage:'It appears that this poll has recently been deleted! Log out or return to the explore page',
+      pollNotFound:false,
     }
     this.handleConfirmYesVoteAlert = this.handleConfirmYesVoteAlert.bind(this)
     this.handleSubmitVote = this.handleSubmitVote.bind(this)
     this.handleCancelVote = this.handleCancelVote.bind(this)
     this.handleConfirmNoVoteAlert = this.handleConfirmNoVoteAlert.bind(this)
+    this.renderMenuButtons = this.renderMenuButtons.bind(this)
+    this.handleCloseCardMenu = this.handleCloseCardMenu.bind(this)
+    this.setPoll = this.setPoll.bind(this)
+    this.handleOpenCardMenu = this.handleOpenCardMenu.bind(this)
+    this.handlePollNotFoundError = this.handlePollNotFoundError.bind(this)
   }
 
   componentWillMount() {
@@ -166,23 +185,59 @@ class PollVotePage extends React.Component {
   handleSubmitVote(){
     let {vote} = this.state
     let voteData = Object.assign({}, {...this.props.userProfile, ...this.props.location.state, vote})
-    console.log('hitting the handleSubmitVote:::', voteData)
     this.setState({castVoteLoad:true})
     this.props.castVote(voteData)
     .then((result)=>{
-      console.log('this is the result', result)
       if (result.status==200){
         this.props.successOnCastVote(result)
         this.setState({castVoteLoad:false})
-
       }
     })
     .catch(err=>{
       console.log('this si the errro', err)
-      this.props.errorOnCastVote()
-      this.setState({castVoteLoad:false})
+      if (err.status===404){
+        this.setState({castVoteLoad:false, castVoteError:true, pollNotFound:true,})
+      }
+      if (err.status===500){
+        this.setState({castVoteLoad:false, castVoteError:true, pollNotFound:true,})
+        this.props.throwGeneralError()
+      }
+    })
+  }
 
-  })
+  
+  renderMenuButtons(){
+    console.log('hitting render menu buttons')
+    return (
+      <MenuItem onClick={this.openReportDialog} className={this.props.classes.menuItem}
+      >
+        <ListItemIcon style={{display:'inline-block'}}>
+            <NotInterested />
+          </ListItemIcon>
+        <ListItemText style={{display:'inline-block'}} inset primary="Report Poll" />
+      </MenuItem>
+    )
+  }
+
+  handleCloseCardMenu(){
+    this.setState({ anchorEl: null, reportDialog: false, pollMenuFocus:null });
+  };
+
+    
+  setPoll(poll){
+    this.setState({pollMenuFocus: poll})
+  }
+
+  handleOpenCardMenu(event){
+    this.setState({ anchorEl: event.currentTarget });
+  };
+
+  handlePollNotFoundError(){
+    this.setState((oldState)=>{
+      return {
+        pollNotFound: !oldState.pollNotFound,
+      }
+    });
   }
 
   render() {
@@ -228,40 +283,65 @@ class PollVotePage extends React.Component {
           </DialogActions>
         </Dialog>
 
+         <CardMenu
+            anchorEl={this.state.anchorEl}
+            renderMenuButtons={this.renderMenuButtons}
+            handleClose={this.handleCloseCardMenu}
+          />
+
 
         <Paper square elevation={2} className={classes.container}>
-            <Card>
+        <Card>
             <CardHeader
-                action={<CardMenu poll={poll}/>} //REPORT POST FEATURE
+                action={<IconButton
+                  onClick={(event)=> {
+                    this.handleOpenCardMenu(event)
+                    this.setPoll(poll)
+                  }}
+                  >
+                  <MoreVertIcon 
+                  style={{color:'#fff'}}
+                  />
+                  </IconButton>}
                 className={classes.cardHeader}
             />
             
             <CardContent>
-                <Typography variant="headline" component="h1">
-                   "{question}"
+            <Typography variant="headline" >
+                    {poll.subject}
+                </Typography>
+                <Typography variant="display2">
+                   "{poll.question}"
                 </Typography>
             </CardContent>
             <CardContent>
-                <Typography variant="subheading" component="p">
-                    {subject}
+            <Typography variant="subheading" component="p">
+                    Poll Expiration: {poll.expiration} hours
                 </Typography>
+               
                 <Typography variant="subheading" component="p">
-                    Poll Expiration: {expiration} hours
-                </Typography>
-                <Typography variant="subheading" component="p">
-                    {'Posted By: '+author_username}
+                    {'Author: '+poll.author_username}
                 </Typography>
             </CardContent>
             </Card>
         </Paper>
         <Paper square elevation={2} className={classes.container}>
           <VoteButtons
-          handleConfirmNoVoteAlert={this.handleConfirmNoVoteAlert}
-          handleConfirmYesVoteAlert={this.handleConfirmYesVoteAlert}
-          classes={classes}
-
+            handleConfirmNoVoteAlert={this.handleConfirmNoVoteAlert}
+            handleConfirmYesVoteAlert={this.handleConfirmYesVoteAlert}
+            classes={classes}
           />
         </Paper>
+
+         <Snackbar
+          open={this.state.pollNotFound}
+          message={this.state.pollNotFoundMessage}
+          action={null}
+          autoHideDuration={this.state.snackBarDuration}
+          onClose={this.handlePollNotFoundError}
+        />
+
+
       </div>
       )
     }

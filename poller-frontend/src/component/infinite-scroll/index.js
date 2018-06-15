@@ -51,7 +51,7 @@ const List = ({ ...props }) =>
       </div>)}
   </div>
 
-const withPaginated = (conditionFn) => (Component) => (props) =>
+const withError = (conditionFn) => (Component) => (props) =>
   <div>
     <Component {...props} />
 
@@ -132,11 +132,11 @@ const withInfiniteScroll =(conditionFn) => (Component) =>
   props.Loading;
 
 
-  const paginatedCondition = props =>
+  const errorCondition = props =>
    !props.Loading && props.error;
 
   const AdvancedList = compose(
-    withPaginated(paginatedCondition),
+    withError(errorCondition),
     withInfiniteScroll(infiniteScrollCondition),
     withLoading(loadingCondition),
   )(List);

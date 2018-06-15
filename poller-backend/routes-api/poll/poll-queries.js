@@ -51,27 +51,24 @@ module.exports = {
         validatedPoll.created_at,
         ],
         function(err, success) {
-        if (success) {
-            if (success.rows[0]){
-            console.log('SUCCESS', success.rows[0])
-            let pollToDelete = pollValidate.formatPollDeleteSend(success.rows[0])
-            res.status(200).json(pollToDelete)
-            }
-            if (success.rowCount==0){
-            console.log('success, not returning anything', success)
-            res.status(401).json({message:'poll was not found'})
-            } 
-            // else {
-            // console.log('success', success)
-            // res.status(500).json({error:'Internal server error'})
-            // }
-        } 
-        else {
-            if (err.name =='error') {
-            console.log('err.name', err)
-            res.status(500).send({error: err.name})
-            }
-        }
+        // if (success) {
+        //     if (success.rows[0]){
+        //     console.log('SUCCESS', success.rows[0])
+        //     let pollToDelete = pollValidate.formatPollDeleteSend(success.rows[0])
+        //     res.status(200).json(pollToDelete)
+        //     }
+        //     if (success.rowCount==0){
+        //     console.log('success, not returning anything', success)
+        //     res.status(401).json({message:'poll was not found'})
+        //     } 
+        // } 
+        // else {
+        //     if (err.name =='error') {
+        //     console.log('err.name', err)
+        //     res.status(500).send({error: err.name})
+        //     }
+        // }
+            res.status(500).send('sup')
         })
     },
     getPollsQuery: (res,user, expirationDate)=>{

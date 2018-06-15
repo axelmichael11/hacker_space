@@ -17,7 +17,7 @@ module.exports = {
                 (($1)-EXTRACT(hour from (now() - date))) as expiration
                 FROM polls
                 ORDER BY random()
-                LIMIT 10;
+                LIMIT 20;
                 `,
                 [expirationDate],
                 function(err, success) {

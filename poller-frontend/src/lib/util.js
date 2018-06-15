@@ -18,5 +18,13 @@ export const logError = (...args) =>
     };
 
     export const handleThen = function(res, ...args){
-      console.log('these are the arguments', res, ...args, )
+      console.log('these are the arguments', res, ...args, );
+      let responses = [...args];
+      console.log('RESPONES', responses)
+      Object.keys(responses).map((i)=>{
+        console.log('hitting option', i)
+        if (res.status===responses[i].status){
+          responses[i].action( responses[i].content)
+        }
+      })
     }

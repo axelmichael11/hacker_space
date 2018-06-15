@@ -132,18 +132,30 @@ class PollCreatePage extends React.Component {
         snackBarDuration: 5000,
         openPollCreateSuccess:false,
         pollCreateSuccessMessage:'Poll has been created!',
-        openPollDeleteSuccess:false,
-        pollDeleteSuccessMessage:'Poll has been deleted!',
-        unknownErrorMessage:'Unknown Error has Occurred...',
+        //poll delete
+        pollDeleteLoad:false,
         pollDeleteAlert: false,
         pollToDelete: null,
-        helpExpanded:false,
+          //success
+          openPollDeleteSuccess:false,
+          pollDeleteSuccessMessage:'Poll has been deleted!',
+          //failure
+          pollDeleteErrorMessage:'Unable to delete Poll... Try again later',
+          openPollDeleteError:false,
+
+        unknownErrorMessage:'Unknown Error has Occurred... Try again later',
+        
+        
         unknownError: false,
+
+
         //loading
         pollCreateLoad:false,
         MyPollsLoad:false,
-        pollDeleteLoad:false,
+        
+
         // help
+        helpExpanded:false,
         helpText: `Represent yourself! None of these fields are required,
         and no demographic information specific to you is shown in the results of a poll.
         These can be updated as often as necessary. Why not make this app a little more interesting?`
@@ -164,6 +176,7 @@ class PollCreatePage extends React.Component {
    this.handlePollDeleteSuccess = this.handlePollDeleteSuccess.bind(this)
    this.handlePollDeleteAlertOpen = this.handlePollDeleteAlertOpen.bind(this)
    this.handlePollDeleteAlertClose = this.handlePollDeleteAlertClose.bind(this)
+   this.handlePollDeleteError = this.handlePollDeleteError.bind(this)
 
    this.handleSubmitPollDelete = this.handleSubmitPollDelete.bind(this)
   }
@@ -231,6 +244,20 @@ class PollCreatePage extends React.Component {
     this.setState((oldState)=>{
       return {
         openPollDeleteSuccess: !oldState.openPollDeleteSuccess,
+        pollDeleteLoad:false,  
+        pollDeleteAlert:false, 
+        pollToDelete:null
+      }
+    });
+  }
+
+  handlePollDeleteError(){
+    this.setState((oldState)=>{
+      return {
+        openPollDeleteError: !oldState.openPollDeleteError,
+        pollDeleteLoad:false,  
+        pollDeleteAlert:false, 
+        pollToDelete:null
       }
     });
   }
@@ -267,11 +294,13 @@ class PollCreatePage extends React.Component {
     this.setState({pollDeleteLoad:true})
     this.props.pollDelete(this.state.pollToDelete)
     .then((res)=>{
-      console.log('this is the response', res)
+      if (res.status===200){
+        this.handlePollDeleteSuccess()
+      }
 
-      this.handlePollDeleteAlertClose()
-  })
+    })
   .catch(err=>{
+    console.log('this is the erorr on the poll delete ', err)
     let status = err.toString().slice(-3)
     console.log('this is the error 2 ', )
     if (status.includes('401')){
@@ -280,7 +309,7 @@ class PollCreatePage extends React.Component {
     }
     if (status.includes('501')){
       console.log('501 error ', )
-      this.handlePollDeleteAlertClose()
+      this.handle()
 
     } else {
       console.log('other error ', )
@@ -316,7 +345,7 @@ class PollCreatePage extends React.Component {
       })
       .catch(err=>{
         let status = err.toString().slice(-3)
-        console.log('this is the error 2 ', )
+        console.log('this is the error 2 ', err, status)
         if (status.includes('550')){
           this.handleMaxPollReached();
           this.setState({pollCreateLoad:false })
@@ -331,6 +360,8 @@ class PollCreatePage extends React.Component {
     this.setState((oldState)=>{
       return {
         unknownError: !oldState.unknownError,
+        pollDeleteLoad: false,
+        pollCreateLoad:false,
       }
     });
   }
@@ -368,6 +399,7 @@ class PollCreatePage extends React.Component {
                 submitClick={this.handleSubmitPollDelete}
                 buttonTitle={'Delete Poll'}
                 Loading={this.state.pollDeleteLoad}
+                timeError={this.handleUnknownError}
               />
             </div>
           </DialogActions>
@@ -434,6 +466,7 @@ class PollCreatePage extends React.Component {
                 submitClick={this.handlePollSubmitCreate}
                 buttonTitle={'Create Poll'}
                 Loading={this.state.pollCreateLoad}
+                timeError={this.handleUnknownError}
               />
             </CardContent>
           </Card>
@@ -479,6 +512,8 @@ class PollCreatePage extends React.Component {
           autoHideDuration={this.state.snackBarDuration}
           onClose={this.handlePollCreateSuccess}
         />
+
+
         <Snackbar
           open={this.state.openMaxPollReached}
           message={this.state.maxPollReachedMessage}
@@ -492,6 +527,14 @@ class PollCreatePage extends React.Component {
           action={null}
           autoHideDuration={this.state.snackBarDuration}
           onClose={this.handlePollDeleteSuccess}
+        />
+
+        <Snackbar
+          open={this.state.openPollDeleteError}
+          message={this.state.pollDeleteErrorMessage}
+          action={null}
+          autoHideDuration={this.state.snackBarDuration}
+          onClose={this.handlePollDeleteError}
         />
         <Snackbar
           open={this.state.unknownError}

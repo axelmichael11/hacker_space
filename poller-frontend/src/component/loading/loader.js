@@ -48,7 +48,7 @@ class Loader extends React.Component{
 
     render(){
     const { classes } = this.props;
-    console.log('LOADER', this.state,this.props)
+    // console.log('LOADER', this.state,this.props)
         return (
             <div style={{textAlign:'center'}}>
                 <CircularProgress style={{ color: "#000", textAlign:'center', margin:'auto'}} thickness={7} size={75}/>
@@ -58,6 +58,9 @@ class Loader extends React.Component{
     }
 };
 
+Loader.PropTypes = {
+    timeError: PropTypes.func.isRequired
+}
 
 
-  export default Loader
+export default Loader

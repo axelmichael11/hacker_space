@@ -62,7 +62,7 @@ class PollLandingContainer extends React.Component {
       helpExpanded: false,
       error:false,
       castVoteHelpText:"Cast your Vote! Remember, however you have set your profile information is how your vote data will be submitted! Represent yourself in the answer!",
-      pollResultsHelpText: "These are the results of how people have voted based on age, gender, religious affiliation, ethnicity, and profession! Perhaps some interesting trends are being discovered!"
+      pollResultsHelpText: "These are the results of how people have voted based on age, gender, religious affiliation, ethnicity, and profession! See for yourself how people are voting!"
     }
     this.fetchVoteData = this.fetchVoteData.bind(this)
     this.handleHelpExpand = this.handleHelpExpand.bind(this)
@@ -106,28 +106,26 @@ class PollLandingContainer extends React.Component {
       }
     })
     .catch(err=>{
-      console.log('this si the errro', err)
-      let status = err.toString().slice(-3)
-
-      if (status.includes('401')){
-        console.log('401 error ', )
+      console.log('this si the errro', err.status);
+      if (err.status===500) {
+        this.setState({
+          alreadyVoted:false,
+          pollData: null,
+          pageLoading:false,
+          error:true,
+          page:null,
+        });
+      }
+      if (err.status===401){
         this.setState({
           alreadyVoted:false,
           pollData: null,
           pageLoading:false,
           error:false,
           page:null,
-          })
-        } 
-        // else {
-        //   this.setState({
-        //     alreadyVoted:false,
-        //     pollData: null,
-        //     pageLoading:false,
-        //     error:true,
-        //     page:null,
-        //     })
-        //   }
+        });
+      }
+      //only for 500 and 401 errors
     })
   }
 
@@ -165,6 +163,7 @@ class PollLandingContainer extends React.Component {
         errorTry={this.fetchVoteData}
         start={Date.now()}
         timeError={this.throwError}
+        throwGeneralError={ this.throwError}
         />
       </div>
     )
@@ -178,7 +177,8 @@ export const mapStateToProps = state => ({
 
 export const mapDispatchToProps = dispatch => ({
     fetchVoteHistory: (poll) => dispatch(fetchVoteHistory(poll)),
-    loadingOff: () => dispatch(loadingOff())
+    loadingOff: () => dispatch(loadingOff()),
+    handleThen:(res) => dispatch(handleThen(res))
 })
 
 export default compose(
