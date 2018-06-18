@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import {compose} from 'recompose'
 
 //Methods
-import { storeUserProfile } from '../../action/user-profile-actions.js'
 import { setAuthToken } from '../../action/auth0-actions.js'
 import { login, logout } from '../../action/auth-actions.js'
 
@@ -100,7 +99,6 @@ export const mapStateToProps = state => ({
 })
 
 export const mapDispatchToProps = dispatch => ({
-  storeUserProfile: (profile) => dispatch(storeUserProfile(profile)),
   setAuthToken: (token) => dispatch(setAuthToken(token)),
   login: () => dispatch(login()),
   logout: () => dispatch(logout()),

@@ -11,8 +11,6 @@ import ReportIcon from '@material-ui/icons/report'
 // import ResponsiveDialog from './responsive-dialog'
 import {reportPoll} from '../../action/report-poll-actions'
 
-import LoadingHOC from '../loading'
-
 
 import MaterialStyles from '../../style/material-ui-style'
 

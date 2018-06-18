@@ -7,13 +7,8 @@ import {ageValidation} from '../../lib/util.js'
 
 
 
-import {
-  profileUpdate,
-} from '../../action/profile-actions.js'
-import classnames from 'classnames';
 
 import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';

@@ -26,12 +26,8 @@ export const pollDelete = (poll) => (dispatch, getState) => {
         .then(res => {
           let parsed = JSON.parse(res.text)
           dispatch(deleteUserPoll(parsed.created_at))
+          parsed.status=res.status
           return parsed
-        })
-        .catch(err => {
-          if (err.status == 550){
-            throw new Error(550)
-          } 
         })
   }
 
@@ -45,14 +41,8 @@ export const pollDelete = (poll) => (dispatch, getState) => {
         .then(res => {
             let parsed = JSON.parse(res.text)
             dispatch(fetchUserPolls(parsed))
-            // dispatch(loadingOff())
+            parsed.status=res.status
             return parsed
-            console.log('poll retrieve!!',parsed)
-        })
-        .catch(err => {
-            dispatch(loadingOff())
-            console.log(err)
-            throw new Error(err)
         })
     }
 
@@ -66,11 +56,7 @@ export const pollDelete = (poll) => (dispatch, getState) => {
             .then(res => {
                 let parsed = JSON.parse(res.text)
                 dispatch(createPoll(parsed))
-                console.log('poll retrieve!!',parsed)
-            })
-            .catch(err => {
-              if (err.status == 550){
-                throw new Error(550)
-              }
+                parsed.status=res.status
+                return parsed
             })
       }

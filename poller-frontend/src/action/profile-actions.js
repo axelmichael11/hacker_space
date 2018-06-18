@@ -3,11 +3,14 @@ const superagent = require('superagent');
 
 import {setAuthToken,setAuth0Profile } from './auth0-actions.js'
 
-import {storeUserProfile} from './user-profile-actions'
-
 import {login} from './auth-actions.js'
 
 import {loadingOn, loadingOff} from './loading-actions'
+
+const storeUserProfile = (userProfile) => {
+  localStorage.setItem('userInfo', JSON.stringify(userProfile))
+    return { type: 'user_profile', payload: userProfile }
+  }
 
 
   export const profileFetch = () => (dispatch, getState) => {
@@ -18,7 +21,6 @@ import {loadingOn, loadingOff} from './loading-actions'
       .set('Authorization', `Bearer ${auth0Token}`)
       .then(res => {
         let parsed = JSON.parse(res.text)
-        console.log('got the user...',parsed)
         localStorage.setItem('poller_token', auth0Token)
         dispatch(storeUserProfile(parsed))
         dispatch(login())
@@ -51,7 +53,6 @@ import {loadingOn, loadingOff} from './loading-actions'
 
 export const profileUpdate = (profile) => (dispatch, getState) => {
   let { auth0Token } = getState();
-  dispatch(loadingOn())
   return superagent
       .put(`${__API_URL__}/api/user`)
       .set('Authorization', `Bearer ${auth0Token}`)
@@ -59,13 +60,7 @@ export const profileUpdate = (profile) => (dispatch, getState) => {
       .then(res => {
         let parsed = JSON.parse(res.text)
         dispatch(storeUserProfile(parsed))
-        dispatch(loadingOff())
-      })
-      .catch(err => {
-        console.log('thsi is the error!',err)
-        dispatch(loadingOff())
-        if (err.status == 500){
-          throw err.status
-        } 
+        parsed.status=res.status
+        return parsed
       })
 }

@@ -26,7 +26,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ReportButton from './report-button.js'
 // import ProfileButton from './settings-button.js'
 // import MyPollsButton from './poll-create-button.js'
-import LoadingHOC from '../loading'
 
 import MenuList from '@material-ui/core/MenuList';
 

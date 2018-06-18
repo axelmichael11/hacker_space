@@ -3,6 +3,7 @@ import React from 'react';
 import {compose} from 'recompose'
 import { withStyles } from '@material-ui/core/styles';
 import ErrorIcon from '@material-ui/icons/error'
+import PropTypes from 'prop-types';
 
 
 import Paper from '@material-ui/core/Paper';
@@ -37,6 +38,11 @@ const Error = ({...props}) => {
     );
   };
 
+
+Error.proptypes = {
+  errorTry: PropTypes.func.isRequired,
+  classes: PropTypes.object.isRequired,
+}
 export default compose(
     withStyles(styles, {withTheme:true})
 )(Error)

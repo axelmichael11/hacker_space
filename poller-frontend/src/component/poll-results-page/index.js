@@ -3,7 +3,6 @@ import React from 'react'
 import Auth0Lock from 'auth0-lock'
 import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
-import {Loading} from '../loading'
 import PieResults from '../charts/yes-no-pie/index'
 import {  compose, branch, renderComponent } from 'recompose'
 

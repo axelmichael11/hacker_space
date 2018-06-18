@@ -30,13 +30,13 @@ module.exports = {
         function(err, success) {
         if (err) {
             console.log('error from database', err)
-            res.json({response: err})
+            res.status(401).send({response: err})
         }
         if (success) {
             console.log('this is the db success', success)
             let sendProfile = profileValidate.formatSendProfile(success.rows[0], user)
             console.log('this is the final profile to send back', sendProfile)
-            res.json(sendProfile)
+            res.status(200).send(sendProfile)
         }
         })
     },
@@ -61,10 +61,10 @@ module.exports = {
               function(err, success) {
                 if (success) {
                   let sendProfile = profileValidate.formatSendProfile(success.rows[0], user)
-                  res.json(sendProfile)
+                  res.status(200).send(sendProfile)
                 } else {
                     console.log(err)
-                  res.status(500).json({message:"unsuccessful updating user profile"})
+                  res.status(500).send({message:"unsuccessful updating user profile"})
                 }
               })
     }

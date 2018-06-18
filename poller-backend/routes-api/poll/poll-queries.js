@@ -26,15 +26,12 @@ module.exports = {
         ],
         function(err, success) {
         if (success && success.command==='UPDATE' && success.rowCount== 1) {
-            console.log('SUCCESS, these are the rows', success.rows[0])
             res.status(200).json(success.rows[0])
         } else {
             if (err.name =='error' && err.constraint=='poller_data_polls_id_check') {
-            console.log('err.name', err)
             res.status(550).send({error: err.name})
             } else {
-            console.log('this is ther ror', err)
-            res.status(500).send({message: err.name})
+            res.status(500).send('unknown error')
             }
         }
         })
@@ -51,24 +48,20 @@ module.exports = {
         validatedPoll.created_at,
         ],
         function(err, success) {
-        // if (success) {
-        //     if (success.rows[0]){
-        //     console.log('SUCCESS', success.rows[0])
-        //     let pollToDelete = pollValidate.formatPollDeleteSend(success.rows[0])
-        //     res.status(200).json(pollToDelete)
-        //     }
-        //     if (success.rowCount==0){
-        //     console.log('success, not returning anything', success)
-        //     res.status(401).json({message:'poll was not found'})
-        //     } 
-        // } 
-        // else {
-        //     if (err.name =='error') {
-        //     console.log('err.name', err)
-        //     res.status(500).send({error: err.name})
-        //     }
-        // }
-            res.status(500).send('sup')
+        if (success) {
+            if (success.rows[0]){
+            let pollToDelete = pollValidate.formatPollDeleteSend(success.rows[0])
+            res.status(200).json(pollToDelete)
+            }
+            if (success.rowCount==0){
+            res.status(404).json({message:'poll was not found'})
+            } 
+        } 
+        else {
+            if (err.name =='error') {
+            res.status(500).send('unknown error')
+            }
+        }
         })
     },
     getPollsQuery: (res,user, expirationDate)=>{
