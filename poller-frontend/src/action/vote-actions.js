@@ -14,9 +14,7 @@ export const fetchVoteHistory = (poll) => (dispatch, getState) => {
     .set('Authorization', `Bearer ${auth0Token}`)
     .send(poll)
     .then(res => {
-        console.log('this is the response', res.status)
         let parsed = JSON.parse(res.text)
-        console.log("this is the parsed!!!",parsed)
         parsed.status=res.status
         return parsed
       })

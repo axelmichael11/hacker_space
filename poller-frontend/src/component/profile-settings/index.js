@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import {recompose, compose} from 'recompose'
 import {ageValidation} from '../../lib/util.js'
-import {WithLoading} from '../loading'
 
 
 
@@ -57,7 +56,7 @@ import profession_list from '../../lib/professions.js'
 import ethnicity_list from '../../lib/ethnicities.js'
 
 import MenuListSelect from './menu-list-select'
-import LoadingHOC from '../loading'
+import LoadingHOC from '../loading/button.js'
 
 
 import MaterialStyles from '../../style/material-ui-style'
@@ -351,18 +350,19 @@ class ProfileSettings extends React.Component {
 
   profileUpdateSubmit(){
     let {age, ethnicity, profession, gender, country, religion} = this.state;
-    this.setState({updateLoading:true})
+    this.setState({updateLoading:true, updateErrorOpen:false,})
     this.props.profileUpdate({age, ethnicity, profession, gender, country, religion})
-    .then((profile)=>{
+    .then((res)=>{
+      if (res.status===200){
       this.handleUpdatedSnackBarRequest()
       this.handleUpdateAlert()
+      }
     })
     .catch(err=>{
-      console.log('this is the error updating profile', err)
-      if (err===500){
+      console.log('this is the error updating profile', err, err.status)
+      if (err.status===500){
         this.handleUpdateErrorSnackBarRequest()
         this.handleUpdateAlert()
-
       }
     })
   }
@@ -465,6 +465,7 @@ class ProfileSettings extends React.Component {
             submitClick={this.profileUpdateSubmit}
             buttonTitle={"Update Profile"}
             Loading={this.state.updateLoading}
+            timeError={this.handleUpdateErrorSnackBarRequest}
             />
           </DialogActions>
         </Dialog>
@@ -641,18 +642,12 @@ class ProfileSettings extends React.Component {
           // onActionClick={this.handleUpdatedSnackBarRequest}
           // onRequestClose={this.handleUpdatedSnackBarRequest}
         />
-         <Snackbar
-
-          anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
-          onClose={this.handleUpdateErrorSnackBarRequest}
+        <Snackbar
           open={this.state.updateErrorOpen}
           message={this.state.updateErrorMessage}
           action={null}
-          onClick={this.handleUpdatedSnackBarRequest}
-
-          autoHideDuration={this.state.updatedAutoHideDuration}
-          // onActionClick={this.handleUpdateErrorSnackBarRequest}
-          // onRequestClose={this.handleUpdateErrorSnackBarRequest}
+          autoHideDuration={this.state.autoHideDuration}
+          onClose={this.handleUpdateErrorSnackBarRequest}
         />
       </div>
     )

@@ -4,6 +4,9 @@ import {compose} from 'recompose'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Snackbar from '@material-ui/core/Snackbar';
+
+
 
 class Loader extends React.Component{
     constructor(props){
@@ -37,8 +40,6 @@ class Loader extends React.Component{
 
     tick(){
 
-        // This function is called every 50 ms. It updates the 
-        // elapsed counter. Calling setState causes the component to be re-rendered
         if (this.state.elapsed < this.state.limit){
             this.setState({elapsed: new Date() - this.state.start});
         } else {
@@ -48,7 +49,7 @@ class Loader extends React.Component{
 
     render(){
     const { classes } = this.props;
-    // console.log('LOADER', this.state,this.props)
+
         return (
             <div style={{textAlign:'center'}}>
                 <CircularProgress style={{ color: "#000", textAlign:'center', margin:'auto'}} thickness={7} size={75}/>
@@ -59,7 +60,12 @@ class Loader extends React.Component{
 };
 
 Loader.PropTypes = {
-    timeError: PropTypes.func.isRequired
+    timeError: PropTypes.func.isRequired,
+    classes: PropTypes.object.isRequired,
+    start: PropTypes.object.isRequired,
+    loadingError: PropTypes.bool.isRequired,
+    loadingErrorMessage: PropTypes.string.isRequired,
+    handleLoadingError: PropTypes.func.isRequired,
 }
 
 

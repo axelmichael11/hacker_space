@@ -6,7 +6,6 @@ import { Link, withRouter } from 'react-router-dom'
 import {recompose, compose} from 'recompose'
 import { withStyles } from '@material-ui/core/styles';
 
-import {Loading} from '../loading'
 import {
   castVote
 } from '../../action/vote-actions'
@@ -64,7 +63,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import NotInterested from '@material-ui/icons/NotInterested';
 
 
-import LoadingHOC from '../loading'
+import LoadingHOC from '../loading/button.js'
+
 const styles = theme =>({
   container: theme.overrides.MuiPaper,
   text: theme.typography.text,
@@ -194,7 +194,6 @@ class PollVotePage extends React.Component {
       }
     })
     .catch(err=>{
-      console.log('this si the errro', err)
       if (err.status===404){
         this.setState({castVoteLoad:false, castVoteError:true, pollNotFound:true,})
       }
@@ -355,7 +354,6 @@ export const mapStateToProps = state => ({
 export const mapDispatchToProps = dispatch => ({
     fetchVoteHistory: (poll) => dispatch(fetchVoteHistory(poll)),
     castVote: (voteData) => dispatch(castVote(voteData)),
-    loadingOff: ()=>dispatch(loadingOff())
 })
 
 export default compose(

@@ -35,7 +35,6 @@ class AuthLockButton extends React.Component {
   }
 
   componentWillMount() {
-    console.log('this.props ON BUTTON',this.props)
     const options = {
       sso: true,
       oidcConformant: true, //this determines METADATA is returned in scope...
@@ -57,7 +56,6 @@ class AuthLockButton extends React.Component {
     )
     this.lock.on('authenticated', authResult => {
       if (!authResult) return new Error('failed to authenticate');
-        console.log('this IS THE authresult',authResult)
         this.props.setAuthToken(authResult.accessToken)
         this.props.profileFetch()
         .then(profile=>{
@@ -67,7 +65,7 @@ class AuthLockButton extends React.Component {
             this.props.history.push('login')
           }
         })
-      
+        
     })
 
     this.lock.on('authorization_error', (error)=>{

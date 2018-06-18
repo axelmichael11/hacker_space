@@ -20,7 +20,6 @@ import LoginPage from '../login'
 import PublicPoll from '../public-poll-card'
 
 
-import LoadingHOC from '../loading'
 import PollVotePage from '../poll-vote-page'
 import PollResultsPage from '../poll-results-page'
 import Loader from '../loading/loader'

@@ -6,6 +6,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import purple from '@material-ui/core/colors/purple';
 import Button from '@material-ui/core/Button';
 import Loader from './loader'
+import Snackbar from '@material-ui/core/Snackbar';
+
 
 const styles =theme=>({
   
@@ -14,21 +16,29 @@ const styles =theme=>({
 
 
 const WithLoading =  (loadingCondition) => (Component) => (props) => {
+  console.log('hititng with loading !!!')
+
   return (
     <div>
-    {loadingCondition(props) ? <Loader start={Date.now()}/> : <Component {...props}/>}
+    {loadingCondition(props) ? <Loader start={Date.now()} {...props}/> : <Component {...props}/>}
     </div>
   )
 }
 
+
 const loadingCondition = props =>
-  props.Loading && !props.error;
+  props.Loading && !props.loadingError;
+
+const errorCondition =  props =>
+!props.Loading && props.loadingError;
 
 
 const LoadingHOC = compose(
 withStyles(styles, {withTheme:true}),
-WithLoading(loadingCondition)
+WithLoading(loadingCondition),
 );
+
+
 
 export default LoadingHOC
 

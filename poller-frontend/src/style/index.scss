@@ -33,7 +33,7 @@
     display:block;
     // position: relative;
     white-space: normal;
-    vertical-align: top;
+    // vertical-align: top;
     width:'100%';
     // border: 1px blue dashed;
 }
@@ -53,8 +53,9 @@
     font-size: 2em;
     display: block;
     width: 50%;
-    vertical-align: top;
+    // vertical-align: top;
     white-space: nowrap;
+    margin:'auto';
     // border: 1px green dashed;
 }
 
@@ -68,9 +69,7 @@
     vertical-align: middle;
 }
 
-.svg-pie {
 
-}
 
 .endless-scroller {
     height:700px; 

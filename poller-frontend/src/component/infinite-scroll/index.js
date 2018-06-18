@@ -26,11 +26,10 @@ import Error from '../error'
 import { Button } from '@material-ui/core';
 import ResponsiveDialog from '../dialog'
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import NoPolls from './no-polls'
 
-
-const List = ({ ...props }) =>
+const List = ({ ...props }) => props.list.length > 0 ?
     <div className="list">
-    
     {props.list.map((poll, key) => 
       <div className="list-row" key={poll.objectID}>
         <UserPollCard
@@ -49,7 +48,7 @@ const List = ({ ...props }) =>
           // classes={props.classes}
         />
       </div>)}
-  </div>
+  </div> : <NoPolls/>
 
 const withError = (conditionFn) => (Component) => (props) =>
   <div>

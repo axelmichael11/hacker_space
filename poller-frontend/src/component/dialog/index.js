@@ -17,7 +17,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ReportIcon from '@material-ui/icons/report'
-import LoadingHOC from '../loading'
+import LoadingHOC from '../loading/button.js'
 import {MyPolls} from '../my-polls'
 
 import HelpTab from '../help-feature'
