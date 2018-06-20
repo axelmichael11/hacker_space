@@ -22,6 +22,7 @@ import SwipeableViews from 'react-swipeable-views';
 
 const tutorialSteps = [
   {
+    photo:'./demographic-photo',
     label: 'Welcome To Poller',
     description: ` This is Poller, a web application to see what people are thinking! ;)
                     Ever wanted to post questions anonymously and get public feedback?
@@ -32,6 +33,7 @@ const tutorialSteps = [
                     (Not required). ALSO! The catch is, you have to vote to see the results. :)`,
   },
   {
+    photo:'./create-photo',
     label: 'Create an Account, customize your profile',
     description: `You have to create an account. This application uses Oauth... That 
                     means this web application or server does NOT store sensitive information.
@@ -40,6 +42,7 @@ const tutorialSteps = [
                     this interesting! (Again, not required...)`,
   },
   {
+    photo:'./vote-photo',
     label: 'Post questions and vote!',
     description: ` Once your profile is set up, you can see other people's questions to vote on,
                     or post your own questions to see what other users are thinking!
@@ -53,9 +56,11 @@ const styles = theme => ({
   containerDiv: theme.overrides.MuiPaper.root,
 
   headingText:{
-    color: theme.palette.primary.contrastText,
+    backgroundColor:theme.palette.primaryColor,
+    color: theme.palette.primary.secondaryColor,
     fontFamily: theme.typography.fontFamily,
-    fontSize:30
+    textAlign:'center',
+    margin:25,
   },
   footingText:{
     color: theme.palette.primary.contrastText,
@@ -65,12 +70,14 @@ const styles = theme => ({
   header: {
     display: 'flex',
     alignItems: 'center',
-    height: 60,
     paddingLeft: theme.spacing.unit * 2,
     marginBottom: 10,
     backgroundColor: theme.palette.primary.main,
   },
-  
+  bodyText:{
+    margin:35,
+
+  },
   button: theme.overrides.MuiButton
 });
 
@@ -110,44 +117,46 @@ class GettingStartedPage extends React.Component {
       <div className={classes.containerDiv}>
         <div >
         <Paper square elevation={2} className={classes.container}>
-        <Paper square elevation={0} className={classes.header}>
-          <Typography variant="subheading" className={classes.headingText}> {tutorialSteps[activeStep].label} </Typography>
-        </Paper>
         <SwipeableViews
           axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
           index={this.state.activeStep}
           onChangeIndex={this.handleStepChange}
           enableMouseEvents
         >
-          {tutorialSteps.map(step => (
-            <Typography className={classes.text}>{step.description}</Typography>
-          ))}
+          {tutorialSteps.map(step => {
+            return (
+              <div>
+                <Typography variant="display2" className={classes.headingText}> {step.label} </Typography>
+                <img src={step.photo}/>
+                <Typography variant="subheading" className={classes.bodyText}>{step.description}</Typography>
+              </div>
+            )
+          })
+          }
         </SwipeableViews>
         <MobileStepper
           variant="text"
           steps={maxSteps}
           position="static"
           activeStep={activeStep}
-          className={classes.header}
+          className={classes.button}
+          style={{backgroundColor:'white'}}
           nextButton={
-            <Button size="small" className={classes.footingText} onClick={this.handleNext} disabled={activeStep === maxSteps - 1}>
-              Next
+            <Button size="small" className={classes.button} onClick={this.handleNext} disabled={activeStep === maxSteps - 1}>
+              
               {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
             </Button>
           }
           backButton={
-            <Button size="small"  className={classes.footingText} onClick={this.handleBack} disabled={activeStep === 0}>
+            <Button size="small"  className={classes.button} onClick={this.handleBack} disabled={activeStep === 0}>
               {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-              Back
+              
             </Button>
           }
         />
         </Paper>
       </div>
-      <Paper square elevation={2} className={classes.root}>
-      <Typography variant="subheading">Sign Up Now!</Typography>
-      <AuthLockButton/>
-    </Paper>
+      <AuthLockButton style={{margin: 15}}/>
     </div>
     );
   }

@@ -79,64 +79,43 @@ module.exports = {
       },
 
       MuiMenuItem: {
-        backgroundColor: secondaryColor,
-        color:primaryColor,
-        display:'inline',
-        fontFamily: [
-          'Play',
-          'Roboto',
-          'Arial',
-          'sans-serif',
-        ].join(','),
+        root:{
+          backgroundColor: secondaryColor,
+          color:primaryColor,
+          fontFamily: [
+            'Play',
+            'Roboto',
+            'Arial',
+            'sans-serif',
+          ].join(','),
+        }
       },
 
       MuiButton: { 
-        textAlign:'center',
-            margin:15,
-            textAlign: 'center',
-            backgroundColor: secondaryColor,
-            color:primaryColor,
-            fontFamily: [
-              'Play',
-              'Roboto',
-              'Arial',
-              'sans-serif',
-            ].join(','),
-            '&:hover': {
-              backgroundColor: '#000',
-              color:'#fff'
-            },
-            margin:'auto',
-            display: 'flex',
-            flexWrap: 'wrap',
-            textAlign:'center',
-            container:{
-              margin:'auto',
-              display: 'flex',
-              flexWrap: 'wrap',
-              textAlign:'center',
-              margin:20
-            }
+        root:{
+          margin:'auto',
+          display: 'flex',
+          flexWrap: 'wrap',
+          textAlign:'center',
+               '&:hover': {
+            backgroundColor: '#000',
+            color:'#fff'
+          },
+        }
       },
       MuiMenu:{
         borderColor: primaryColor,
       },
       MuiListItem:{
-        // backgroundColor: theme.palette.primary.main,
-        // color:theme.palette.secondary.main,
-        title: { width:'50%'},
         container:{
-          width: '50%',
+          border: '1px black solid',
           maxWidth: 500,
         },
-        border: '1px black solid',
       },
       MuiSelectField: {
         width: 250,
         display:'inline-block',
         margin:'auto'
-      },
-      MuiCheckbox: {
       },
       MuiPaper:{
         root:{
@@ -147,9 +126,11 @@ module.exports = {
         }
       },
       MuiAppBar:{
-        fontSize: 20,
-        fontFamily: "Play",
-        backgroundColor: '#000',
+        root:{
+          fontSize: 20,
+          fontFamily: "Play",
+          backgroundColor: '#000',
+        }
       },
       PollCard:{
         cardHeader:{
@@ -172,12 +153,14 @@ module.exports = {
         },
       },
       MuiCheckbox: {
-        color: primaryColor,
-        backgroundColor: secondaryColor,
-        marginBottom: 16,
-        marginLeft: 10,
-        fontFamily: 'Play',
-        fontSize: 20,
+        root:{
+          color: primaryColor,
+          backgroundColor: secondaryColor,
+          marginBottom: 16,
+          marginLeft: 10,
+          fontFamily: 'Play',
+          fontSize: 20,
+        }
       },
 
       MuiIcon:{
@@ -232,17 +215,11 @@ module.exports = {
               color:'#fff'
             },
             margin:'auto',
+            display:'inline',
             // display: 'flex',
             width:'50%',
-            flexWrap: 'wrap',
+            // flexWrap: 'wrap',
             textAlign:'center',
-            container:{
-              margin:'auto',
-              display: 'flex',
-              flexWrap: 'wrap',
-              textAlign:'center',
-              margin:20
-            }
           },
           dialogStretchedButtons:{
             root:{
@@ -256,6 +233,23 @@ module.exports = {
             color:'white',
             backgroundColor:'black'
           },
+          backButton:{
+            textAlign:'center',
+            margin:15,
+            textAlign: 'center',
+            backgroundColor: '#000',
+            color:"#fff",
+            fontFamily: [
+              'Play',
+              'Roboto',
+              'Arial',
+              'sans-serif',
+            ].join(','),
+            '&:hover': {
+              backgroundColor: '#fff',
+              color:'#000'
+            }
+          }
     },
   },
     pie_hover_text:{

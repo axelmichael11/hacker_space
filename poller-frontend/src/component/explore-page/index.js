@@ -25,13 +25,13 @@ import {handleThen} from '../../lib/util'
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import NotInterested from '@material-ui/icons/NotInterested';
+import Snackbar from '@material-ui/core/Snackbar';
 
 
 const styles = theme =>({
   button: theme.overrides.MuiButton,
   menuItem: theme.overrides.MuiMenuItem,
-  // primary: {},
-  // icon: {},
+  
 })
 
 class ExplorePage extends React.Component {
@@ -40,11 +40,10 @@ class ExplorePage extends React.Component {
     this.state = {
       polls: this.props.publicPolls,
       previousPolls:0,
-      // onExplorePage:false,
 
       //loading
       exploreLoading:false,
-      dialogLoading:false,
+      reportLoading:false,
 
 
       exploreError: false,
@@ -58,9 +57,14 @@ class ExplorePage extends React.Component {
       dialogContent:'',
 
       //report dialog
+      reportPollSuccessSnack: false,
+      reportPollErrorSnack: false,
       reportTitle:'Report This poll?',
       reportContent:"Is this poll offensive? Please report if so and we will review this shortly! Sorry for the material :(",
       submitReportText:'Report Poll',
+      reportContentSuccess:'This poll has been reported... we will review this',
+      reportContentError: 'There was an error reporting this ... try again later',
+      snackBarDuration:4000,
 
       //card menu
       anchorEl: null,
@@ -70,7 +74,6 @@ class ExplorePage extends React.Component {
     }
 
     this.fetchPolls = this.fetchPolls.bind(this)
-    this.handleRenderCount = this.handleRenderCount.bind(this);
     this.handleCloseDialog = this.handleCloseDialog.bind(this);
     this.openReportDialog = this.openReportDialog.bind(this);
     this.handleOpenCardMenu = this.handleOpenCardMenu.bind(this)
@@ -79,10 +82,14 @@ class ExplorePage extends React.Component {
     this.reportPoll = this.reportPoll.bind(this)
     this.throwError = this.throwError.bind(this)
     this.setPoll = this.setPoll.bind(this)
+    this.handleReportSuccess = this.handleReportSuccess.bind(this)
+    this.handleReportError = this.handleReportError.bind(this)
+    this.renderReportDialogContent = this.renderReportDialogContent.bind(this)
   }
 
   componentWillMount(){
-    if (this.props.publicPolls.length===0){
+    let publicPollsCount = Object.keys(this.props.publicPolls)
+    if (publicPollsCount.length===0){
       this.fetchPolls()
     }
   }
@@ -95,9 +102,11 @@ class ExplorePage extends React.Component {
     this.setState({exploreLoading:true, exploreError:false })
     this.props.getPublicPolls()
     .then((res)=>{
-      this.setState({exploreLoading:false })
+      console.log("HITTING RESPONSE!!")
+      this.setState({exploreLoading:false, exploreError:false })
     })
     .catch((err)=>{
+      console.log("HITTING ERROROR!!")
       this.setState({exploreLoading:false, exploreError:true})
     })
   }
@@ -111,26 +120,6 @@ class ExplorePage extends React.Component {
   }
 
 
- 
-  handleRenderCount(){
-    let percent;
-
-    // for (var i = 0; i <this.props.polls.length; i++){
-    //   for (var j = 0; j <this.props.polls.length; j++){
-    //     if (this.props.polls[i].created_at === this.props.polls[j].created_at){
-
-    //     } 
-    // }
-
-    // this.setState((oldState)=>{
-    //   return {
-    //     renderCount: oldState.renderCount+1,
-    //     exploreLoading: false,
-    //     previousPolls: this.props.polls.length
-    //   }
-    // })
-  }
-
   openReportDialog(poll){
     console.log('hitting open report dialog')
 
@@ -140,6 +129,7 @@ class ExplorePage extends React.Component {
       dialogSubmitText: this.state.submitReportText,
       dialogOpen: true,
       anchorEl:null,
+      dialogContent: this.renderReportDialogContent()
     })
   }
   
@@ -167,21 +157,19 @@ class ExplorePage extends React.Component {
 
   reportPoll(){
     console.log('report POlL!!')
-    this.setState({ dialogLoading: true });
+    this.setState({ reportLoading: true });
     this.props.reportPoll(this.state.pollMenuFocus)
     .then((res)=>{
         console.log(res)
-        handleThen(res, 
-          {status:200, 
-          state: { exploreLoading:false, 
-            exploreError:true,
-            dialogOpen:false,
-          },
-        })
+        if (res.status===200){
+         this.handleReportSuccess()
+        }
       })
     .catch((err)=>{
-        console.log(err)
-        this.setState({ dialogLoading: false });
+      console.log(err)
+      if (err.status===500){
+        this.handleReportSuccess()
+       }
       })
 }
 
@@ -192,6 +180,31 @@ throwError(){
 setPoll(poll){
   this.setState({pollMenuFocus: poll})
 }
+
+handleReportSuccess(){
+  this.setState((oldState)=> {
+      return {
+        reportPollErrorSnack: false,
+        reportPollSuccessSnack: !oldState.reportPollSuccessSnack,
+        dialogOpen: false,
+        reportLoading:false,
+      }
+    })
+  }
+
+  handleReportError(){
+    this.setState((oldState)=> {
+      return {
+        reportPollSuccessSnack:false,
+        reportPollErrorSnack: !oldState.reportPollErrorSnack,
+        dialogOpen: false,
+        reportLoading:false,
+      }
+    })
+  }
+  renderReportDialogContent(){
+    return "Is this poll offensive? Please report if so and we will review this shortly! Sorry for the material :("
+  }
 
 
   render() {
@@ -210,8 +223,10 @@ setPoll(poll){
                 handleClose={this.handleCloseDialog}
                 dialogSubmitText={this.state.dialogSubmitText}
                 submitClick={this.reportPoll}
-                submitLoading={this.state.dialogLoading}
-                classes={classes}
+                submitLoading={this.state.reportLoading}
+                timeError={this.fetchPolls}
+
+                // classes={classes}
                 />
 
                 <CardMenu
@@ -227,10 +242,27 @@ setPoll(poll){
               page={this.state.page}
               fetchPolls={this.fetchPolls}
               handleOpenCardMenu={this.handleOpenCardMenu}
-              classes={classes}
+              // classes={classes}
               errorTry={this.fetchPolls}
+              timeError={this.fetchPolls}
               throwError={this.throwError}
               setPoll={this.setPoll}
+              />
+
+
+              <Snackbar
+                open={this.state.reportPollSuccessSnack}
+                message={this.state.reportContentSuccess}
+                action={null}
+                autoHideDuration={this.state.snackBarDuration}
+                onClose={this.handleReportPollSuccess}
+              />
+              <Snackbar
+                open={this.state.reportPollErrorSnack}
+                message={this.state.reportContentError}
+                action={null}
+                autoHideDuration={this.state.snackBarDuration}
+                onClose={this.handleReportError}
               />
         </div>
       )

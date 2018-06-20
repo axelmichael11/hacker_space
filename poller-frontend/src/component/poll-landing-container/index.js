@@ -1,7 +1,7 @@
 //packages
 import React from 'react'
 import { connect } from 'react-redux'
-import { Link, Route } from 'react-router-dom'
+import { Link, Route, withRouter } from 'react-router-dom'
 import classnames from 'classnames';
 
 import {compose} from 'recompose'
@@ -16,17 +16,10 @@ import {fetchVoteHistory} from '../../action/vote-actions'
 import * as util from '../../lib/util.js'
 
 import RenderPollPage from '../render-poll-page'
+import ArrayBackIcon from '@material-ui/icons/arrowback';
 
 
-
-
-//Style
-
-
-//HOC
-// const RenderRenderPollPage = RenderPollPage()
-
-
+import Button from '@material-ui/core/Button';
 import HelpTab from '../help-feature'
 
 
@@ -48,7 +41,8 @@ const styles = theme => ({
   },
   expandMoreIcon:{
     colorPrimary: theme.palette.secondary.main
-  }
+  },
+  backButton:theme.overrides.uniqueStyles.backButton
 })
 
 
@@ -146,6 +140,13 @@ class PollLandingContainer extends React.Component {
     let {classes} = this.props
     return (
       <div >
+        <Button
+          size='small'
+          className={classes.backButton}
+          onClick={this.props.history.goBack}
+        >
+          <ArrayBackIcon/>
+        </Button>
         <HelpTab
           helpExpanded={this.state.helpExpanded}
           handleHelpExpand={this.handleHelpExpand}
@@ -177,11 +178,11 @@ export const mapStateToProps = state => ({
 
 export const mapDispatchToProps = dispatch => ({
     fetchVoteHistory: (poll) => dispatch(fetchVoteHistory(poll)),
-    loadingOff: () => dispatch(loadingOff()),
     handleThen:(res) => dispatch(handleThen(res))
 })
 
 export default compose(
+  withRouter,
   connect(mapStateToProps, mapDispatchToProps),
     withStyles(styles, {withTheme:true}),
     )(PollLandingContainer);

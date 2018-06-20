@@ -55,7 +55,6 @@ class ReportButton extends React.Component{
 
 
     render(){
-        console.log('this.PROPS on the pollcreate button', this.props)
         let {classes} = this.props
         return (
             <div>

@@ -16,7 +16,7 @@ const styles =theme=>({
 
 
 const WithLoading =  (loadingCondition) => (Component) => (props) => {
-  console.log('hititng with loading !!!')
+  console.log('hititng with loading !!!', props)
 
   return (
     <div>

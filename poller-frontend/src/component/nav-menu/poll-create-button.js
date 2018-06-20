@@ -3,8 +3,19 @@ import { withRouter, Route } from 'react-router'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { NavLink } from 'react-router-dom'
-
+import {compose} from 'recompose'
 import MenuItem from '@material-ui/core/MenuItem';
+import { withStyles } from '@material-ui/core/styles';
+
+
+const styles = theme => ({
+    root: {
+      width: '100%',
+      maxWidth: 360,
+      backgroundColor: theme.palette.background.paper,
+    },
+  });
+
 
 
 class MyPollsButton extends React.Component{
@@ -28,14 +39,17 @@ class MyPollsButton extends React.Component{
         )
     }
 }
-
 export const mapStateToProps = state => ({
     loggedIn: state.loggedIn,
-    userProfile: state.userProfile,
-})
-
-export const mapDispatchToProps = dispatch => ({
-})
-
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(MyPollsButton))
+      userProfile: state.userProfile,
+  })
+  
+  export const mapDispatchToProps = dispatch => ({
+  })
+  
+  export default compose(
+    // These are both single-argument HOCs
+    connect(mapStateToProps, mapDispatchToProps),
+    withStyles(styles),
+    withRouter
+  )(MyPollsButton)

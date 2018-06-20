@@ -27,7 +27,6 @@ class LandingContainer extends React.Component {
   
 
   render() {
-    console.log('this is the state and props on LANDING CONTAINER', this.state, this.props, this.context)
     return (
       <div>
         <NavBar/>
@@ -36,6 +35,9 @@ class LandingContainer extends React.Component {
           <Route  path="/explore" component={ExplorePage}/>
           <Route path="/pollcreate" component={PollCreatePage}/>
           <Route path='/poll/:author_username/:created_at' component={PollLandingContainer}/>
+          <Route  path="/*" component={LoginPage}/>
+          <Route component={LoginPage}/>
+
         </Switch>
       </div>
     )

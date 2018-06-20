@@ -8,7 +8,7 @@ import {
   pollDelete,
   pollSend,
   } from '../../action/user-polls-actions.js'
-  
+
   
   import classnames from 'classnames';
   import PropTypes from 'prop-types';
@@ -80,7 +80,6 @@ const FeedBackSubmitButton = LoadingHOC(SubmitButton)
     ageSelect:{
       marginLeft: 15,
     },
-    // buttonContainer: theme.overrides.MuiButton.root.container,
     button: theme.overrides.MuiButton,
    
     text: theme.typography.text,
@@ -379,7 +378,6 @@ class PollCreatePage extends React.Component {
   render() {
     const {classes, theme} = this.props
 
-    console.log('this is the poll create page state', this.state, this.props)
     return (
         <div>
           <Dialog
@@ -495,7 +493,7 @@ class PollCreatePage extends React.Component {
             <MyPolls
             Loading={this.state.myPollsLoad}
             userPolls={this.props.userPolls}
-            classes={classes}
+            // classes={classes}
             loadingError={this.state.myPollsError}
             loadingErrorMessage={this.state.myPollsErrorMessage}
             handleLoadingError={this.handleMyPollsError}
@@ -575,7 +573,7 @@ export const mapStateToProps = state => ({
   export const mapDispatchToProps = dispatch => ({
     pollSend: (poll)=> dispatch(pollSend(poll)),
     pollsFetch: () => dispatch(pollsFetch()),
-    pollDelete: (poll)=> dispatch(pollDelete(poll))
+    pollDelete: (poll)=> dispatch(pollDelete(poll)),
   })
   
   // export default connect(mapStateToProps, mapDispatchToProps)(PollCreatePage)

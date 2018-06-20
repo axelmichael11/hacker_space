@@ -7,6 +7,9 @@ import Auth0Lock from 'auth0-lock'
 import InfiniteScroll from 'react-infinite-scroller'
 import {  compose } from 'recompose'
 import _ from 'lodash'
+import { withStyles } from '@material-ui/core';
+
+
 
 import Paper from 'material-ui/Paper'
 
@@ -27,29 +30,45 @@ import { Button } from '@material-ui/core';
 import ResponsiveDialog from '../dialog'
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import NoPolls from './no-polls'
+import LoadingHOC from '../loading/button.js'
 
-const List = ({ ...props }) => props.list.length > 0 ?
+
+
+
+
+const styles = (theme) =>({
+  button:theme.overrides.MuiButton,
+})
+const List = ({ ...props }) => {
+  let pollList = Object.keys(props.list);
+  return (
+    pollList.length > 0 ?
     <div className="list">
-    {props.list.map((poll, key) => 
+    {pollList.map((poll, key) => 
       <div className="list-row" key={poll.objectID}>
         <UserPollCard
           pollActions={<IconButton
             onClick={(event)=> {
               props.handleOpenCardMenu(event)
-              props.setPoll(poll)
+              props.setPoll(props.list[poll])
             }}
             >
             <MoreVertIcon 
             style={{color:'#fff'}}
             />
             </IconButton>}
-          poll={poll}
-          key={key}
+          poll={props.list[poll]}
+          // key={key}
           // classes={props.classes}
         />
       </div>)}
-  </div> : <NoPolls/>
+  </div> : null
 
+  )
+
+
+
+} 
 const withError = (conditionFn) => (Component) => (props) =>
   <div>
     <Component {...props} />
@@ -58,7 +77,7 @@ const withError = (conditionFn) => (Component) => (props) =>
       {
         conditionFn(props) &&
         <div>
-          <Error/>
+          <Error {...props}/>
         </div>
       }
     </div>
@@ -66,6 +85,7 @@ const withError = (conditionFn) => (Component) => (props) =>
 
 
 const withLoading = (conditionFn) => (Component) => (props) => {
+  console.log('WITH LOADING', Component)
   return(
     <div>
     <Component {...props} />
@@ -78,7 +98,53 @@ const withLoading = (conditionFn) => (Component) => (props) => {
 }
 
 
+const SearchPollsButton = ({...props}) =>{
+  return (
+    <div 
+    // className={props.classes.buttonContainer}
+    >
+      <NoPolls/>
+        <Button 
+              variant="outlined"
+              onClick={props.fetchPolls} 
+              // className={props.classes.button}
+              >
+              SEARCH FOR MORE POLLS
+        </Button>
+    </div>
+  )
+}
 
+
+
+const FeedBackSearchPollsButton = LoadingHOC(SearchPollsButton)
+
+
+
+const withNoPolls = (conditionFn) => (Component) => (props) => {
+  console.log('hitting the with No Polls Found COMPONent', props, Component )
+  return (
+    <div>
+      {loadingCondition(props) &&
+      <div>
+        <FeedBackSearchPollsButton timeError={props.fetchPolls} {...props}/>
+      </div>
+      } 
+    </div>
+  )
+}
+
+
+// <FeedBackSearchPollsButton
+//         // classes={classes}
+//         submitClick={props.fetchPolls}
+//         buttonTitle={'SEARCH FOR MORE POLLS'}
+//         Loading={props.Loading}
+//         timeError={props.timeError}
+//         loadingError={props.error}
+//         loadingErrorMessage={"there was a loading error"}
+//         handleLoadingError={props.throwError}
+//       />
 
 
 const withInfiniteScroll =(conditionFn) => (Component) => 
@@ -134,10 +200,15 @@ const withInfiniteScroll =(conditionFn) => (Component) =>
   const errorCondition = props =>
    !props.Loading && props.error;
 
+   const withNoPollsCondition = props =>
+   !props.Loading && !props.error && Object.keys(props.list).length === 0
+
   const AdvancedList = compose(
+    withNoPolls(withNoPollsCondition),
     withError(errorCondition),
     withInfiniteScroll(infiniteScrollCondition),
     withLoading(loadingCondition),
+    // withStyles(styles, {withTheme:true}),
   )(List);
 
 export default AdvancedList

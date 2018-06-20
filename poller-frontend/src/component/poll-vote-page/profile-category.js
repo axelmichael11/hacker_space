@@ -59,22 +59,26 @@ import MaterialStyles from '../../style/material-ui-style'
 
 
 const styles = theme => ({
-    container: theme.overrides.MuiPaper,
-  ageSelect:{
-    marginLeft: 15,
-  },
-  listContainer: theme.overrides.MuiListItem.container,
-  listItem:theme.overrides.MuiListItem,
-  listTitle: theme.overrides.MuiListItem.title,
+  container: theme.overrides.MuiPaper,
+  listItem:theme.overrides.MuiListItem.container,
   cardHeader:theme.overrides.PollCard.cardHeader,
   cardContent:theme.overrides.PollCard.cardContent,
+  // listItemText:theme.overrides.MuiListItem.container
 })
 
 
 const ProfileCategory = ({...props})=> {
   let {classes} = props
   let {age, profession, religion, ethnicity, gender, country} = props.userProfile
-  let profileInformation = Object.assign({},{age, profession, religion, ethnicity, gender, country})
+
+  let profileInformation = {
+    'Age':age,
+    'Profession':profession_list[profession], 
+    'Religion': religion, 
+    'Ethnicity':ethnicity_list[ethnicity], 
+    'Gender': gender, 
+    'Country':country_list[country]
+  }
 
     console.log('this is the profile information!!!!!', props, profileInformation)
      return (
@@ -83,25 +87,17 @@ const ProfileCategory = ({...props})=> {
           <div key={i}> 
             <CardContent className={classes.cardContent}>
              <Toolbar className={classes.cardContent}>
-              <Typography variant="subheading" component="h3" className={classes.listTitle}>
+              <Typography variant="subheading" style={{width:'50%'}}>
                 {category}
               </Typography>
-            <div className={classes.listContainer}>
-              <List 
-              // component="nav"
-              >
+            <div>
+              <List>
                 <ListItem
                   button
-                  aria-haspopup="true"
-                  aria-controls="lock-menu"
-                  aria-label="When device is locked"
-                  // onClick={handleOpenList}
                   className={classes.listItem}
                 >
                   <ListItemText
                     primary={profileInformation[category] ? profileInformation[category]: "Unknown"}
-                    // secondary={country_list[this.state.country]}
-                    // className={classes.listContainer}
                   />
                 </ListItem>
               </List>
@@ -121,12 +117,6 @@ export const mapDispatchToProps = dispatch => ({
 })
 
 
-// list, listTitle, handleListItemClick, selectedItem, anchorEl, handleCloseList,
-ProfileCategory.propTypes = {
-  classes: PropTypes.object.isRequired,
-  // value: PropTypes.isRequired,
-  // category: PropTypes.string.isRequired
-};
 
 
 

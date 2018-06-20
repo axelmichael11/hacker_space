@@ -6,10 +6,9 @@ import { Link, withRouter } from 'react-router-dom'
 import {recompose, compose} from 'recompose'
 import { withStyles } from '@material-ui/core/styles';
 
-import {
-  castVote
-} from '../../action/vote-actions'
+import {castVote} from '../../action/vote-actions'
 import {loadingOff} from '../../action/loading-actions'
+import {deletePollFromPublic} from '../../action/public-poll-actions.js'
 
 //Methods
 
@@ -62,19 +61,20 @@ import ResponsiveDialog from '../dialog'
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import NotInterested from '@material-ui/icons/NotInterested';
 
+import {reportPoll} from '../../action/report-poll-actions'
+
 
 import LoadingHOC from '../loading/button.js'
 
 const styles = theme =>({
   container: theme.overrides.MuiPaper,
   text: theme.typography.text,
-  listContainer: theme.overrides.MuiListItem.container,
-  listItem:theme.overrides.MuiListItem,
-  // buttonContainer: theme.overrides.MuiButton.root.container,
-  button: theme.uniqueStyles.MuiVoteButton,
+  
+  voteButton: theme.uniqueStyles.MuiVoteButton,
   cardHeader:theme.overrides.PollCard.cardHeader,
   stretchedButtons: theme.uniqueStyles.dialogStretchedButtons,
-
+  button:theme.overrides.MuiButton,
+  
 })
 
 
@@ -86,14 +86,14 @@ const VoteButtons = ({...props}) =>{
       <Button 
       variant="outlined"
       onClick={props.handleConfirmYesVoteAlert} 
-      className={props.classes.button}
+      className={props.classes.voteButton}
       >
       YES
       </Button>
       <Button 
       variant="outlined"
       onClick={props.handleConfirmNoVoteAlert} 
-      className={props.classes.button}
+      className={props.classes.voteButton}
       >
       NO
       </Button>
@@ -127,8 +127,36 @@ class PollVotePage extends React.Component {
     this.state = {
       openVoteConfirmAlert:false,
       vote:null,
+      //loading
       castVoteLoad: false,
+      dialogLoading:false,
 
+      //dialog
+      dialogOpen: false,
+      dialogTitle:'',
+      dialogSubmitText:'',
+      dialogContent:'',
+      dialogSubmitClick: null,
+
+
+       //report dialog
+       reportPollSuccessSnack: false,
+       reportPollErrorSnack: false,
+       reportTitle:'Report This poll?',
+       reportContent:"Is this poll offensive? Please report if so and we will review this shortly! Sorry for the material :(",
+       submitReportText:'Report Poll',
+       reportContentSuccess:'This poll has been reported... we will review this',
+       reportContentError: 'There was an error reporting this ... try again later',
+       snackBarDuration:4000,
+
+       //submit vote dialog
+       submitVoteTitle:"Are you sure?",
+       submitVoteText:'Submit Vote',
+       submitVoteContentSuccess:'This poll has been submitVoteed... we will review this',
+       submitVoteContentError: 'There was an error submitting your vote... try again later',
+
+
+       //vote dialog
       castVoteError:false,
       anchorEl:null,
       pollMenuFocus:null,
@@ -147,6 +175,14 @@ class PollVotePage extends React.Component {
     this.setPoll = this.setPoll.bind(this)
     this.handleOpenCardMenu = this.handleOpenCardMenu.bind(this)
     this.handlePollNotFoundError = this.handlePollNotFoundError.bind(this)
+    this.handleReportSuccess = this.handleReportSuccess.bind(this)
+    this.handleReportError = this.handleReportError.bind(this)
+    this.reportPoll = this.reportPoll.bind(this)
+    this.openReportDialog = this.openReportDialog.bind(this)
+    this.handleCloseDialog = this.handleCloseDialog.bind(this);
+
+    this.openSubmitVoteDialog = this.openSubmitVoteDialog.bind(this)
+    this.renderSubmitVoteDialogContent = this.renderSubmitVoteDialogContent.bind(this)
   }
 
   componentWillMount() {
@@ -157,25 +193,25 @@ class PollVotePage extends React.Component {
   handleConfirmYesVoteAlert(){
     this.setState((oldState)=>{
       return {
-        openVoteConfirmAlert: !oldState.openVoteConfirmAlert,
         vote:"yes",
       }
     });
+    this.openSubmitVoteDialog()
   }
 
   handleConfirmNoVoteAlert(){
     this.setState((oldState)=>{
       return {
-        openVoteConfirmAlert: !oldState.openVoteConfirmAlert,
         vote:"no",
       }
     });
+    this.openSubmitVoteDialog()
   }
 
   handleCancelVote(){
     this.setState({
       vote:null,
-      openVoteConfirmAlert: false,
+      dialogOpen: false,
     })
   }
 
@@ -185,20 +221,21 @@ class PollVotePage extends React.Component {
   handleSubmitVote(){
     let {vote} = this.state
     let voteData = Object.assign({}, {...this.props.userProfile, ...this.props.location.state, vote})
-    this.setState({castVoteLoad:true})
+    this.setState({dialogLoading:true})
     this.props.castVote(voteData)
     .then((result)=>{
       if (result.status==200){
         this.props.successOnCastVote(result)
-        this.setState({castVoteLoad:false})
+        this.setState({dialogLoading:false})
       }
     })
     .catch(err=>{
       if (err.status===404){
-        this.setState({castVoteLoad:false, castVoteError:true, pollNotFound:true,})
+        this.setState({dialogLoading:false, castVoteError:true, pollNotFound:true,})
+        this.props.deletePollFromPublic(this.props.location.state)
       }
       if (err.status===500){
-        this.setState({castVoteLoad:false, castVoteError:true, pollNotFound:true,})
+        this.setState({dialogLoading:false, castVoteError:true, pollNotFound:true,})
         this.props.throwGeneralError()
       }
     })
@@ -206,7 +243,6 @@ class PollVotePage extends React.Component {
 
   
   renderMenuButtons(){
-    console.log('hitting render menu buttons')
     return (
       <MenuItem onClick={this.openReportDialog} className={this.props.classes.menuItem}
       >
@@ -238,6 +274,99 @@ class PollVotePage extends React.Component {
       }
     });
   }
+
+  reportPoll(){
+    console.log('report POlL!!')
+    this.setState({ dialogLoading: true });
+    this.props.reportPoll(this.state.pollMenuFocus)
+    .then((res)=>{
+        console.log(res)
+        if (res.status===200){
+         this.handleReportSuccess()
+        }
+      })
+    .catch((err)=>{
+        this.handleReportError()
+      })
+  }
+
+  
+handleReportSuccess(){
+  this.setState((oldState)=> {
+      return {
+        reportPollErrorSnack: false,
+        reportPollSuccessSnack: !oldState.reportPollSuccessSnack,
+        dialogOpen: false,
+        dialogLoading:false,
+      }
+    })
+  }
+
+  handleReportError(){
+    this.setState((oldState)=> {
+      return {
+        reportPollSuccessSnack:false,
+        reportPollErrorSnack: !oldState.reportPollErrorSnack,
+        dialogOpen: false,
+        dialogLoading:false,
+      }
+    })
+  }
+
+  
+  openReportDialog(poll){
+    console.log('hitting open report dialog')
+
+    this.setState({
+      dialogSubmitButton: this.reportPoll,
+      dialogTitle: this.state.reportTitle,
+      dialogContent: this.state.reportContent,
+      dialogSubmitText: this.state.submitReportText,
+      dialogSubmitClick: 'report',
+      dialogOpen: true,
+      anchorEl:null,
+    })
+  }
+
+  openSubmitVoteDialog(){
+    this.setState({
+      dialogSubmitButton: this.handleSubmitVote,
+      dialogTitle: this.state.submitVoteTitle,
+      dialogContent: this.renderSubmitVoteDialogContent(),
+      dialogSubmitText: this.state.submitVoteText,
+      dialogSubmitClick: 'submitVote',
+      dialogOpen: true,
+      anchorEl:null,
+    })
+  }
+
+  
+  handleCloseDialog(){
+    this.setState({
+      dialogOpen:false,
+      dialogTitle:'',
+      dialogContent:null,
+      dialogSubmitText:'',
+      dialogSubmitClick:null,
+    })
+  }
+  renderSubmitVoteDialogContent(){
+    return (
+      <DialogContentText id="alert-dialog-description">
+      You are about to submit this demographic information for the question!
+      <ProfileCategory
+        // classes={this.props.classes}
+      />
+      </DialogContentText>
+    )
+  }
+
+  throwError(){
+    this.setState({dialogLoading: false, reportPollErrorSnack:true})
+  }
+  
+
+
 
   render() {
     console.log('poll vote page', this.props, this.state)
@@ -324,6 +453,9 @@ class PollVotePage extends React.Component {
             </CardContent>
             </Card>
         </Paper>
+
+
+
         <Paper square elevation={2} className={classes.container}>
           <VoteButtons
             handleConfirmNoVoteAlert={this.handleConfirmNoVoteAlert}
@@ -332,6 +464,20 @@ class PollVotePage extends React.Component {
           />
         </Paper>
 
+
+        <ResponsiveDialog
+          dialogTitle={this.state.dialogTitle}
+          dialogContent={this.state.dialogContent}
+          // DialogSubmitButton={FeedBackReportButton}
+          dialogOpen={this.state.dialogOpen}
+          handleClose={this.handleCloseDialog}
+          dialogSubmitText={this.state.dialogSubmitText}
+          submitClick={this.state.dialogSubmitClick==='report'? this.reportPoll: this.handleSubmitVote }
+          submitLoading={this.state.dialogLoading}
+          // classes={classes}
+        />
+
+
          <Snackbar
           open={this.state.pollNotFound}
           message={this.state.pollNotFoundMessage}
@@ -339,7 +485,20 @@ class PollVotePage extends React.Component {
           autoHideDuration={this.state.snackBarDuration}
           onClose={this.handlePollNotFoundError}
         />
-
+        <Snackbar
+          open={this.state.reportPollSuccessSnack}
+          message={this.state.reportContentSuccess}
+          action={null}
+          autoHideDuration={this.state.snackBarDuration}
+          onClose={this.handleReportPollSuccess}
+        />
+        <Snackbar
+          open={this.state.reportPollErrorSnack}
+          message={this.state.reportContentError}
+          action={null}
+          autoHideDuration={this.state.snackBarDuration}
+          onClose={this.handleReportError}
+        />
 
       </div>
       )
@@ -354,6 +513,8 @@ export const mapStateToProps = state => ({
 export const mapDispatchToProps = dispatch => ({
     fetchVoteHistory: (poll) => dispatch(fetchVoteHistory(poll)),
     castVote: (voteData) => dispatch(castVote(voteData)),
+    reportPoll: (poll) => dispatch(reportPoll(poll)),
+    deletePollFromPublic: (poll)=> dispatch(deletePollFromPublic(poll))
 })
 
 export default compose(

@@ -48,7 +48,6 @@ class NavMenu extends React.Component{
 
 
     render(){
-        console.log('this.PROPS on the MENu', this.context, this.props.history)
          const { anchorEl } = this.state;
          const open = Boolean(anchorEl);
 
