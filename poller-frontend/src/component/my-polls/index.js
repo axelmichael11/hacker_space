@@ -66,7 +66,7 @@ props.userPolls.map((poll,key) => <div className="list-row" key={key}>
 const WithLoading = (props) => {
   return (
     <div>
-      <Loader start={Date.now()}/>
+      <Loader start={Date.now()} timeError={props.timeError}/>
     </div>
   )
 }

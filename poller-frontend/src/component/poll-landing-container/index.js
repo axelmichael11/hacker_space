@@ -42,7 +42,7 @@ const styles = theme => ({
   expandMoreIcon:{
     colorPrimary: theme.palette.secondary.main
   },
-  backButton:theme.overrides.uniqueStyles.backButton
+  backButton:theme.uniqueStyles.backButton
 })
 
 
@@ -140,13 +140,6 @@ class PollLandingContainer extends React.Component {
     let {classes} = this.props
     return (
       <div >
-        <Button
-          size='small'
-          className={classes.backButton}
-          onClick={this.props.history.goBack}
-        >
-          <ArrayBackIcon/>
-        </Button>
         <HelpTab
           helpExpanded={this.state.helpExpanded}
           handleHelpExpand={this.handleHelpExpand}

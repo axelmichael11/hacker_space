@@ -87,7 +87,7 @@ class ExplorePage extends React.Component {
     this.renderReportDialogContent = this.renderReportDialogContent.bind(this)
   }
 
-  componentWillMount(){
+  componentDidMount(){
     let publicPollsCount = Object.keys(this.props.publicPolls)
     if (publicPollsCount.length===0){
       this.fetchPolls()
@@ -142,7 +142,6 @@ class ExplorePage extends React.Component {
   };
 
   renderMenuButtons(){
-    console.log('hitting render menu buttons')
     return (
       <MenuItem onClick={this.openReportDialog} className={this.props.classes.menuItem}
       >

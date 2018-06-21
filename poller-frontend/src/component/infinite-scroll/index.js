@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Auth0Lock from 'auth0-lock'
 import InfiniteScroll from 'react-infinite-scroller'
-import {  compose } from 'recompose'
+import {  compose, branch, renderComponent} from 'recompose'
 import _ from 'lodash'
 import { withStyles } from '@material-ui/core';
 
@@ -30,7 +30,7 @@ import { Button } from '@material-ui/core';
 import ResponsiveDialog from '../dialog'
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import NoPolls from './no-polls'
-import LoadingHOC from '../loading/button.js'
+import LoadingHOC from '../loading/loadingHOC.js'
 
 
 
@@ -41,6 +41,7 @@ const styles = (theme) =>({
 })
 const List = ({ ...props }) => {
   let pollList = Object.keys(props.list);
+  console.log('hitting LIST')
   return (
     pollList.length > 0 ?
     <div className="list">
@@ -62,14 +63,17 @@ const List = ({ ...props }) => {
           // classes={props.classes}
         />
       </div>)}
-  </div> : null
+  </div> : <SearchPollsButton timeError={props.fetchPolls} {...props}/>
 
   )
 
 
 
 } 
-const withError = (conditionFn) => (Component) => (props) =>
+const withError = (conditionFn) => (Component) => (props) => {
+  console.log('hitting withError')
+
+  return (
   <div>
     <Component {...props} />
 
@@ -82,16 +86,18 @@ const withError = (conditionFn) => (Component) => (props) =>
       }
     </div>
   </div>
+  )
+}
 
 
-const withLoading = (conditionFn) => (Component) => (props) => {
-  console.log('WITH LOADING', Component)
+const WithLoading = (props) => {
+  console.log('hitting withLoading')
   return(
     <div>
-    <Component {...props} />
+    {/* <Component {...props} /> */}
 
     <div className="interactions">
-      {conditionFn(props) && <Loader start={Date.now()} timeError={props.throwError}/>}
+      <Loader start={Date.now()} timeError={props.throwError}/>
     </div>
   </div>
   )
@@ -99,6 +105,8 @@ const withLoading = (conditionFn) => (Component) => (props) => {
 
 
 const SearchPollsButton = ({...props}) =>{
+  console.log('hitting searchPollsButton')
+
   return (
     <div 
     // className={props.classes.buttonContainer}
@@ -117,7 +125,7 @@ const SearchPollsButton = ({...props}) =>{
 
 
 
-const FeedBackSearchPollsButton = LoadingHOC(SearchPollsButton)
+// const FeedBackSearchPollsButton = LoadingHOC(SearchPollsButton)
 
 
 
@@ -135,19 +143,7 @@ const withNoPolls = (conditionFn) => (Component) => (props) => {
 }
 
 
-// <FeedBackSearchPollsButton
-//         // classes={classes}
-//         submitClick={props.fetchPolls}
-//         buttonTitle={'SEARCH FOR MORE POLLS'}
-//         Loading={props.Loading}
-//         timeError={props.timeError}
-//         loadingError={props.error}
-//         loadingErrorMessage={"there was a loading error"}
-//         handleLoadingError={props.throwError}
-//       />
-
-
-const withInfiniteScroll =(conditionFn) => (Component) => 
+const WithInfiniteScroll =(conditionFn) => (Component) => 
   class WithInfiniteScroll extends React.Component {
    constructor(props) {
         super(props);
@@ -204,11 +200,25 @@ const withInfiniteScroll =(conditionFn) => (Component) =>
    !props.Loading && !props.error && Object.keys(props.list).length === 0
 
   const AdvancedList = compose(
-    withNoPolls(withNoPollsCondition),
-    withError(errorCondition),
-    withInfiniteScroll(infiniteScrollCondition),
-    withLoading(loadingCondition),
-    // withStyles(styles, {withTheme:true}),
+    // withNoPolls(withNoPollsCondition),
+    branch(
+      props =>
+        (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
+        && props.list.length
+        && !props.Loading
+        && !props.error,
+      renderComponent(WithInfiniteScroll)
+    ),
+    branch(
+      (props)=>
+        props.Loading && !props.error,
+      renderComponent(WithLoading)
+    ),
+    branch(
+      props =>
+        !props.Loading && props.error,
+      renderComponent(Error)
+    ),
   )(List);
 
 export default AdvancedList

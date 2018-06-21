@@ -3,6 +3,7 @@ import {compose} from 'recompose'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import classnames from 'classnames';
+import { Link, withRouter } from 'react-router-dom'
 
 
 import Dialog from '@material-ui/core/Dialog';
@@ -44,9 +45,13 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Menu from '@material-ui/core/Menu';
+import ArrayBackIcon from '@material-ui/icons/arrowback';
+import Button from '@material-ui/core/Button';
+
 
 const styles = theme => ({
-    container: theme.overrides.MuiPaper,
+    container: theme.overrides.MuiPaper.root,
+    helpBarContainer:theme.uniqueStyles.helpBar.root,
     text: theme.typography.text,
     expand: {
       transform: 'rotate(0deg)',
@@ -69,7 +74,17 @@ const styles = theme => ({
 
 
 const Help = ({...props}) => 
-<Paper className={props.classes.container}>
+<div className={props.classes.container}>
+<Button
+          size='small'
+          className={props.classes.backButton}
+          onClick={props.history.goBack}
+        >
+          <ArrayBackIcon/>
+        </Button>
+
+
+<Paper className={props.classes.helpBarContainer}>
           <Card>
             <CardActions 
               disableActionSpacing
@@ -101,6 +116,7 @@ const Help = ({...props}) =>
             </Collapse>
           </Card>
         </Paper>
+        </div>
 
 Help.proptypes = {
     helpText: PropTypes.string.isRequired,
@@ -110,6 +126,7 @@ Help.proptypes = {
 
 
 const HelpTab = compose(
+  withRouter,
     withStyles(styles, {withTheme:true}),
     )(Help);
     

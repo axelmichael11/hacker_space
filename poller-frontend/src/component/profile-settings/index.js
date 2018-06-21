@@ -56,7 +56,7 @@ import profession_list from '../../lib/professions.js'
 import ethnicity_list from '../../lib/ethnicities.js'
 
 import MenuListSelect from './menu-list-select'
-import LoadingHOC from '../loading/button.js'
+import LoadingHOC from '../loading/loadingHOC.js'
 
 
 import MaterialStyles from '../../style/material-ui-style'
@@ -472,7 +472,7 @@ class ProfileSettings extends React.Component {
         <HelpTab
           helpExpanded={this.state.helpExpanded}
           handleHelpExpand={this.handleHelpExpand}
-          classes={classes}
+          // classes={classes}
           helpText={this.state.helpText}
         />
 

@@ -64,7 +64,7 @@ import NotInterested from '@material-ui/icons/NotInterested';
 import {reportPoll} from '../../action/report-poll-actions'
 
 
-import LoadingHOC from '../loading/button.js'
+import LoadingHOC from '../loading/loadingHOC.js'
 
 const styles = theme =>({
   container: theme.overrides.MuiPaper,

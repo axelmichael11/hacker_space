@@ -50,8 +50,6 @@ class Loader extends React.Component{
 
 Loader.propTypes = {
     timeError: PropTypes.func.isRequired,
-    // start: PropTypes.object.isRequired,
-    // loadingError: PropTypes.bool.isRequired, (?)
 }
 
 

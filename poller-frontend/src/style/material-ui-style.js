@@ -180,16 +180,12 @@ module.exports = {
         }
       },
       MuiCollapse:{
-        root:{
-            backgroundColor:secondaryColor,
-            color:primaryColor,
-          },
         container:{
           maxWidth: 600, 
           margin: 'auto',
-          // marginBottom:20,
+          backgroundColor:secondaryColor,
+          color:primaryColor,
           flexGrow: 1,
-          // margin:5
         },
         wrapperInner:{
           display:"inline-block"
@@ -221,6 +217,17 @@ module.exports = {
             // flexWrap: 'wrap',
             textAlign:'center',
           },
+          helpBar:{
+            root:{
+              // verticalAlign:'top',
+
+              maxWidth: '60%', 
+              margin: '2.5%',
+              marginBottom:20,
+              flexGrow: 1,
+              display:'inline-block'
+            }
+          },
           dialogStretchedButtons:{
             root:{
               display:'block',
@@ -235,9 +242,12 @@ module.exports = {
           },
           backButton:{
             textAlign:'center',
-            margin:15,
+            margin:"2.5%",
             textAlign: 'center',
             backgroundColor: '#000',
+            display:'inline-block',
+            verticalAlign:'top',
+            width:'30%',
             color:"#fff",
             fontFamily: [
               'Play',

@@ -123,9 +123,9 @@ class GettingStartedPage extends React.Component {
           onChangeIndex={this.handleStepChange}
           enableMouseEvents
         >
-          {tutorialSteps.map(step => {
+          {tutorialSteps.map((step, key) => {
             return (
-              <div>
+              <div key={key}>
                 <Typography variant="display2" className={classes.headingText}> {step.label} </Typography>
                 <img src={step.photo}/>
                 <Typography variant="subheading" className={classes.bodyText}>{step.description}</Typography>
