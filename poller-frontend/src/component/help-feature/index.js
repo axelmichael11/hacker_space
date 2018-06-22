@@ -51,7 +51,8 @@ import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
     container: theme.overrides.MuiPaper.root,
-    helpBarContainer:theme.uniqueStyles.helpBar.root,
+    helpBarButton:theme.uniqueStyles.helpBarButton,
+    backButton: theme.uniqueStyles.backButton,
     text: theme.typography.text,
     expand: {
       transform: 'rotate(0deg)',
@@ -66,9 +67,6 @@ const styles = theme => ({
     actions: {
       display: 'flex',
     },
-    expandMoreIcon:{
-        colorPrimary: theme.palette.secondary.main
-      }
 })
 
 
@@ -84,13 +82,18 @@ const Help = ({...props}) =>
         </Button>
 
 
-<Paper className={props.classes.helpBarContainer}>
-          <Card>
+{/* <Paper className={props.classes.helpBarButton}> */}
+          {/* <Card> */}
+            <Button
+            className={props.classes.helpBarButton}
+            size='small'
+            >
             <CardActions 
               disableActionSpacing
               onClick={props.handleHelpExpand}
               disableActionSpacing
               className="help-card-actions"
+              style={{boxSizing:'initial'}}
             >
                 <Typography className={props.classes.text} variant="title">
                   Help
@@ -104,7 +107,7 @@ const Help = ({...props}) =>
                   aria-expanded={props.helpExpanded}
                   aria-label="Show more"
                 >
-                  <ExpandMoreIcon className={props.classes.expandMoreIcon}/>
+                  <ExpandMoreIcon style={{color:'white'}}/>
                 </IconButton>
               </CardActions>
             <Collapse in={props.helpExpanded} timeout="auto" unmountOnExit>
@@ -114,14 +117,16 @@ const Help = ({...props}) =>
                 </Typography>
               </CardContent>
             </Collapse>
-          </Card>
-        </Paper>
+            </Button>
+            {/* </Card> */}
+        {/*</Paper> */}
         </div>
 
 Help.proptypes = {
     helpText: PropTypes.string.isRequired,
     handleHelpExpand: PropTypes.func.isRequired,
     helpExpanded: PropTypes.bool.isRequired,
+    classes: PropTypes.object.isRequired
 }
 
 

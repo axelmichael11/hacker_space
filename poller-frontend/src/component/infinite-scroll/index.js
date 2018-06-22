@@ -90,14 +90,14 @@ const withError = (conditionFn) => (Component) => (props) => {
 }
 
 
-const WithLoading = (props) => {
-  console.log('hitting withLoading')
+const WithLoading = (conditionFn) => (Component) => (props) => {
+  console.log('hitting withLoading' ,props)
   return(
     <div>
-    {/* <Component {...props} /> */}
+    <Component {...props} />
 
     <div className="interactions">
-      <Loader start={Date.now()} timeError={props.throwError}/>
+    {conditionFn(props) && <Loader start={Date.now()} timeError={props.throwError}/>}
     </div>
   </div>
   )
@@ -129,7 +129,7 @@ const SearchPollsButton = ({...props}) =>{
 
 
 
-const withNoPolls = (conditionFn) => (Component) => (props) => {
+const WithNoPolls = (conditionFn) => (Component) => (props) => {
   console.log('hitting the with No Polls Found COMPONent', props, Component )
   return (
     <div>
@@ -185,7 +185,7 @@ const WithInfiniteScroll =(conditionFn) => (Component) =>
 
   const infiniteScrollCondition = props =>
   (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
-  && props.list.length
+  && props.list
   && !props.Loading
   && !props.error;
 
@@ -197,28 +197,13 @@ const WithInfiniteScroll =(conditionFn) => (Component) =>
    !props.Loading && props.error;
 
    const withNoPollsCondition = props =>
-   !props.Loading && !props.error && Object.keys(props.list).length === 0
+   !props.Loading && !props.error && props.list
 
   const AdvancedList = compose(
-    // withNoPolls(withNoPollsCondition),
-    branch(
-      props =>
-        (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
-        && props.list.length
-        && !props.Loading
-        && !props.error,
-      renderComponent(WithInfiniteScroll)
-    ),
-    branch(
-      (props)=>
-        props.Loading && !props.error,
-      renderComponent(WithLoading)
-    ),
-    branch(
-      props =>
-        !props.Loading && props.error,
-      renderComponent(Error)
-    ),
+    withNoPollsCondition(WithNoPolls),
+    infiniteScrollCondition(WithInfiniteScroll),
+    loadingCondition(WithLoading),
+    errorCondition(withError),
   )(List);
 
 export default AdvancedList

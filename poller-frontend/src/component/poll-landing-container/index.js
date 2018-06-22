@@ -42,7 +42,7 @@ const styles = theme => ({
   expandMoreIcon:{
     colorPrimary: theme.palette.secondary.main
   },
-  backButton:theme.uniqueStyles.backButton
+  // backButton:theme.uniqueStyles.backButton
 })
 
 
@@ -143,7 +143,7 @@ class PollLandingContainer extends React.Component {
         <HelpTab
           helpExpanded={this.state.helpExpanded}
           handleHelpExpand={this.handleHelpExpand}
-          classes={classes}
+          // classes={classes}
           helpText={this.state.alreadyVoted ? this.state.pollResultsHelpText: this.state.castVoteHelpText}
         />
         <RenderPollPage

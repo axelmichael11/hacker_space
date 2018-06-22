@@ -217,16 +217,30 @@ module.exports = {
             // flexWrap: 'wrap',
             textAlign:'center',
           },
-          helpBar:{
-            root:{
+          helpBarButton:{
+            margin:0,
+            padding:0,
+            textAlign:'center',
+            backgroundColor: '#000',
+            display:'inline-block',
+            verticalAlign:'top',
+            color:"#fff",
+            fontFamily: [
+              'Play',
+              'Roboto',
+              'Arial',
+              'sans-serif',
+            ].join(','),
+            '&:hover': {
+              backgroundColor: '#fff',
+              color:'#000'
+            },
               // verticalAlign:'top',
-
-              maxWidth: '60%', 
-              margin: '2.5%',
-              marginBottom:20,
+              width: '75%',
+              maxWidth: '75%', 
               flexGrow: 1,
               display:'inline-block'
-            }
+    
           },
           dialogStretchedButtons:{
             root:{
@@ -241,13 +255,14 @@ module.exports = {
             backgroundColor:'black'
           },
           backButton:{
-            textAlign:'center',
-            margin:"2.5%",
+            marginRight:"5%",
             textAlign: 'center',
             backgroundColor: '#000',
             display:'inline-block',
             verticalAlign:'top',
-            width:'30%',
+            width:'20%',
+            maxWidth: '20%', 
+
             color:"#fff",
             fontFamily: [
               'Play',

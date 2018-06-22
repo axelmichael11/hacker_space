@@ -410,7 +410,7 @@ class PollCreatePage extends React.Component {
         <HelpTab
           helpExpanded={this.state.helpExpanded}
           handleHelpExpand={this.handleHelpExpand}
-          // classes={classes}
+          classes={classes}
           helpText={this.state.helpText}
         />
 

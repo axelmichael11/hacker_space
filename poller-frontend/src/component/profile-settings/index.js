@@ -472,9 +472,11 @@ class ProfileSettings extends React.Component {
         <HelpTab
           helpExpanded={this.state.helpExpanded}
           handleHelpExpand={this.handleHelpExpand}
-          // classes={classes}
+          classes={classes}
           helpText={this.state.helpText}
         />
+
+        
 
         <form className={classes.container} noValidate onSubmit={this.handleSubmit} autoComplete="off">
         <Paper className={classes.container}>
