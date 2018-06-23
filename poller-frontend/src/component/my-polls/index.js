@@ -58,7 +58,6 @@ props.userPolls.map((poll,key) => <div className="list-row" key={key}>
                   >
                     <DeleteIcon />
                   </IconButton>}
-                // classes={props.classes}
                 />
             </div>) : <NoPolls/>
 

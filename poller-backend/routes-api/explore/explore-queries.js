@@ -22,13 +22,11 @@ module.exports = {
                 [expirationDate],
                 function(err, success) {
                     if (success){
-                        if (success.rows[0]){
+                        if (success.rows){
                         console.log('this is the success', success.rows)
                         res.status(200).send(success.rows)
                         }
-                        if (success.rows==[]){
-                        res.status(200).send(success.rows)
-                        }
+                    
                         console.log('this is the success', success)
                     }
                     if (err) {

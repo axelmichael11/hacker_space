@@ -31,7 +31,6 @@ class ExploreButton extends React.Component{
 
     }
     render(){
-        console.log('this.PROPS on the home button', this.context, this.props.history)
         return (
             <div>
                 <MenuItem onClick={()=>this.nextPath()}>Explore</MenuItem>

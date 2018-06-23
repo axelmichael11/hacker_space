@@ -26,12 +26,12 @@ import IconButton from '@material-ui/core/IconButton';
 import NotInterested from '@material-ui/icons/NotInterested';
 import Loader from '../loading/loader'
 import Error from '../error'
-import { Button } from '@material-ui/core';
+import  Button from '@material-ui/core';
 import ResponsiveDialog from '../dialog'
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import NoPolls from './no-polls'
 import LoadingHOC from '../loading/loadingHOC.js'
-
+import FeedBackMaxPollsReached from './max-polls'
 
 
 
@@ -39,14 +39,17 @@ import LoadingHOC from '../loading/loadingHOC.js'
 const styles = (theme) =>({
   button:theme.overrides.MuiButton,
 })
+
+
 const List = ({ ...props }) => {
   let pollList = Object.keys(props.list);
   console.log('hitting LIST')
   return (
-    pollList.length > 0 ?
+   
     <div className="list">
-    {pollList.map((poll, key) => 
-      <div className="list-row" key={poll.objectID}>
+
+    {pollList.map((poll, key) =>
+      <div className="list-row" key={key}>
         <UserPollCard
           pollActions={<IconButton
             onClick={(event)=> {
@@ -59,23 +62,24 @@ const List = ({ ...props }) => {
             />
             </IconButton>}
           poll={props.list[poll]}
-          // key={key}
-          // classes={props.classes}
+          
         />
       </div>)}
-  </div> : <SearchPollsButton timeError={props.fetchPolls} {...props}/>
+  </div>
 
   )
+}
 
 
+{/* <SearchPollsButton timeError={props.fetchPolls} {...props}/>  */}
 
-} 
-const withError = (conditionFn) => (Component) => (props) => {
+
+const withError = (conditionFn)  => (Component) => (props) => {
   console.log('hitting withError')
 
   return (
   <div>
-    <Component {...props} />
+        <Component {...props} />
 
     <div className="interactions">
       {
@@ -91,7 +95,7 @@ const withError = (conditionFn) => (Component) => (props) => {
 
 
 const WithLoading = (conditionFn) => (Component) => (props) => {
-  console.log('hitting withLoading' ,props)
+  console.log('hitting withLoading' ,props, Component)
   return(
     <div>
     <Component {...props} />
@@ -105,7 +109,7 @@ const WithLoading = (conditionFn) => (Component) => (props) => {
 
 
 const SearchPollsButton = ({...props}) =>{
-  console.log('hitting searchPollsButton')
+  console.log('hitting searchPollsButton', props)
 
   return (
     <div 
@@ -125,25 +129,23 @@ const SearchPollsButton = ({...props}) =>{
 
 
 
-// const FeedBackSearchPollsButton = LoadingHOC(SearchPollsButton)
+const FeedBackSearchPollsButton = LoadingHOC(SearchPollsButton)
 
 
 
-const WithNoPolls = (conditionFn) => (Component) => (props) => {
-  console.log('hitting the with No Polls Found COMPONent', props, Component )
-  return (
-    <div>
-      {loadingCondition(props) &&
+const WithNoPolls = (conditionFn) => (props) => {
+      return (
       <div>
-        <FeedBackSearchPollsButton timeError={props.fetchPolls} {...props}/>
+        {/* <Component {...props} /> */}
+        {conditionFn(props) && <FeedBackSearchPollsButton {...props}/>}
       </div>
-      } 
-    </div>
-  )
+      )
 }
 
 
-const WithInfiniteScroll =(conditionFn) => (Component) => 
+
+
+const withInfiniteScroll = (conditionFn) => (Component) =>
   class WithInfiniteScroll extends React.Component {
    constructor(props) {
         super(props);
@@ -173,7 +175,7 @@ const WithInfiniteScroll =(conditionFn) => (Component) =>
       console.log("hiting onscroll methoD", conditionFn(this.props))
 
       if (conditionFn(this.props)){
-       _.throttle(this.props.fetchPolls(), 200)
+       _.debounce(this.props.fetchPolls(), 400)
       }
     }
 
@@ -185,25 +187,49 @@ const WithInfiniteScroll =(conditionFn) => (Component) =>
 
   const infiniteScrollCondition = props =>
   (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
-  && props.list
+  && !props.maxPublicPolls
+  && props.pollCount
   && !props.Loading
   && !props.error;
 
   const loadingCondition = props =>
-  props.Loading;
+  props.Loading && ! props.maxPublicPolls;
 
 
   const errorCondition = props =>
    !props.Loading && props.error;
 
-   const withNoPollsCondition = props =>
-   !props.Loading && !props.error && props.list
+   const noPollsCondition = props =>
+   props.pollCount===0 && !props.error;
 
-  const AdvancedList = compose(
-    withNoPollsCondition(WithNoPolls),
-    infiniteScrollCondition(WithInfiniteScroll),
-    loadingCondition(WithLoading),
-    errorCondition(withError),
+   const maxPublicPollsCondition = props =>
+   props.maxPublicPolls;
+
+   const withMaxPublicPolls = (conditionFn) => (Component) => (props) =>
+    <div>
+      <Component {...props} />
+      <div>
+      { conditionFn(props) && <FeedBackMaxPollsReached {...props}/>}
+      </div>
+    </div>
+
+  const InfiniteLoadList = compose(
+    withInfiniteScroll(infiniteScrollCondition),
+    WithLoading(loadingCondition),
+    withMaxPublicPolls(maxPublicPollsCondition),
+    withError(errorCondition),
   )(List);
 
-export default AdvancedList
+  const AdvancedList = compose(
+    branch(
+      (props)=> props.pollCount === 0,
+      renderComponent(WithNoPolls)
+    ),
+    branch(
+      (props)=> props.pollCount !== 0,
+      renderComponent(InfiniteLoadList)
+    )
+  )(<div></div>)
+
+  export default AdvancedList
+

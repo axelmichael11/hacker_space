@@ -1,11 +1,27 @@
 const superagent = require('superagent');
 import {loadingOn, loadingOff} from './loading-actions'
 
+// import {maxDataReached, maxDataNotReached} from './max-data-actions'
+
+
+ const maxDataReached = () => {
+    return {
+      type: 'max_data_reached',
+      payload: true,
+    }
+  }
+
+
+const maxDataNotReached = () => {
+    return {
+      type: 'max_data_not_reached',
+      payload: false,
+    }
+  }
+
 
 
 const fetchPublicPolls = (polls) => {
-
-
     return { type: 'public_polls_fetch', payload: polls }
   }
 
@@ -15,16 +31,31 @@ const filterOutPoll = (newPolls)=>{
 } 
 
 
-  const fetchPollsExperiment = (publicPolls, newPolls) => {
-    let pollStateLength = Object.keys(publicPolls).length
+
+
+  const fetchPollsExperiment = (dispatch, getState, newPolls) => {
+    let {publicPolls} = getState()
+    let alreadyExist = 0;
+    let newPollsLength = newPolls.length;
+    let pollStateLength = Object.keys(publicPolls).length;
+
     console.log('hitting fetch polls experiment')
     for (let i = 0; i <newPolls.length;i++ ){
         console.log('POLL', newPolls[i])
         if (!publicPolls[newPolls[i].created_at]){
             publicPolls[newPolls[i].created_at]= newPolls[i];
+        } else {
+            alreadyExist++;
         }
     }
-    return {type: 'public_polls_fetch', payload: publicPolls}
+    console.log('fetchPolls ExperimenTING', alreadyExist, newPollsLength, pollStateLength, publicPolls)
+
+    if (alreadyExist === newPollsLength && newPollsLength>0){
+        dispatch(maxDataReached())
+    } else {
+        dispatch(fetchPublicPolls(publicPolls))
+        dispatch(maxDataNotReached())
+    }
 }
 
 export const getPublicPolls = () => (dispatch, getState) => {
@@ -35,12 +66,9 @@ export const getPublicPolls = () => (dispatch, getState) => {
     .then(res => {
         let parsed = JSON.parse(res.text)
         console.log('parsed from GET PUBLIC POLLS ACTION', parsed)
-        dispatch(fetchPollsExperiment(publicPolls, parsed))
+        fetchPollsExperiment(dispatch, getState, parsed)
+        parsed.status = res.status
         return parsed;
-    })
-    .catch(err => {
-        console.log('parsed from GET PUBLIC POLLS ACTION', err)
-
     })
 }
 

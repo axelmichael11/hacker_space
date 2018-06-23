@@ -87,7 +87,8 @@ class ExplorePage extends React.Component {
     this.renderReportDialogContent = this.renderReportDialogContent.bind(this)
   }
 
-  componentDidMount(){
+  componentWillMount(){
+    console.log('publicPolls on explore page', this.props.publicPolls)
     let publicPollsCount = Object.keys(this.props.publicPolls)
     if (publicPollsCount.length===0){
       this.fetchPolls()
@@ -102,11 +103,11 @@ class ExplorePage extends React.Component {
     this.setState({exploreLoading:true, exploreError:false })
     this.props.getPublicPolls()
     .then((res)=>{
-      console.log("HITTING RESPONSE!!")
+      console.log("HITTING RESPONSE!!", res)
       this.setState({exploreLoading:false, exploreError:false })
     })
     .catch((err)=>{
-      console.log("HITTING ERROROR!!")
+      console.log("HITTING ERROROR!!", err)
       this.setState({exploreLoading:false, exploreError:true})
     })
   }
@@ -224,8 +225,6 @@ handleReportSuccess(){
                 submitClick={this.reportPoll}
                 submitLoading={this.state.reportLoading}
                 timeError={this.fetchPolls}
-
-                // classes={classes}
                 />
 
                 <CardMenu
@@ -246,6 +245,8 @@ handleReportSuccess(){
               timeError={this.fetchPolls}
               throwError={this.throwError}
               setPoll={this.setPoll}
+              pollCount={Object.keys(this.props.publicPolls).length}
+              maxPublicPolls={this.props.maxPublicPolls}
               />
 
 
@@ -271,6 +272,7 @@ handleReportSuccess(){
 export const mapStateToProps = state => ({
     loggedIn: state.loggedIn,
     publicPolls: state.publicPolls,
+    maxPublicPolls: state.maxPublicPolls
   })
   
   export const mapDispatchToProps = dispatch => ({
