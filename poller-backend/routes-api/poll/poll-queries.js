@@ -12,6 +12,7 @@ const env = {
 
 module.exports = {
     postPollQuery : function(res, user, validatedPoll){
+        console.log('THIS IS THE DATA...', user, validatedPoll)
         Client.query(`
         WITH poll AS (INSERT INTO polls (author_id, author_username, subject, question)
         VALUES ($1, $2, $3, $4) RETURNING created_at, id, author_id, subject, question, author_username)
@@ -20,7 +21,7 @@ module.exports = {
         RETURNING poll.author_username, poll.created_at, poll.subject, poll.question;
         `,
         [user[`${env.uid}`],
-        user.nickname,
+        validatedPoll.nickname,
         validatedPoll.pollSubject,
         validatedPoll.pollQuestion,
         ],
@@ -31,6 +32,7 @@ module.exports = {
             if (err.name =='error' && err.constraint=='poller_data_polls_id_check') {
             res.status(550).send({error: err.name})
             } else {
+                console.log('this is the error from DB on pOST POLL', err)
             res.status(500).send('unknown error')
             }
         }

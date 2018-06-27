@@ -260,6 +260,7 @@ class PollVotePage extends React.Component {
 
     
   setPoll(poll){
+    console.log('this is the poll being SET', poll)
     this.setState({pollMenuFocus: poll})
   }
 
@@ -276,7 +277,7 @@ class PollVotePage extends React.Component {
   }
 
   reportPoll(){
-    console.log('report POlL!!')
+    console.log('report POlL!!', this.state.pollMenuFocus)
     this.setState({ dialogLoading: true });
     this.props.reportPoll(this.state.pollMenuFocus)
     .then((res)=>{
@@ -371,8 +372,8 @@ handleReportSuccess(){
   render() {
     console.log('poll vote page', this.props, this.state)
     let {classes} = this.props
-    let {subject, author_username, question, expiration } = this.props.location.state
-    let poll = {subject, author_username, question, expiration};
+    let poll = this.props.location.state
+    // let poll = {created_at, subject, author_username, question, expiration};
 
     return (
 
@@ -474,6 +475,7 @@ handleReportSuccess(){
           dialogSubmitText={this.state.dialogSubmitText}
           submitClick={this.state.dialogSubmitClick==='report'? this.reportPoll: this.handleSubmitVote }
           submitLoading={this.state.dialogLoading}
+          timeError={this.handleReportError}
           // classes={classes}
         />
 

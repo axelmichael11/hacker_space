@@ -21,31 +21,34 @@ const styles = theme => ({
     button:theme.overrides.MuiButton
 })
 
-const MaxPolls = ({...props}) =>{
+const MaxPolls = ({...props}) => {
+    console.log('props on max polls', props)
     return(
-    <div className="no-data">
+    <div>
         <Typography variant="headline" component="h3" 
         style={{width:'100%' , margin:'auto', textAlign:'center' }}>
         It appears that is all the polls posted recently! Check back for more or 
         search for more below...
         </Typography>
-        <Button 
+        <div>
+        {/* <Button 
             variant="outlined"
             onClick={props.fetchPolls} 
-            className={props.classes.button}
+            // className={props.classes.button}
             >
             SEARCH FOR MORE POLLS
-    </Button>
+    </Button> */}
+    </div>
     </div>
     )
 }
 
-const MaxPollsWithStyle =  compose(
+export default  compose(
     withStyles(styles, {withTheme:true})
 )(MaxPolls)
 
-const FeedBackMaxPollsReached = LoadingHOC(MaxPollsWithStyle)
+// const FeedBackMaxPollsReached = LoadingHOC(MaxPollsWithStyle)
 
 
 
-export default FeedBackMaxPollsReached
+// export default FeedBackMaxPollsReached

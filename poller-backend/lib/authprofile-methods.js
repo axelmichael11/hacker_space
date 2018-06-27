@@ -1,5 +1,6 @@
 
 const superagent = require('superagent');
+const jwt_decode =require('jwt-decode')
 
 module.exports = {
         getAuthProfile : (token) => {
@@ -7,8 +8,21 @@ module.exports = {
             .set('Authorization',`${token}`)
             .set('scope','openid profile email read write user_metadata userId')
             .then((response)=>{
+                console.log('THIS IS THE BODDY', response.body)
             return response.body
             })
             .catch(err=> console.log('error',err))
+    },
+    decodeToken: (token) => {
+        let user_profile = jwt_decode(token)
+      console.log('DECODED TOKEN',user_profile)
+        return new Promise((resolve, reject)=>{
+            if (!user_profile){
+                var error = new Error('unable to decode token');
+                reject(error)
+            } else {
+                resolve(user_profile)
+            }
+        })
     }
 }

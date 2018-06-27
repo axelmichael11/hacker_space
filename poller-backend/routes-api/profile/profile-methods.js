@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const superagent = require('superagent');
+const jwt_decode =require('jwt-decode')
 
 const validation = require('../../lib/validation-methods')
 const auth_0 = require('../../lib/authprofile-methods')
@@ -25,7 +26,7 @@ const profile = {};
     profile.updateProfile = (req,res) => {
       let token = validation.checkForToken(req.headers.authorization)
       let profileInfo = profileValidate.userProfileValidate(req.body)
-      auth_0.getAuthProfile(token)
+      auth_0.decodeToken(token)
       .then(user=>{
         validation.validateUid(user)
         .then(user=>{

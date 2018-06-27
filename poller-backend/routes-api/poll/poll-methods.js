@@ -13,7 +13,7 @@ const poll = {}
 poll.postPoll = (req, res) => {
     let token = validation.checkForToken(req.headers.authorization)
     let validatedPoll = pollValidate.userPollValidate(req.body)
-    auth_0.getAuthProfile(token)
+    auth_0.decodeToken(token)
     .then(user=>{
       validation.validateUid(user)
       .then(user=>{
@@ -28,7 +28,7 @@ poll.postPoll = (req, res) => {
   poll.deletePoll = (req,res)=> {
     let token = validation.checkForToken(req.headers.authorization)
     let validatedPoll = pollValidate.deletePollValidate(req.body)
-    auth_0.getAuthProfile(token)
+    auth_0.decodeToken(token)
     .then(user=>{
       validation.validateUid(user)
       .then(user=>{
@@ -41,7 +41,7 @@ poll.postPoll = (req, res) => {
 
   poll.getPolls = (req,res)=> {
     let token = validation.checkForToken(req.headers.authorization)
-    auth_0.getAuthProfile(token)
+    auth_0.decodeToken(token)
     .then(user=>{
       validation.validateUid(user)
       .then(user=>{

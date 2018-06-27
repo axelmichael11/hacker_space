@@ -11,6 +11,7 @@ module.exports = {
     return token
     },
     validateUid : (user) => {
+        console.log('USER DATA IN TOKEN',user)
         console.log(user[`${env.uid}`])
         return new Promise((resolve, reject)=>{
             console.log(user[`${env.uid}`])
@@ -18,6 +19,7 @@ module.exports = {
                 var error = new Error('no user id found in auth0');
                 reject(error)
             } else {
+                console.log('uid is validated!', user)
                 resolve(user)
             }
         })

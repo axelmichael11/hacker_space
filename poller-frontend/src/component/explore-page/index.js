@@ -40,15 +40,15 @@ class ExplorePage extends React.Component {
     this.state = {
       polls: this.props.publicPolls,
       previousPolls:0,
-
+      pollCount: Object.keys(this.props.publicPolls).length,
       //loading
       exploreLoading:false,
       reportLoading:false,
-
+      searchMoreLoading:false,
 
       exploreError: false,
       renderCount:0,
-      maxContentReached: false,
+      maxPublicPolls: this.props.maxPublicPolls,
 
       //dialog
       dialogOpen: false,
@@ -158,7 +158,9 @@ class ExplorePage extends React.Component {
   reportPoll(){
     console.log('report POlL!!')
     this.setState({ reportLoading: true });
-    this.props.reportPoll(this.state.pollMenuFocus)
+    let pollToReport = this.props.publicPolls[this.state.pollMenuFocus]
+    console.log('poll to report!!', this.state.pollMenuFocus, pollToReport)
+    this.props.reportPoll(pollToReport)
     .then((res)=>{
         console.log(res)
         if (res.status===200){
@@ -224,7 +226,7 @@ handleReportSuccess(){
                 dialogSubmitText={this.state.dialogSubmitText}
                 submitClick={this.reportPoll}
                 submitLoading={this.state.reportLoading}
-                timeError={this.fetchPolls}
+                timeError={this.handleReportError}
                 />
 
                 <CardMenu
@@ -245,8 +247,8 @@ handleReportSuccess(){
               timeError={this.fetchPolls}
               throwError={this.throwError}
               setPoll={this.setPoll}
-              pollCount={Object.keys(this.props.publicPolls).length}
-              maxPublicPolls={this.props.maxPublicPolls}
+              pollCount={this.state.pollCount}
+              maxPublicPolls={this.state.maxPublicPolls}
               />
 
 
