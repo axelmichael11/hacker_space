@@ -19,10 +19,13 @@ import Button from '@material-ui/core/Button';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import SwipeableViews from 'react-swipeable-views';
+import welcomePhoto from '../../lib/welcome.jpg'
+import profilePhoto from '../../lib/profile.jpg'
+import votePhoto from '../../lib/vote.jpg'
 
 const tutorialSteps = [
   {
-    photo:'./demographic-photo',
+    photo: welcomePhoto,
     label: 'Welcome To Poller',
     description: ` This is Poller, a web application to see what people are thinking! ;)
                     Ever wanted to post questions anonymously and get public feedback?
@@ -33,7 +36,7 @@ const tutorialSteps = [
                     (Not required). ALSO! The catch is, you have to vote to see the results. :)`,
   },
   {
-    photo:'./create-photo',
+    photo: profilePhoto,
     label: 'Create an Account, customize your profile',
     description: `You have to create an account. This application uses Oauth... That 
                     means this web application or server does NOT store sensitive information.
@@ -42,7 +45,7 @@ const tutorialSteps = [
                     this interesting! (Again, not required...)`,
   },
   {
-    photo:'./vote-photo',
+    photo: votePhoto,
     label: 'Post questions and vote!',
     description: ` Once your profile is set up, you can see other people's questions to vote on,
                     or post your own questions to see what other users are thinking!
@@ -127,7 +130,7 @@ class GettingStartedPage extends React.Component {
             return (
               <div key={key}>
                 <Typography variant="display2" className={classes.headingText}> {step.label} </Typography>
-                <img src={step.photo}/>
+                <img src={step.photo} width={'250px'} style={{display:'block', margin:'auto'}}/>
                 <Typography variant="subheading" className={classes.bodyText}>{step.description}</Typography>
               </div>
             )

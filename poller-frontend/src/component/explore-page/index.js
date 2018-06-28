@@ -41,6 +41,7 @@ class ExplorePage extends React.Component {
       polls: this.props.publicPolls,
       previousPolls:0,
       pollCount: Object.keys(this.props.publicPolls).length,
+      noPolls:false,
       //loading
       exploreLoading:false,
       reportLoading:false,
@@ -90,9 +91,7 @@ class ExplorePage extends React.Component {
   componentWillMount(){
     console.log('publicPolls on explore page', this.props.publicPolls)
     let publicPollsCount = Object.keys(this.props.publicPolls)
-    if (publicPollsCount.length===0){
       this.fetchPolls()
-    }
   }
 
   componentWillUnmount(){
@@ -104,7 +103,20 @@ class ExplorePage extends React.Component {
     this.props.getPublicPolls()
     .then((res)=>{
       console.log("HITTING RESPONSE!!", res)
-      this.setState({exploreLoading:false, exploreError:false })
+      if( res.polls.length===0){
+        this.setState({
+          exploreLoading:false, 
+          exploreError:false,
+          noPolls:true,
+        })
+      }
+      if (res.polls.length > 0){
+        this.setState({
+          exploreLoading:false, 
+          exploreError:false,
+          noPolls:false,
+        })
+      }
     })
     .catch((err)=>{
       console.log("HITTING ERROROR!!", err)
@@ -242,6 +254,7 @@ handleReportSuccess(){
               page={this.state.page}
               fetchPolls={this.fetchPolls}
               handleOpenCardMenu={this.handleOpenCardMenu}
+              noPolls={this.state.noPolls}
               // classes={classes}
               errorTry={this.fetchPolls}
               timeError={this.fetchPolls}

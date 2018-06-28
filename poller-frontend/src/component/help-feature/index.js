@@ -71,7 +71,9 @@ const styles = theme => ({
 
 
 
-const Help = ({...props}) => 
+const Help = ({...props}) => {
+  console.log('hitting help FEATRURE', props)
+  return (
 <div className={props.classes.container}>
 <Button
           size='small'
@@ -82,8 +84,6 @@ const Help = ({...props}) =>
         </Button>
 
 
-{/* <Paper className={props.classes.helpBarButton}> */}
-          {/* <Card> */}
             <Button
             className={props.classes.helpBarButton}
             size='small'
@@ -118,9 +118,9 @@ const Help = ({...props}) =>
               </CardContent>
             </Collapse>
             </Button>
-            {/* </Card> */}
-        {/*</Paper> */}
         </div>
+  )
+}
 
 Help.proptypes = {
     helpText: PropTypes.string.isRequired,

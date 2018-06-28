@@ -1,7 +1,8 @@
 
 const superagent = require('superagent');
 import {loadingOn, loadingOff} from './loading-actions'
-import {deletePollFromPublic} from './public-poll-actions'
+import {deletePollFromPublic, addCreatedPollToPublicPolls} from './public-poll-actions'
+
 
 const fetchUserPolls = (polls) => {
       return { type: 'user_polls_fetch', payload: polls }
@@ -58,7 +59,9 @@ export const pollDelete = (poll) => (dispatch, getState) => {
             .send(poll)
             .then(res => {
                 let parsed = JSON.parse(res.text)
+                console.log('created poll!!', parsed)
                 dispatch(createPoll(parsed))
+                // dispatch(addCreatedPollToPublicPolls(parsed))
                 parsed.status=res.status
                 return parsed
             })

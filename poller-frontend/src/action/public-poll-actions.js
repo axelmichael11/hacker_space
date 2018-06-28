@@ -10,8 +10,6 @@ import {loadingOn, loadingOff} from './loading-actions'
       payload: true,
     }
   }
-
-
 const maxDataNotReached = () => {
     return {
       type: 'max_data_not_reached',
@@ -21,15 +19,24 @@ const maxDataNotReached = () => {
 
 
 
+
+
 const fetchPublicPolls = (polls) => {
     return { type: 'public_polls_fetch', payload: polls }
   }
+
+const addCreatedPollToPublicPolls = (poll) => (dispatch, getState) => {
+    let {publicPolls} = getState()
+
+    publicPolls[poll.created_at] = poll;
+    console.log('hitting public polls', publicPolls)
+    return {type:'add_created_poll', payload: publicPolls}
+}
 
   
 const filterOutPoll = (newPolls)=>{
     return {type: 'public_poll_filter', payload: newPolls}
 } 
-
 
 
 
@@ -52,7 +59,8 @@ const filterOutPoll = (newPolls)=>{
 
     if (alreadyExist === newPollsLength && newPollsLength>0){
         dispatch(maxDataReached())
-    } else {
+    }
+    if (alreadyExist !== newPollsLength){
         dispatch(fetchPublicPolls(publicPolls))
         dispatch(maxDataNotReached())
     }
@@ -60,13 +68,15 @@ const filterOutPoll = (newPolls)=>{
 
 export const getPublicPolls = () => (dispatch, getState) => {
     let { auth0Token, publicPolls } = getState();
-    
+
+
     return superagent.get(`${__API_URL__}/api/explore`)
     .set('Authorization', `Bearer ${auth0Token}`)
     .then(res => {
-        let parsed = JSON.parse(res.text)
+        let parsed = {}
+        parsed.polls = JSON.parse(res.text)
         console.log('parsed from GET PUBLIC POLLS ACTION', parsed)
-        fetchPollsExperiment(dispatch, getState, parsed)
+        fetchPollsExperiment(dispatch, getState, parsed.polls)
         parsed.status = res.status
         return parsed;
     })

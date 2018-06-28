@@ -39,4 +39,4 @@ vote.getVotes = (req, res) => {
   }
 
 
-  module.exports = vote;
+  // module.exports = vote;

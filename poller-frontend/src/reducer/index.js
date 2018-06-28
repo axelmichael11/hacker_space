@@ -10,4 +10,4 @@ import publicPolls from './public-polls-reducer.js'
 // import Loading from './loading-reducer.js'
 import maxPublicPolls from './max-data-reached'
 
-export default combineReducers({ maxPublicPolls, publicPolls, userPolls, auth0Token, userProfile, loggedIn, storageLoginAttempt})
+export default combineReducers({maxPublicPolls, publicPolls, userPolls, auth0Token, userProfile, loggedIn, storageLoginAttempt})

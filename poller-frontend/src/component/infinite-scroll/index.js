@@ -62,12 +62,12 @@ const List = ({ ...props }) => {
           key={key}
         />
       </div>)}
+      {null}
   </div>
   )
 }
 
 
-{/* <SearchPollsButton timeError={props.fetchPolls} {...props}/>  */}
 
 
 const withError = (conditionFn)  => (Component) => (props) => {
@@ -103,30 +103,6 @@ const WithLoading = (conditionFn) => (Component) => (props) => {
   )
 }
 
-
-const SearchPollsButton = ({...props}) =>{
-  console.log('hitting searchPollsButton', props)
-
-  return (
-    <div>
-      <NoPolls/>
-        {/* <Button 
-              variant="outlined"
-              onClick={props.fetchPolls} 
-              // className={props.classes.button}
-              >
-              SEARCH FOR MORE POLLS
-        </Button> */}
-    </div>
-  )
-}
-
-
-
-const FeedBackSearchPollsButton = LoadingHOC(SearchPollsButton)
-const FeedBackMaxPollsSearch = LoadingHOC(MaxPolls)
-
-
 const WithNoPolls  = (conditionFn) => (Component) => (props) => {
   console.log('hitting WITH NO POLLS', props)
     
@@ -134,17 +110,11 @@ const WithNoPolls  = (conditionFn) => (Component) => (props) => {
     <div>
       <Component {...props} />
       <div>
-      { conditionFn(props) && <NoPolls/>}
+      { conditionFn(props) && <NoPolls {...props}/>}
       </div>
     </div>
    )
 }
-
-      // <FeedBackSearchPollsButton 
-      //     loadingError={props.error}
-      //     {...props}
-      //     />
-
 
 
 
@@ -188,45 +158,20 @@ const WithNoPolls  = (conditionFn) => (Component) => (props) => {
         }
       }
 
-  const infiniteScrollCondition = props =>
-  (window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
-  && !props.maxPublicPolls
-  && !props.Loading
-  && !props.error;
-
-  const loadingCondition = props =>
-  props.Loading;
-
-
-  const errorCondition = props =>
-   !props.Loading && props.error;
-
-   const noPollsCondition = props =>
-   props.pollCount===0 && !props.Loading && !props.error;
-
-   const maxPublicPollsCondition = props =>
-   props.maxPublicPolls && !props.Loading && !props.error ;
+  
 
    const withMaxPublicPolls = (conditionFn) => (Component) => (props) =>
     <div>
       <Component {...props} />
       <div>
-      { conditionFn(props) && 
-      <FeedBackMaxPollsSearch 
-        submitClick={props.fetchPolls}
-        dialogSubmitText={props.dialogSubmitText}
-        Loading={props.Loading}
-        timeError={props.timeError}
-        loadingError={props.error} 
-        {...props}
-        />
-        }
+      { conditionFn(props) && <MaxPolls {...props}/>}
       </div>
     </div>
 
 
 
  const mapStateToProps = state => ({
+  noPolls:state.noPolls,
   loggedIn: state.loggedIn,
   publicPolls: state.publicPolls,
   maxPublicPolls: state.maxPublicPolls
@@ -235,6 +180,27 @@ const WithNoPolls  = (conditionFn) => (Component) => (props) => {
  const mapDispatchToProps = dispatch => ({
 })
 
+
+//conditions
+const infiniteScrollCondition = props =>
+(window.innerHeight + window.pageYOffset) >= document.body.offsetHeight
+&& props.list
+&& !props.maxPublicPolls
+&& !props.Loading
+&& !props.error;
+
+const loadingCondition = props =>
+props.Loading;
+
+
+const errorCondition = props =>
+ !props.Loading && props.error;
+
+ const noPollsCondition = props =>
+ Object.keys(props.list).length === 0 && !props.Loading && !props.error;
+
+ const maxPublicPollsCondition = props =>
+ props.maxPublicPolls && Object.keys(props.list).length > 0 && !props.Loading && !props.error ;
 
 
   const AdvancedList = compose(

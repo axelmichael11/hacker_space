@@ -94,7 +94,7 @@ class AuthLockButton extends React.Component {
   render() {
       let {classes} = this.props
     return (
-      <div className={classes.container}>
+      <div >
         <Button 
         variant="outlined"
         onClick={this.props.loggedIn ? this.logout : this.showLock} 
