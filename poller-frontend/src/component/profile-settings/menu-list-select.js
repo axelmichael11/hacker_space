@@ -58,19 +58,27 @@ const styles = theme => ({
   ageSelect:{
     marginLeft: 15,
   },
+  cardContent:theme.overrides.PollCard.cardContent,
+  text: theme.typography.text,
+
   listContainer: theme.overrides.MuiListItem.container,
   listItem:theme.overrides.MuiListItem,
-  listTitle: theme.overrides.MuiListItem.title,
+  // listTitle: theme.overrides.MuiListItem.title,
 })
 
 
 const MenuListSelect = ({list, listTitle, handleOpenList, selectedItem, anchorEl, handleCloseList,  classes, theme, renderMenuItems, changeListValue })=> {
 
+  console.log("props on menulistselect", classes)
 
       return (
-      <CardContent className={classes.cardContent}>
-        <Toolbar className={classes.cardContent}>
-            <Typography variant="subheading" component="h3" className={classes.listTitle}>
+      <CardContent 
+      // className={classes.cardContent}
+      >
+        <Toolbar 
+        className={classes.cardContent}
+        >
+            <Typography variant="subheading" component="h3" style={{width:'40%' }} >
                 {listTitle}
             </Typography>
         <div className={classes.listContainer}>
@@ -86,7 +94,6 @@ const MenuListSelect = ({list, listTitle, handleOpenList, selectedItem, anchorEl
         <ListItemText
           primary={selectedItem}
           // secondary={country_list[this.state.country]}
-          // className={classes.listContainer}
         />
         <DropDownArrowIcon/>
 
@@ -122,8 +129,7 @@ const MenuListSelect = ({list, listTitle, handleOpenList, selectedItem, anchorEl
 
 // list, listTitle, handleListItemClick, selectedItem, anchorEl, handleCloseList,
 MenuListSelect.propTypes = {
-  classes: PropTypes.object.isRequired,
-  // theme: PropTypes.object.isRequired,
+
   list: PropTypes.object.isRequired,
   listTitle: PropTypes.string.isRequired,
   handleOpenList: PropTypes.func.isRequired,
@@ -133,8 +139,6 @@ MenuListSelect.propTypes = {
   // anchorEl: PropTypes.object,
   renderMenuItems: PropTypes.func.isRequired
 };
-
-
 
 
 export default compose(

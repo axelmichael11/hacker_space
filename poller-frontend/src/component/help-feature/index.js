@@ -3,6 +3,7 @@ import {compose} from 'recompose'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import classnames from 'classnames';
+import { Link, withRouter } from 'react-router-dom'
 
 
 import Dialog from '@material-ui/core/Dialog';
@@ -44,9 +45,14 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Menu from '@material-ui/core/Menu';
+import ArrayBackIcon from '@material-ui/icons/arrowback';
+import Button from '@material-ui/core/Button';
+
 
 const styles = theme => ({
-    container: theme.overrides.MuiPaper,
+    container: theme.overrides.MuiPaper.root,
+    helpBarButton:theme.uniqueStyles.helpBarButton,
+    backButton: theme.uniqueStyles.backButton,
     text: theme.typography.text,
     expand: {
       transform: 'rotate(0deg)',
@@ -61,21 +67,33 @@ const styles = theme => ({
     actions: {
       display: 'flex',
     },
-    expandMoreIcon:{
-        colorPrimary: theme.palette.secondary.main
-      }
 })
 
 
 
-const Help = ({...props}) => 
-<Paper className={props.classes.container}>
-          <Card>
+const Help = ({...props}) => {
+  console.log('hitting help FEATRURE', props)
+  return (
+<div className={props.classes.container}>
+<Button
+          size='small'
+          className={props.classes.backButton}
+          onClick={props.history.goBack}
+        >
+          <ArrayBackIcon/>
+        </Button>
+
+
+            <Button
+            className={props.classes.helpBarButton}
+            size='small'
+            >
             <CardActions 
               disableActionSpacing
               onClick={props.handleHelpExpand}
               disableActionSpacing
               className="help-card-actions"
+              style={{boxSizing:'initial'}}
             >
                 <Typography className={props.classes.text} variant="title">
                   Help
@@ -89,7 +107,7 @@ const Help = ({...props}) =>
                   aria-expanded={props.helpExpanded}
                   aria-label="Show more"
                 >
-                  <ExpandMoreIcon className={props.classes.expandMoreIcon}/>
+                  <ExpandMoreIcon style={{color:'white'}}/>
                 </IconButton>
               </CardActions>
             <Collapse in={props.helpExpanded} timeout="auto" unmountOnExit>
@@ -99,17 +117,21 @@ const Help = ({...props}) =>
                 </Typography>
               </CardContent>
             </Collapse>
-          </Card>
-        </Paper>
+            </Button>
+        </div>
+  )
+}
 
 Help.proptypes = {
     helpText: PropTypes.string.isRequired,
     handleHelpExpand: PropTypes.func.isRequired,
     helpExpanded: PropTypes.bool.isRequired,
+    classes: PropTypes.object.isRequired
 }
 
 
 const HelpTab = compose(
+  withRouter,
     withStyles(styles, {withTheme:true}),
     )(Help);
     

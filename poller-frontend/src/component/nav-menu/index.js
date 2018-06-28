@@ -23,7 +23,7 @@ import Menu from '@material-ui/core/Menu';
 import ExploreButton from './Explore-button.js'
 import ProfileButton from './settings-button.js'
 import MyPollsButton from './poll-create-button.js'
-
+import ContactButton from './contact-button.js'
 
 const styles= {
 
@@ -48,7 +48,6 @@ class NavMenu extends React.Component{
 
 
     render(){
-        console.log('this.PROPS on the MENu', this.context, this.props.history)
          const { anchorEl } = this.state;
          const open = Boolean(anchorEl);
 
@@ -81,6 +80,7 @@ class NavMenu extends React.Component{
                   <ExploreButton handleClose={this.handleClose}/>
                   <MyPollsButton handleClose={this.handleClose}/>
                   <ProfileButton handleClose={this.handleClose}/>
+                  <ContactButton handleClose={this.handleClose}/>
                   <AuthLockButton />
                 </Menu>
 

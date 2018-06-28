@@ -35,7 +35,6 @@ const styles= {
 
 }
 const CardMenu = ({...props}) => {
-        console.log('PROPS on the Card MENu',props)
          const { anchorEl } = props;
          const open = Boolean(anchorEl);
         return (
@@ -72,7 +71,7 @@ const CardMenu = ({...props}) => {
 CardMenu.propTypes = {
   renderMenuButtons: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired,
-  anchorEl: PropTypes.isRequired
+  // anchorEl: PropTypes.isRequired
 }
 
 

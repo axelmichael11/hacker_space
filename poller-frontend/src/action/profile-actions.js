@@ -15,7 +15,6 @@ const storeUserProfile = (userProfile) => {
 
   export const profileFetch = () => (dispatch, getState) => {
     let { auth0Token } = getState()
-    console.log('this is the api url AND TOKEN', __API_URL__, auth0Token)
     return superagent
       .get(`${__API_URL__}/api/user`)
       .set('Authorization', `Bearer ${auth0Token}`)
@@ -34,7 +33,6 @@ const storeUserProfile = (userProfile) => {
 
   export const localStorageProfileFetch = () => (dispatch, getState) => {
     let auth0Token = localStorage.poller_token
-    console.log('this is the api url AND TOKEN', __API_URL__, auth0Token)
     return superagent
       .get(`${__API_URL__}/api/user`)
       .set('Authorization', `Bearer ${auth0Token}`)

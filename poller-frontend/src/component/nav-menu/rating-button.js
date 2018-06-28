@@ -18,7 +18,7 @@ const styles = theme => ({
   });
 
 
-class ExploreButton extends React.Component{
+class RatingButton extends React.Component{
     constructor(props) {
         super(props)
         this.state = {}
@@ -26,14 +26,13 @@ class ExploreButton extends React.Component{
       }
 
     nextPath(){
-        this.props.history.push('/explore')
+        this.props.history.push('/rating')
         this.props.handleClose()
-
     }
     render(){
         return (
             <div>
-                <MenuItem onClick={()=>this.nextPath()}>Explore</MenuItem>
+                <MenuItem onClick={()=>this.nextPath()}>Contact</MenuItem>
            </div>
         )
     }
@@ -51,4 +50,4 @@ export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   withStyles(styles),
   withRouter,
-)(ExploreButton)
+)(RatingButton)

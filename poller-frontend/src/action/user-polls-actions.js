@@ -1,6 +1,7 @@
 
 const superagent = require('superagent');
 import {loadingOn, loadingOff} from './loading-actions'
+import {deletePollFromPublic, addCreatedPollToPublicPolls} from './public-poll-actions'
 
 
 const fetchUserPolls = (polls) => {
@@ -17,6 +18,8 @@ const createPoll = (poll) => {
 
 
 
+
+
 export const pollDelete = (poll) => (dispatch, getState) => {
     let { auth0Token } = getState();
     return superagent
@@ -26,14 +29,15 @@ export const pollDelete = (poll) => (dispatch, getState) => {
         .then(res => {
           let parsed = JSON.parse(res.text)
           dispatch(deleteUserPoll(parsed.created_at))
+          dispatch(deletePollFromPublic(parsed))
           parsed.status=res.status
+          console.log('parsed hitting pOLL DETELE', parsed)
           return parsed
         })
   }
 
   export const pollsFetch = (poll) => (dispatch, getState) => {
     let { auth0Token } = getState();
-    // dispatch(loadingOn())
     return superagent.get(`${__API_URL__}/api/poll`)
         .set('Authorization',`Bearer ${auth0Token}`)
         .set('accept', 'application/json')
@@ -55,7 +59,9 @@ export const pollDelete = (poll) => (dispatch, getState) => {
             .send(poll)
             .then(res => {
                 let parsed = JSON.parse(res.text)
+                console.log('created poll!!', parsed)
                 dispatch(createPoll(parsed))
+                // dispatch(addCreatedPollToPublicPolls(parsed))
                 parsed.status=res.status
                 return parsed
             })

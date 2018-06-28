@@ -1,28 +1,46 @@
 import React from 'react'
+import {  compose, branch, renderComponent} from 'recompose'
 
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import Paper from 'material-ui/Paper'
 
-import {VictoryPie, VictoryLegend, VictoryTooltip, VictoryLabel} from 'victory'
-import AppBar from 'material-ui/AppBar'
 
 import '../../style/index.scss'
-import Chip from 'material-ui/Chip';
 
 import MaterialStyles from '../../style/material-ui-style'
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import { withStyles } from '@material-ui/core';
+import CancelIcon from '@material-ui/icons/cancel'
+import Paper from '@material-ui/core/Paper';
 
 
-class NoPolls extends React.Component {
-  
-  render(){
-    console.log('yes-no pie charts', this.props, this.state)
+
+const styles = theme => ({
+  container: theme.overrides.MuiPaper,
+  button:theme.overrides.MuiButton
+})
+
+
+ const NoPolls = ({...props}) => {
+    console.log('no polls component', props)
       return(
-        <div className="no-data">
-            <Typography variant="headline" component="h3" style={{width:'100%' , margin:'auto', textAlign:'center' }}>No Polls Listed...</Typography>
-        </div>
+        <div style={{textAlign:'center'}}>
+            <CancelIcon style={{fontSize:40}}/>
+            <Typography variant="headline">
+            No Polls Listed...
+                </Typography>
+                <Button 
+                variant="outlined"
+                onClick={props.fetchPolls} 
+                className={props.classes.button}
+                style={{marginTop:10}}
+                >
+                SEARCH FOR MORE POLLS
+                </Button>
+    </div>
       )
-  }
 }
 
-export default NoPolls
+
+export default  compose(
+  withStyles(styles, {withTheme:true})
+)(NoPolls)

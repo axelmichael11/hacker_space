@@ -8,7 +8,7 @@ import {
   pollDelete,
   pollSend,
   } from '../../action/user-polls-actions.js'
-  
+
   
   import classnames from 'classnames';
   import PropTypes from 'prop-types';
@@ -48,27 +48,12 @@ import {
   import FormControlLabel from '@material-ui/core/FormControlLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import UserPollCard from '../user-poll-card'
-import LoadingHOC from '../loading/button.js'
+import LoadingHOC from '../loading/loadingHOC.js'
+import SubmitButton from '../loading/button.js'
 import MyPolls from '../my-polls'
 
 import HelpTab from '../help-feature'
 
-
-const SubmitButton = ({...props}) =>{
-  return (
-    <div 
-    // className={props.classes.buttonContainer}
-    >
-      <Button 
-      variant="outlined"
-      onClick={props.submitClick} 
-      className={props.classes.button}
-      >
-      {props.buttonTitle}
-      </Button>
-    </div>
-  )
-}
 
 
 
@@ -77,10 +62,6 @@ const FeedBackSubmitButton = LoadingHOC(SubmitButton)
 
   const styles = theme => ({
     container: theme.overrides.MuiPaper,
-    ageSelect:{
-      marginLeft: 15,
-    },
-    // buttonContainer: theme.overrides.MuiButton.root.container,
     button: theme.overrides.MuiButton,
    
     text: theme.typography.text,
@@ -107,7 +88,6 @@ const FeedBackSubmitButton = LoadingHOC(SubmitButton)
       margin: theme.spacing.unit,
       minWidth: 120,
     },
-    pollActions: theme.overrides.PollCard.pollActions,
   });
 
 
@@ -151,6 +131,8 @@ class PollCreatePage extends React.Component {
         //poll create
         pollCreateLoad:false,
         openPollCreateSuccess:false,
+        openPollDeleteError:false,
+        pollCreateErrorMessage:'There was an error creating your poll... hmm',
         pollCreateSuccessMessage:'Poll has been created!',
         maxPollReachedMessage:'You already have three questions! That is the limit...',
 
@@ -184,6 +166,7 @@ class PollCreatePage extends React.Component {
    this.handleSubmitPollDelete = this.handleSubmitPollDelete.bind(this)
    this.handleMyPollsError = this.handleMyPollsError.bind(this)
    this.pollsFetch = this.pollsFetch.bind(this)
+   this.handlePollCreateError= this.handlePollCreateError.bind(this)
   }
 
   pollsFetch(){
@@ -374,12 +357,19 @@ class PollCreatePage extends React.Component {
       }
     });
   }
+  handlePollCreateError(){
+    this.setState((oldState)=>{
+      return {
+        openPollCreateError: !oldState.openPollCreateError,
+        pollCreateLoad:false,  
+      }
+    });
+  }
 
 
   render() {
     const {classes, theme} = this.props
 
-    console.log('this is the poll create page state', this.state, this.props)
     return (
         <div>
           <Dialog
@@ -404,7 +394,7 @@ class PollCreatePage extends React.Component {
             <div className={classes.container}>
 
             <FeedBackSubmitButton
-                classes={classes}
+                // classes={classes}
                 submitClick={this.handleSubmitPollDelete}
                 buttonTitle={'Delete Poll'}
                 Loading={this.state.pollDeleteLoad}
@@ -474,12 +464,13 @@ class PollCreatePage extends React.Component {
             </CardContent>
             <CardContent className={classes.container}>
               <FeedBackSubmitButton
-                classes={classes}
                 submitClick={this.handlePollSubmitCreate}
                 buttonTitle={'Create Poll'}
                 Loading={this.state.pollCreateLoad}
                 timeError={this.handleUnknownError}
-
+                loadingError={this.state.openPollCreateError}
+                loadingErrorMessage={this.state.pollCreateErrorMessage}
+                handleLoadingError={this.handlePollCreateError}
               />
             </CardContent>
           </Card>
@@ -495,12 +486,13 @@ class PollCreatePage extends React.Component {
             <MyPolls
             Loading={this.state.myPollsLoad}
             userPolls={this.props.userPolls}
-            classes={classes}
+            // classes={classes}
             loadingError={this.state.myPollsError}
             loadingErrorMessage={this.state.myPollsErrorMessage}
             handleLoadingError={this.handleMyPollsError}
             error={this.state.myPollsError}
             errorTry={this.pollsFetch}
+            timeError={this.pollsFetch}
             handlePollDeleteAlertOpen={this.handlePollDeleteAlertOpen}
             />
           </div>
@@ -529,6 +521,14 @@ class PollCreatePage extends React.Component {
           action={null}
           autoHideDuration={this.state.snackBarDuration}
           onClose={this.handlePollCreateSuccess}
+        />
+
+         <Snackbar
+          open={this.state.openPollCreateError}
+          message={this.state.pollCreateErrorMessage}
+          action={null}
+          autoHideDuration={this.state.snackBarDuration}
+          onClose={this.handlePollCreateError}
         />
 
 
@@ -575,7 +575,7 @@ export const mapStateToProps = state => ({
   export const mapDispatchToProps = dispatch => ({
     pollSend: (poll)=> dispatch(pollSend(poll)),
     pollsFetch: () => dispatch(pollsFetch()),
-    pollDelete: (poll)=> dispatch(pollDelete(poll))
+    pollDelete: (poll)=> dispatch(pollDelete(poll)),
   })
   
   // export default connect(mapStateToProps, mapDispatchToProps)(PollCreatePage)

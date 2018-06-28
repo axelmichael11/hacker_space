@@ -36,7 +36,6 @@ class LoginPage extends React.Component {
   }
 
   render() {
-    console.log('THIS>PROPS ON LOGIN PAGE', this.props)
     let {classes, theme} = this.props;
     return (
       <div>

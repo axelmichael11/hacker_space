@@ -51,6 +51,19 @@ module.exports = {
         exclude: /node_module/,
         loader: 'babel-loader',
       },
+      {
+        test: /\.(pdf|jpg|jpeg|gif|png|tiff|svg)$/,
+        exclude: /\.icon.svg$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 60000,
+              name: '[name].[ext]',
+            },
+          },
+        ],
+      },
       // {
       //   test: /\.scss$/,
       //   loader: ExtractPlugin.extract({

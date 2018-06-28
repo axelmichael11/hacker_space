@@ -56,7 +56,7 @@ import profession_list from '../../lib/professions.js'
 import ethnicity_list from '../../lib/ethnicities.js'
 
 import MenuListSelect from './menu-list-select'
-import LoadingHOC from '../loading/button.js'
+import LoadingHOC from '../loading/loadingHOC.js'
 
 
 import MaterialStyles from '../../style/material-ui-style'
@@ -85,12 +85,11 @@ const FeedBackSubmitButton = LoadingHOC(SubmitButton)
 
 const styles = theme => ({
   container: theme.overrides.MuiPaper,
-  ageSelect:{
-    marginLeft: 15,
-  },
-  listContainer: theme.overrides.MuiListItem.container,
-  listItem:theme.overrides.MuiListItem,
-  // buttonContainer: theme.overrides.MuiButton.root.container,
+  // ageSelect:{
+  //   marginLeft: 15,
+  // },
+  // listContainer: theme.overrides.MuiListItem.container,
+  // listItem:theme.overrides.MuiListItem,
   button: theme.overrides.MuiButton,
  
   text: theme.typography.text,
@@ -437,7 +436,7 @@ class ProfileSettings extends React.Component {
       marginLeft: 3,
     }
     let {classes, theme} = this.props
-    console.log('profile SETINGS ',this.state, this.props)
+
     return (
       <div>
         <Dialog
@@ -477,6 +476,8 @@ class ProfileSettings extends React.Component {
           helpText={this.state.helpText}
         />
 
+        
+
         <form className={classes.container} noValidate onSubmit={this.handleSubmit} autoComplete="off">
         <Paper className={classes.container}>
           <Card>
@@ -491,7 +492,7 @@ class ProfileSettings extends React.Component {
             <Divider/>
             <CardContent className={classes.cardContent}>
               <Toolbar className={classes.cardContent}>
-                <Typography variant="subheading" component="h3" style={{marginRight:15}}>
+                <Typography variant="subheading" component="h3">
                     Age
                 </Typography>
                 <TextField
@@ -501,7 +502,9 @@ class ProfileSettings extends React.Component {
                   onChange={this.handleAgeChange}
                   type="number"
                   error={this.state.ageError}
-                  className={classes.ageSelect}
+                  style={{
+                    marginLeft: 15,
+                  }}
                   InputLabelProps={{
                     shrink: true,
                   }}
@@ -522,7 +525,7 @@ class ProfileSettings extends React.Component {
                       value={this.state.maleCheckBox}
                       onChange={this.updateMaleCheckBox}
                         label="Male"
-                        className={classes.MuiCheckbox}
+                        className={classes.checkBox}
                         color="default"
                     />
                   }
@@ -535,7 +538,7 @@ class ProfileSettings extends React.Component {
                       value={this.state.femaleCheckBox}
                       onChange={this.updateFemaleCheckBox}
                         label="Female"
-                        className={classes.MuiCheckbox}
+                        className={classes.checkBox}
                         color="default"
                     />
                   }
@@ -557,7 +560,7 @@ class ProfileSettings extends React.Component {
                       value={this.state.religionYesCheckBox}
                       onChange={this.updateReligionYesCheckBox}
                         label="Yes"
-                        className={classes.MuiCheckbox}
+                        className={classes.checkBox}
                         color="default"
                     />
                   }
@@ -570,7 +573,7 @@ class ProfileSettings extends React.Component {
                       value={this.state.religionNoCheckBox}
                       onChange={this.updateReligionNoCheckBox}
                         label="No"
-                        className={classes.MuiCheckbox}
+                        className={classes.checkBox}
                         color="default"
                     />
                   }
@@ -580,7 +583,6 @@ class ProfileSettings extends React.Component {
             </CardContent>
             <Divider/>
             <MenuListSelect
-            // list, listTitle, handleListItemClick, selectedItem, anchorEl, handleCloseList,
             listTitle={'Country'}
             list={country_list}
             handleOpenList={this.handleOpenCountryList}
@@ -592,7 +594,6 @@ class ProfileSettings extends React.Component {
             />
             <Divider/>
             <MenuListSelect
-            // list, listTitle, handleListItemClick, selectedItem, anchorEl, handleCloseList,
             listTitle={'Profession'}
             list={profession_list}
             handleOpenList={this.handleOpenProfessionList}
@@ -604,7 +605,6 @@ class ProfileSettings extends React.Component {
             />
             <Divider/>
             <MenuListSelect
-            // list, listTitle, handleListItemClick, selectedItem, anchorEl, handleCloseList,
             listTitle={'Ethnicity'}
             list={ethnicity_list}
             handleOpenList={this.handleOpenEthnicityList}
@@ -616,9 +616,7 @@ class ProfileSettings extends React.Component {
             />
             <Divider/>
             <CardContent className={classes.container}>
-            <div 
-            // className={classes.buttonContainer}
-            >
+            <div>
               <Button 
               variant="outlined"
               onClick={this.handleUpdateAlert} 
@@ -631,17 +629,14 @@ class ProfileSettings extends React.Component {
          </Paper >
          </form>
          <Snackbar
-          anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
-          onClose={this.handleUpdatedSnackBarRequest}
-          open={this.state.updatedOpen}
-          message={this.state.updatedMessage}
-          action={null}
-          onClick={this.updatedOpen}
-
-          autoHideDuration={this.state.updatedAutoHideDuration}
-          // onActionClick={this.handleUpdatedSnackBarRequest}
-          // onRequestClose={this.handleUpdatedSnackBarRequest}
-        />
+            anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+            onClose={this.handleUpdatedSnackBarRequest}
+            open={this.state.updatedOpen}
+            message={this.state.updatedMessage}
+            action={null}
+            onClick={this.updatedOpen}
+            autoHideDuration={this.state.updatedAutoHideDuration}
+          />
         <Snackbar
           open={this.state.updateErrorOpen}
           message={this.state.updateErrorMessage}

@@ -12,7 +12,7 @@ const vote = {}
 vote.getVotes = (req, res) => {
     let token = validation.checkForToken(req.headers.authorization)
     let voteData = voteValidate.validateGetVoteData(req.body)
-    auth_0.getAuthProfile(token)
+    auth_0.decodeToken(token)
     .then(user=>{
       validation.validateUid(user)
       .then(user=>{
@@ -26,7 +26,7 @@ vote.getVotes = (req, res) => {
   vote.castVote = (req, res) => {
     let token = validation.checkForToken(req.headers.authorization)
     let voteData = voteValidate.validateCastVoteData(req.body)
-    auth_0.getAuthProfile(token)
+    auth_0.decodeToken(token)
     .then(user=>{
       validation.validateUid(user)
       .then(user=>{
@@ -39,4 +39,4 @@ vote.getVotes = (req, res) => {
   }
 
 
-  module.exports = vote;
+  // module.exports = vote;

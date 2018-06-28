@@ -21,7 +21,7 @@ import Button from '@material-ui/core/Button';
 
 
 const styles = theme => ({
-  container: theme.overrides.MuiButton.container,
+  // container: theme.overrides.MuiButton.container,
   button: theme.overrides.MuiButton,
 })
 
@@ -94,7 +94,7 @@ class AuthLockButton extends React.Component {
   render() {
       let {classes} = this.props
     return (
-      <div className={classes.container}>
+      <div >
         <Button 
         variant="outlined"
         onClick={this.props.loggedIn ? this.logout : this.showLock} 

@@ -39,13 +39,11 @@ class App extends React.Component {
 
   checkAuthorization(){
     if (localStorage.poller_token && !this.props.loggedIn && !this.props.storageLoginAttempt){
-      console.log('HITTING THE CHECK LOCAL STORAGE FETCH')
       this.props.localStorageProfileFetch().then(()=>this.props.storageLogin())
     }
   }
 
   render() {
-    console.log('this.props on the app',this.props)
     const history = createBrowserHistory()
     return (
       <div className="app">
@@ -55,9 +53,6 @@ class App extends React.Component {
               <Route path="/gettingstarted" render={()=> <GettingStartedPage/>}/>
               <Route path="/login" render={()=> <LoginPage/>}/>
               <PrivateRoute  loggedIn={this.props.loggedIn} path="/" redirectTo="/login" component={LandingContainer} />
-              
-              {/* <PrivateRoute loggedIn={this.props.loggedIn} path="/settings" redirectTo='/login' component={ProfileSettings} />
-              <PrivateRoute loggedIn={this.props.loggedIn} path="/home" redirectTo='/login' component={HomePage} /> */}
               </Switch>
           </div>
         </BrowserRouter>

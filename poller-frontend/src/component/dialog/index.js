@@ -17,7 +17,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ReportIcon from '@material-ui/icons/report'
-import LoadingHOC from '../loading/button.js'
+import LoadingHOC from '../loading/loadingHOC.js'
 import {MyPolls} from '../my-polls'
 
 import HelpTab from '../help-feature'
@@ -44,18 +44,20 @@ const SubmitButton = ({...props}) =>{
 const FeedBackSubmitButton = LoadingHOC(SubmitButton)
 
 const styles = theme => ({
-    root: {
-      width: '100%',
-      maxWidth: 360,
-      backgroundColor: theme.palette.background.paper,
-    },
+    // root: {
+    //   width: '100%',
+    //   maxWidth: 360,
+    //   backgroundColor: theme.palette.background.paper,
+    // },
+
+  
   });
 
   
 
 const ResponsiveDialog = ({...props}) => {
     // const { fullScreen } = props;
-   
+   console.log('props on responsive dialog', props)
   
     return (
       <div>
@@ -72,6 +74,7 @@ const ResponsiveDialog = ({...props}) => {
           <DialogActions>
                <div className={props.classes.container}>
             <Button 
+              variant="outlined"
               onClick={props.handleClose} 
               className={props.classes.button}
             >
@@ -85,6 +88,7 @@ const ResponsiveDialog = ({...props}) => {
                 submitClick={props.submitClick}
                 dialogSubmitText={props.dialogSubmitText}
                 Loading={props.submitLoading}
+                timeError={props.timeError}
               />
             </div>
            
@@ -96,11 +100,14 @@ const ResponsiveDialog = ({...props}) => {
 
 ResponsiveDialog.propTypes = {
 //   fullScreen: PropTypes.bool.isRequired,
+timeError:PropTypes.func.isRequired,
 dialogTitle: PropTypes.string.isRequired,
-dialogContent: PropTypes.string.isRequired,
+// dialogContent: PropTypes.object.isRequired,
+dialogSubmitText:PropTypes.string.isRequired,
 // dialogActions:PropTypes.array.isRequired,
 dialogOpen: PropTypes.bool.isRequired,
 handleClose: PropTypes.func.isRequired,
+submitClick:PropTypes.func.isRequired,
 
 };
 

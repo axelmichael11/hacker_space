@@ -10,10 +10,46 @@ import IconButton from '@material-ui/core/IconButton';
 import NoPolls from './no-polls'
 import Error from '../error'
 import Loader from '../loading/loader'
+import { withStyles } from '@material-ui/core/styles';
+
+
+const styles = theme => ({
+  container: theme.overrides.MuiPaper,
+  ageSelect:{
+    marginLeft: 15,
+  },
+  button: theme.overrides.MuiButton,
+ 
+  text: theme.typography.text,
+  expand: {
+    transform: 'rotate(0deg)',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+    marginLeft: 'auto',
+  },
+  expandOpen: {
+    transform: 'rotate(180deg)',
+  },
+  actions: {
+    display: 'flex',
+  },
+  expandMoreIcon:{
+    colorPrimary: theme.palette.secondary.main
+  },
+
+  cardHeader:theme.overrides.PollCard.cardHeader,
+  cardContent:theme.overrides.PollCard.cardContent,
+  formControl: {
+    margin: theme.spacing.unit,
+    minWidth: 120,
+  },
+  pollActions: theme.overrides.PollCard.pollActions,
+});
 
 
 export const Polls = ({...props}) => props.userPolls.length > 0 ?
-props.userPolls.map(poll => <div className="list-row" key={poll.objectID}>
+props.userPolls.map((poll,key) => <div className="list-row" key={key}>
                 <UserPollCard 
                 poll={poll}
                 pollActions={<IconButton
@@ -22,7 +58,6 @@ props.userPolls.map(poll => <div className="list-row" key={poll.objectID}>
                   >
                     <DeleteIcon />
                   </IconButton>}
-                classes={props.classes}
                 />
             </div>) : <NoPolls/>
 
@@ -30,13 +65,14 @@ props.userPolls.map(poll => <div className="list-row" key={poll.objectID}>
 const WithLoading = (props) => {
   return (
     <div>
-      <Loader start={Date.now()}/>
+      <Loader start={Date.now()} timeError={props.timeError}/>
     </div>
   )
 }
 
 
 const MyPolls = compose(
+  withStyles(styles, {withTheme:true}),
   branch(
     (props)=>props.Loading && !props.error,
     renderComponent(WithLoading)
