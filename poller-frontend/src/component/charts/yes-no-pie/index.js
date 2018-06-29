@@ -63,7 +63,21 @@ container: theme.overrides.MuiPaper,
   resultActionCard: theme.overrides.MuiCardActions,
   expandMoreIcon:{
     colorPrimary: theme.palette.secondary.main
-  }
+  },
+  expand: {
+    color:theme.palette.secondary.main,
+    transform: 'rotate(0deg)',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shortest,
+    }),
+    marginLeft: 'auto',
+  },
+  expandOpen: {
+    transform: 'rotate(180deg)',
+  },
+  actions: {
+    display: 'flex',
+  },
 })
 
 
@@ -242,7 +256,7 @@ renderLegendKey(){
               classes={classes.MuiResultActionCard}
               className="category-card-actions"
             >
-                <Typography classes={classes.text} align="center" variant="title" className="category-title">
+                <Typography align="center" variant="title" className="category-title">
                   {this.props.title}
                 </Typography>
                 
@@ -250,10 +264,8 @@ renderLegendKey(){
                   className={classnames(this.props.classes.expand, {
                     [this.props.classes.expandOpen]: this.props.dataExpanded,
                   })}
-                  // onClick={this.handleExpandClick}
                   aria-expanded={this.props.dataExpanded}
                   aria-label="Show more"
-                  // className={classes.expandMoreIcon}
                 >
                   <ExpandMoreIcon className={classes.expandMoreIcon}/>
                 </IconButton>

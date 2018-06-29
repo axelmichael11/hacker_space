@@ -4,7 +4,6 @@ const report = {};
 const validator = require('../../lib/validation-methods')
 
 report.validateReportPollData = function(incomingReportPollData){
-    console.log('this is the incoming data', incomingReportPollData)
     let {author_username, created_at, nickname} = incomingReportPollData;
     let reportData = Object.assign({},{created_at, author_username, nickname});
 

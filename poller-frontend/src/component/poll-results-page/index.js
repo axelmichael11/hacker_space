@@ -53,7 +53,7 @@ import {
 const styles = theme =>({
   container: theme.overrides.MuiPaper.root,
   cardHeader:theme.overrides.PollCard.cardHeader,
-  typography: theme.typography.text,
+  // typography: theme.typography.text,
   expand: {
     color:theme.palette.secondary.main,
     transform: 'rotate(0deg)',
@@ -180,7 +180,7 @@ class PollResultsPage extends React.Component {
         categories={Object.keys(this.state.ageCategories)}
         colorCategories= {this.state.ageCategories}
         labelSentence={"have an age between"}
-        classes={classes}
+        // classes={classes}
         dataExpanded={this.state.dataExpandedAge}
         handleDataExpand={this.handleDataExpand}
         expandedState="dataExpandedAge"
@@ -192,7 +192,7 @@ class PollResultsPage extends React.Component {
         categories={Object.keys(this.state.genderCategories)}
         colorCategories= {this.state.genderCategories}
         labelSentence={" are of gender "}
-        classes={classes}
+        // classes={classes}
         dataExpanded={this.state.dataExpandedGender}
         handleDataExpand={this.handleDataExpand}
         expandedState="dataExpandedGender"
@@ -204,7 +204,7 @@ class PollResultsPage extends React.Component {
         categories={Object.keys(this.state.countryCategories)}
         colorCategories= {this.state.countryCategories}
         labelSentence={" are from "}
-        classes={classes}
+        // classes={classes}
         dataExpanded={this.state.dataExpandedCountry}
         handleDataExpand={this.handleDataExpand}
         expandedState="dataExpandedCountry"
@@ -216,7 +216,7 @@ class PollResultsPage extends React.Component {
         categories={Object.keys(this.state.professionCategories)}
         colorCategories= {this.state.professionCategories}
         labelSentence={" have a profession of "}
-        classes={classes}
+        // classes={classes}
         dataExpanded={this.state.dataExpandedProfession}
         handleDataExpand={this.handleDataExpand}
         expandedState="dataExpandedProfession"
@@ -228,7 +228,7 @@ class PollResultsPage extends React.Component {
         categories={Object.keys(this.state.ethnicityCategories)}
         colorCategories= {this.state.ethnicityCategories}
         labelSentence={" are of "}
-        classes={classes}
+        // classes={classes}
         dataExpanded={this.state.dataExpandedEthnicity}
         handleDataExpand={this.handleDataExpand}
         expandedState="dataExpandedEthnicity"
@@ -240,7 +240,7 @@ class PollResultsPage extends React.Component {
         categories={Object.keys(this.state.religionCategories)}
         colorCategories= {this.state.religionCategories}
         labelSentence={" are "}
-        classes={classes}
+        // classes={classes}
         dataExpanded={this.state.dataExpandedReligion}
         handleDataExpand={this.handleDataExpand}
         expandedState="dataExpandedReligion"
@@ -257,7 +257,6 @@ export const mapStateToProps = state => ({
 export const mapDispatchToProps = dispatch => ({
 })
 
-// export default connect(mapStateToProps, mapDispatchToProps)(PollResultsPage)
 
 
 export default compose(

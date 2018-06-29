@@ -45,7 +45,7 @@ class TotalVotesGraph extends React.Component {
       return(
           <div>
             <CardContent>
-                <Typography variant="display3">
+                <Typography variant="display3" style={{overflowWrap:'break-word'}}>
                    "{poll.question}"
                 </Typography>
             </CardContent>

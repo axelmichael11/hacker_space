@@ -56,7 +56,6 @@ const UserPollCard = ({classes, theme, pollActions, poll }) =>{
                     action={pollActions}
                     className={classes.cardHeader}
                     title={poll.author_username}
-                    // style={{color:'white'}}
                     classes={{
                         title: classes.cardHeader
                     }}
@@ -68,7 +67,7 @@ const UserPollCard = ({classes, theme, pollActions, poll }) =>{
                 style={{ textDecoration: 'none' }}
                 >
                 <CardContent className={classes.cardContent}>
-                    <Typography variant="display3">
+                    <Typography variant="display3" style={{overflowWrap:'break-word'}}>
                     "{poll.question}"
                     </Typography>
                 </CardContent>
@@ -79,10 +78,6 @@ const UserPollCard = ({classes, theme, pollActions, poll }) =>{
                 <Typography variant="subheading" component="p">
                         Poll Expiration: {poll.expiration} hours
                     </Typography>
-                
-                    {/* <Typography variant="subheading" component="p">
-                        {'Author: '+poll.author_username}
-                    </Typography> */}
                 </CardContent>
                 </Link>
                 </Card>

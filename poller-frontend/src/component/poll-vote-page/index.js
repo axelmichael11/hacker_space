@@ -137,7 +137,7 @@ class PollVotePage extends React.Component {
       dialogSubmitText:'',
       dialogContent:'',
       dialogSubmitClick: null,
-
+      dialogLoading:false,
 
        //report dialog
        reportPollSuccessSnack: false,
@@ -154,10 +154,10 @@ class PollVotePage extends React.Component {
        submitVoteText:'Submit Vote',
        submitVoteContentSuccess:'This poll has been submitVoteed... we will review this',
        submitVoteContentError: 'There was an error submitting your vote... try again later',
+       submitVoteError:false,
 
 
        //vote dialog
-      castVoteError:false,
       anchorEl:null,
       pollMenuFocus:null,
       snackBarDuration: 4000,
@@ -183,6 +183,7 @@ class PollVotePage extends React.Component {
     this.renderReportDialogContent = this.renderReportDialogContent.bind(this) 
     this.openSubmitVoteDialog = this.openSubmitVoteDialog.bind(this)
     this.renderSubmitVoteDialogContent = this.renderSubmitVoteDialogContent.bind(this)
+    this.handleSubmitVoteError = this.handleSubmitVoteError.bind(this)
   }
 
 
@@ -221,18 +222,20 @@ class PollVotePage extends React.Component {
     this.props.castVote(voteData)
     .then((result)=>{
       if (result.status==200){
+        this.setState({dialogLoading:false, submitVoteError:false})
         this.props.successOnCastVote(result)
-        this.setState({dialogLoading:false})
       }
     })
     .catch(err=>{
       if (err.status===404){
-        this.setState({dialogLoading:false, castVoteError:true, pollNotFound:true,})
+        this.setState({dialogLoading:false, pollNotFound:true,})
         this.props.deletePollFromPublic(this.props.location.state)
       }
       if (err.status===500){
-        this.setState({dialogLoading:false, castVoteError:true, pollNotFound:true,})
+        this.setState({dialogLoading:false, submitVoteError:true, pollNotFound:true,})
         this.props.throwGeneralError()
+      } else {
+        this.setState({dialogLoading:false, submitVoteError:true })
       }
     })
   }
@@ -309,7 +312,6 @@ handleReportSuccess(){
 
   
   openReportDialog(poll){
-
     this.setState({
       dialogSubmitButton: this.reportPoll,
       dialogTitle: this.state.reportTitle,
@@ -347,7 +349,7 @@ handleReportSuccess(){
     return (
       <div>
       <DialogContentText id="alert-dialog-description">
-      You are about to submit this demographic information for the question!
+      You are about to submit this demographic information for the question! heyyyyyasfd
       </DialogContentText>
       <ProfileCategory/>
       </div>
@@ -366,6 +368,9 @@ handleReportSuccess(){
     this.setState({dialogLoading: false, reportPollErrorSnack:true})
   }
   
+  handleSubmitVoteError(){
+    this.setState({dialogLoading: false, submitVoteError:true})
+  }
 
 
 
@@ -376,7 +381,7 @@ handleReportSuccess(){
     return (
 
       <div>
-         <Dialog
+         {/* <Dialog
             open={this.state.openVoteConfirmAlert}
             modal={false}
         >
@@ -406,9 +411,10 @@ handleReportSuccess(){
             submitClick={this.handleSubmitVote}
             buttonTitle={"Submit Vote"}
             Loading={this.state.castVoteLoad}
+            timeError={this.handle}
             />
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
 
          <CardMenu
             anchorEl={this.state.anchorEl}
@@ -473,7 +479,7 @@ handleReportSuccess(){
           dialogSubmitText={this.state.dialogSubmitText}
           submitClick={this.state.dialogSubmitClick==='report'? this.reportPoll: this.handleSubmitVote }
           submitLoading={this.state.dialogLoading}
-          timeError={this.handleReportError}
+          timeError={this.state.dialogSubmitClick==='report'? this.handleReportError : this.handleSubmitVoteError}
         />
 
 
@@ -497,6 +503,14 @@ handleReportSuccess(){
           action={null}
           autoHideDuration={this.state.snackBarDuration}
           onClose={this.handleReportError}
+        />
+
+        <Snackbar
+           open={this.state.submitVoteError}
+           message={this.state.submitVoteContentError}
+           action={null}
+           autoHideDuration={this.state.snackBarDuration}
+           onClose={this.handleSubmitVoteError}
         />
 
       </div>
