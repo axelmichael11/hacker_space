@@ -19,8 +19,6 @@ import Typography from '@material-ui/core/Typography';
 class HoverLabel extends React.Component {
     render() {
       const {x, y, orientation, title, vote} = this.props;
-      console.log('HITING HOVER LABEL', this.props)
-    //   const newY = orientation === "top" ? y - 25 : y + 25;
       if (x =="Unknown"){
           return <Typography variant="title" component="h3">{`${y} of voters who voted ${vote} have an Unknown ${this.props.title}`}</Typography>
       } else {

@@ -41,20 +41,17 @@ module.exports = {
       },
       display2:{
         fontFamily:"Play",
-        // fontSize: 30,
         textAlign:'center'
       },
       subheading:{
-        // margin:'auto',
         display:'block',
         fontFamily:"Play",
-        // textAlign: 'center'
       },
 
       title:{
         color:secondaryColor,
         backgroundColor: primaryColor,
-        // margin:'auto',
+        margin:'auto',
       },
       
       display1:{
@@ -69,7 +66,10 @@ module.exports = {
           'Arial',
           'sans-serif',
         ].join(','),
-        margin:'auto'
+        margin:'auto',
+        color:primaryColor,
+        backgroundColor: secondaryColor,
+
       }
 
     },
@@ -103,9 +103,9 @@ module.exports = {
           },
         }
       },
-      MuiMenu:{
-        borderColor: primaryColor,
-      },
+      // MuiMenu:{
+      //   borderColor: primaryColor,
+      // },
       MuiListItem:{
         container:{
           border: '1px black solid',
@@ -138,7 +138,7 @@ module.exports = {
           fontFamily: appFonts,
           color: secondaryColor,
           backgroundColor: primaryColor,
-        },
+          },
         pollActions:{
           backgroundColor: primaryColor,
           color: secondaryColor
@@ -223,7 +223,7 @@ module.exports = {
             textAlign:'center',
             backgroundColor: '#000',
             display:'inline-block',
-            verticalAlign:'top',
+            // verticalAlign:'top',
             color:"#fff",
             fontFamily: [
               'Play',
@@ -231,10 +231,10 @@ module.exports = {
               'Arial',
               'sans-serif',
             ].join(','),
-            '&:hover': {
-              backgroundColor: '#fff',
-              color:'#000'
-            },
+            // '&:hover': {
+            //   backgroundColor: '#fff',
+            //   color:'#000'
+            // },
               // verticalAlign:'top',
               width: '75%',
               maxWidth: '75%', 

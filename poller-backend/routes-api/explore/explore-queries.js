@@ -23,14 +23,10 @@ module.exports = {
                 function(err, success) {
                     if (success){
                         if (success.rows){
-                        console.log('this is the success', success.rows)
                         res.status(200).send(success.rows)
                         }
-                    
-                        console.log('this is the success', success)
                     }
                     if (err) {
-                        console.log('err.name', err)
                         res.status(500).send({error: err})
                     }
                 })

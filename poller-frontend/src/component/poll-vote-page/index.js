@@ -180,13 +180,9 @@ class PollVotePage extends React.Component {
     this.reportPoll = this.reportPoll.bind(this)
     this.openReportDialog = this.openReportDialog.bind(this)
     this.handleCloseDialog = this.handleCloseDialog.bind(this);
-
+    this.renderReportDialogContent = this.renderReportDialogContent.bind(this) 
     this.openSubmitVoteDialog = this.openSubmitVoteDialog.bind(this)
     this.renderSubmitVoteDialogContent = this.renderSubmitVoteDialogContent.bind(this)
-  }
-
-  componentWillMount() {
-    console.log('this.props.history on the vote  poll page', this.props.match)
   }
 
 
@@ -260,7 +256,6 @@ class PollVotePage extends React.Component {
 
     
   setPoll(poll){
-    console.log('this is the poll being SET', poll)
     this.setState({pollMenuFocus: poll})
   }
 
@@ -277,11 +272,9 @@ class PollVotePage extends React.Component {
   }
 
   reportPoll(){
-    console.log('report POlL!!', this.state.pollMenuFocus)
     this.setState({ dialogLoading: true });
     this.props.reportPoll(this.state.pollMenuFocus)
     .then((res)=>{
-        console.log(res)
         if (res.status===200){
          this.handleReportSuccess()
         }
@@ -316,12 +309,11 @@ handleReportSuccess(){
 
   
   openReportDialog(poll){
-    console.log('hitting open report dialog')
 
     this.setState({
       dialogSubmitButton: this.reportPoll,
       dialogTitle: this.state.reportTitle,
-      dialogContent: this.state.reportContent,
+      dialogContent: this.renderReportDialogContent(),
       dialogSubmitText: this.state.submitReportText,
       dialogSubmitClick: 'report',
       dialogOpen: true,
@@ -353,13 +345,21 @@ handleReportSuccess(){
   }
   renderSubmitVoteDialogContent(){
     return (
+      <div>
       <DialogContentText id="alert-dialog-description">
       You are about to submit this demographic information for the question!
-      <ProfileCategory
-        // classes={this.props.classes}
-      />
       </DialogContentText>
+      <ProfileCategory/>
+      </div>
     )
+  }
+  renderReportDialogContent(){
+    <div>
+      <DialogContentText id="alert-dialog-description">
+        {this.state.reportContent}
+      </DialogContentText>
+      <ProfileCategory/>
+      </div>
   }
 
   throwError(){
@@ -370,10 +370,8 @@ handleReportSuccess(){
 
 
   render() {
-    console.log('poll vote page', this.props, this.state)
     let {classes} = this.props
     let poll = this.props.location.state
-    // let poll = {created_at, subject, author_username, question, expiration};
 
     return (
 
@@ -383,16 +381,16 @@ handleReportSuccess(){
             modal={false}
         >
           <DialogTitle id="alert-dialog-title">"Are you sure?"</DialogTitle>
-          <DialogContent>
+          <div>
             <DialogContentText id="alert-dialog-description">
             You are about to submit this demographic information for the question!
+            </DialogContentText>
+
             <ProfileCategory
               value={this.props.userProfile.age}
               category={"Age"}
-              // classes={classes}
             />
-            </DialogContentText>
-          </DialogContent>
+          </div>
           <DialogActions>
           <div className={classes.stretchedButtons}>
 
@@ -420,37 +418,38 @@ handleReportSuccess(){
 
 
         <Paper square elevation={2} className={classes.container}>
-        <Card>
+        <Card style={{padding:7}}>
             <CardHeader
                 action={<IconButton
                   onClick={(event)=> {
                     this.handleOpenCardMenu(event)
                     this.setPoll(poll)
-                  }}
-                  >
+                  }}>
                   <MoreVertIcon 
                   style={{color:'#fff'}}
                   />
                   </IconButton>}
                 className={classes.cardHeader}
+                title={poll.author_username}
+                classes={{
+                  title: classes.cardHeader
+              }}
             />
             
             <CardContent>
-            <Typography variant="headline" >
-                    {poll.subject}
-                </Typography>
-                <Typography variant="display2">
+                <Typography variant="display3" style={{textAlign:'center'}}>
                    "{poll.question}"
                 </Typography>
             </CardContent>
             <CardContent>
-            <Typography variant="subheading" component="p">
+            <Typography variant="subheading">
+                    {poll.subject}
+                </Typography>
+            <Typography variant="subheading">
                     Poll Expiration: {poll.expiration} hours
-                </Typography>
+            </Typography>
                
-                <Typography variant="subheading" component="p">
-                    {'Author: '+poll.author_username}
-                </Typography>
+    
             </CardContent>
             </Card>
         </Paper>
@@ -469,14 +468,12 @@ handleReportSuccess(){
         <ResponsiveDialog
           dialogTitle={this.state.dialogTitle}
           dialogContent={this.state.dialogContent}
-          // DialogSubmitButton={FeedBackReportButton}
           dialogOpen={this.state.dialogOpen}
           handleClose={this.handleCloseDialog}
           dialogSubmitText={this.state.dialogSubmitText}
           submitClick={this.state.dialogSubmitClick==='report'? this.reportPoll: this.handleSubmitVote }
           submitLoading={this.state.dialogLoading}
           timeError={this.handleReportError}
-          // classes={classes}
         />
 
 

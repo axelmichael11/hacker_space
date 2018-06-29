@@ -22,12 +22,6 @@ class LandingContainer extends React.Component {
     this.state = {}
    
   }
-
-  componentWillMount() {
-    console.log(this.props.history)
-  }
-  
-
   render() {
     return (
       <div>

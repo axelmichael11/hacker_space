@@ -34,7 +34,6 @@ function notBooleanOrNull (value) {
     };
 
 vote.validateGetVoteData = function(incomingGetVoteData){
-    console.log('this is the incoming data', incomingGetVoteData)
     let {created_at, author_username} = incomingGetVoteData;
     let voteData = Object.assign({},{created_at, author_username});
 
@@ -46,7 +45,6 @@ vote.validateGetVoteData = function(incomingGetVoteData){
         throw new Error('invalid author_username type or length, or nonexistant property');
     }
     
-    console.log('he0re is the votedata function,', voteData)
     return voteData
 }
 
@@ -90,7 +88,6 @@ vote.validatePostVoteData = function(incomingPostVoteData){
     if (!voteData.vote || typeof voteData.vote !== 'string'){
         throw new Error('invalid vote data type or nonexistant property');
     }
-    console.log('he0re is the votedata function,', voteData)
     return voteData
 }
 

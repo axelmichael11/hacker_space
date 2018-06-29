@@ -15,7 +15,6 @@ export const reportPoll = (poll) => (dispatch, getState) => {
         .then(res => {
           let parsed = JSON.parse(res.text)
           parsed.status = res.status
-          console.log('parsed!!! report poll', parsed)
           return parsed
         })
   }

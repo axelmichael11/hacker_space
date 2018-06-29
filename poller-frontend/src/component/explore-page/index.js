@@ -26,12 +26,12 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import NotInterested from '@material-ui/icons/NotInterested';
 import Snackbar from '@material-ui/core/Snackbar';
+import DialogContentText from '@material-ui/core/DialogContentText';
 
 
 const styles = theme =>({
   button: theme.overrides.MuiButton,
   menuItem: theme.overrides.MuiMenuItem,
-  
 })
 
 class ExplorePage extends React.Component {
@@ -89,20 +89,16 @@ class ExplorePage extends React.Component {
   }
 
   componentWillMount(){
-    console.log('publicPolls on explore page', this.props.publicPolls)
-    let publicPollsCount = Object.keys(this.props.publicPolls)
       this.fetchPolls()
   }
 
   componentWillUnmount(){
-    // this.setState({onExplorePage:false})
   }
 
   fetchPolls(){
     this.setState({exploreLoading:true, exploreError:false })
     this.props.getPublicPolls()
     .then((res)=>{
-      console.log("HITTING RESPONSE!!", res)
       if( res.polls.length===0){
         this.setState({
           exploreLoading:false, 
@@ -119,7 +115,6 @@ class ExplorePage extends React.Component {
       }
     })
     .catch((err)=>{
-      console.log("HITTING ERROROR!!", err)
       this.setState({exploreLoading:false, exploreError:true})
     })
   }
@@ -134,7 +129,6 @@ class ExplorePage extends React.Component {
 
 
   openReportDialog(poll){
-    console.log('hitting open report dialog')
 
     this.setState({
       dialogTitle: this.state.reportTitle,
@@ -168,19 +162,15 @@ class ExplorePage extends React.Component {
 
 
   reportPoll(){
-    console.log('report POlL!!')
     this.setState({ reportLoading: true });
     let pollToReport = this.props.publicPolls[this.state.pollMenuFocus]
-    console.log('poll to report!!', this.state.pollMenuFocus, pollToReport)
     this.props.reportPoll(pollToReport)
     .then((res)=>{
-        console.log(res)
         if (res.status===200){
          this.handleReportSuccess()
         }
       })
     .catch((err)=>{
-      console.log(err)
       if (err.status===500){
         this.handleReportSuccess()
        }
@@ -217,7 +207,13 @@ handleReportSuccess(){
     })
   }
   renderReportDialogContent(){
-    return "Is this poll offensive? Please report if so and we will review this shortly! Sorry for the material :("
+    return (
+      <div>
+      <DialogContentText id="alert-dialog-description">
+      "Is this poll offensive? Please report if so and we will review this shortly! Sorry for the material :("
+      </DialogContentText>
+      </div>
+    )
   }
 
 
@@ -225,14 +221,11 @@ handleReportSuccess(){
     const {stepIndex} = this.state;  
     const {classes} = this.props;
 
-    console.log('explore page', this.state, this.props)
     return (
-        // <div className="endless-scroller">
         <div>
           <ResponsiveDialog
                 dialogTitle={this.state.dialogTitle}
                 dialogContent={this.state.dialogContent}
-                // DialogSubmitButton={FeedBackReportButton}
                 dialogOpen={this.state.dialogOpen}
                 handleClose={this.handleCloseDialog}
                 dialogSubmitText={this.state.dialogSubmitText}
@@ -255,7 +248,6 @@ handleReportSuccess(){
               fetchPolls={this.fetchPolls}
               handleOpenCardMenu={this.handleOpenCardMenu}
               noPolls={this.state.noPolls}
-              // classes={classes}
               errorTry={this.fetchPolls}
               timeError={this.fetchPolls}
               throwError={this.throwError}

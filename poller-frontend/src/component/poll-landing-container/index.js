@@ -42,7 +42,6 @@ const styles = theme => ({
   expandMoreIcon:{
     colorPrimary: theme.palette.secondary.main
   },
-  // backButton:theme.uniqueStyles.backButton
 })
 
 
@@ -81,14 +80,12 @@ class PollLandingContainer extends React.Component {
   }
 
   fetchVoteData(){
-    console.log('POLL LANDING CONTAINER::::', this.props.location.state)
     let {created_at, author_username} = this.props.location.state
     
     let voteData = Object.assign({},{created_at, author_username})
     this.setState({pageLoading:true})
     this.props.fetchVoteHistory(voteData)
     .then((result)=>{
-      console.log('RESULT', result, result.status)
       if (result.status==200){
         this.setState({
         alreadyVoted:true,
@@ -100,7 +97,6 @@ class PollLandingContainer extends React.Component {
       }
     })
     .catch(err=>{
-      console.log('this si the errro', err.status);
       if (err.status===500) {
         this.setState({
           alreadyVoted:false,
@@ -119,7 +115,6 @@ class PollLandingContainer extends React.Component {
           page:null,
         });
       }
-      //only for 500 and 401 errors
     })
   }
 
@@ -136,14 +131,12 @@ class PollLandingContainer extends React.Component {
 
 
   render() {
-    console.log('poll landing container', this.props, this.state)
     let {classes} = this.props
     return (
       <div >
         <HelpTab
           helpExpanded={this.state.helpExpanded}
           handleHelpExpand={this.handleHelpExpand}
-          // classes={classes}
           helpText={this.state.alreadyVoted ? this.state.pollResultsHelpText: this.state.castVoteHelpText}
         />
         <RenderPollPage

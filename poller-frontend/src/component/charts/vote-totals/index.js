@@ -16,8 +16,6 @@ import {VictoryBar, VictoryContainer, VictoryChart, VictoryAxis, VictoryLabel} f
 import MaterialStyles from '../../../style/material-ui-style'
 import Typography from '@material-ui/core/Typography';
 
-// import '../../style/index.scss'
-
 
 const styles = theme =>({
   container: theme.overrides.MuiPaper.root,
@@ -33,7 +31,6 @@ class TotalVotesGraph extends React.Component {
     }
   }
 
-
   getData() {
     const rand = () => Math.max(Math.floor(Math.random() * 10000), 1000);
 
@@ -44,12 +41,11 @@ class TotalVotesGraph extends React.Component {
   }
 
   render(){
-      console.log('total bar GRAPH DATA!', this.state, this.props)
       let {classes, poll} = this.props
       return(
           <div>
             <CardContent>
-                <Typography variant="display2">
+                <Typography variant="display3">
                    "{poll.question}"
                 </Typography>
             </CardContent>
@@ -80,8 +76,6 @@ class TotalVotesGraph extends React.Component {
                           onLoad: { duration: 1000 }
                         }}
                         barRatio={1}
-                        // labelComponent={ <VictoryLabel dy={30}/>}
-                        // containerComponent={<VictoryContainer responsive={false}/>}
                     />
                     </VictoryChart>
                     <CardContent>
@@ -107,6 +101,5 @@ class TotalVotesGraph extends React.Component {
 
 
 export default compose(
-  // connect(mapStateToProps, mapDispatchToProps),
   withStyles(styles, {withTheme:true}),
 )(TotalVotesGraph);

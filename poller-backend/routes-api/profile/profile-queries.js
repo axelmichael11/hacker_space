@@ -28,16 +28,13 @@ module.exports = {
         user[`${env.uid}`]
         ],
         function(err, success) {
-        if (err) {
-            console.log('error from database', err)
-            res.status(401).send({response: err})
-        }
-        if (success) {
-            console.log('this is the db success', success)
-            let sendProfile = profileValidate.formatSendProfile(success.rows[0], user)
-            console.log('this is the final profile to send back', sendProfile)
-            res.status(200).send(sendProfile)
-        }
+            if (err) {
+                res.status(401).send({response: err})
+            }
+            if (success) {
+                let sendProfile = profileValidate.formatSendProfile(success.rows[0], user)
+                res.status(200).send(sendProfile)
+            }
         })
     },
     updateProfileQuery: (res,user,profileInfo) => {
@@ -63,7 +60,6 @@ module.exports = {
                   let sendProfile = profileValidate.formatSendProfile(success.rows[0], user)
                   res.status(200).send(sendProfile)
                 } else {
-                    console.log(err)
                   res.status(500).send({message:"unsuccessful updating user profile"})
                 }
               })

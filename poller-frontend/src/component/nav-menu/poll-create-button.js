@@ -31,7 +31,6 @@ class MyPollsButton extends React.Component{
 
     }
     render(){
-        console.log('this.PROPS on the pollcreate button', this.context, this.props.history)
         return (
             <div>
                 <MenuItem onClick={()=>this.nextPath()}>My Polls</MenuItem>
@@ -39,6 +38,7 @@ class MyPollsButton extends React.Component{
         )
     }
 }
+
 export const mapStateToProps = state => ({
     loggedIn: state.loggedIn,
       userProfile: state.userProfile,

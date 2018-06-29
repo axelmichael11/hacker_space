@@ -43,7 +43,6 @@ class ContactPage extends React.Component {
   render() {
     const {classes} = this.props;
 
-    console.log('explore page', this.state, this.props)
     return (
         <div style={{textAlign:'center'}}>
           <Paper square elevation={2} className={classes.container}>

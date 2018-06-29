@@ -31,7 +31,6 @@ export const pollDelete = (poll) => (dispatch, getState) => {
           dispatch(deleteUserPoll(parsed.created_at))
           dispatch(deletePollFromPublic(parsed))
           parsed.status=res.status
-          console.log('parsed hitting pOLL DETELE', parsed)
           return parsed
         })
   }
@@ -59,9 +58,7 @@ export const pollDelete = (poll) => (dispatch, getState) => {
             .send(poll)
             .then(res => {
                 let parsed = JSON.parse(res.text)
-                console.log('created poll!!', parsed)
                 dispatch(createPoll(parsed))
-                // dispatch(addCreatedPollToPublicPolls(parsed))
                 parsed.status=res.status
                 return parsed
             })

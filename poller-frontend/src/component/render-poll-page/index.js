@@ -28,7 +28,6 @@ import Error from '../error'
 
 
 const withError = (conditionFn) => (Component) => (props) =>{
-  console.log('render error page!')
   return(
   <div>
     <Component {...props} />
@@ -47,7 +46,6 @@ const withError = (conditionFn) => (Component) => (props) =>{
 
 
 const withLoading = (conditionFn) =>  (Component) => (props) => {
-  console.log('hitting with loading page!')
   return(
     <div>
     <Component {...props} />
@@ -61,7 +59,6 @@ const withLoading = (conditionFn) =>  (Component) => (props) => {
 }
 
 const renderVotePage =(conditionFn) =>  (Component) => (props) => {
-    console.log('hitting the renderVotePage!')
       return (
           <div>
               <Component {...props}/>
@@ -71,7 +68,6 @@ const renderVotePage =(conditionFn) =>  (Component) => (props) => {
   }
 
   const renderVoteResults =(conditionFn) => (Component) =>  (props) => {
-    console.log('hitting the rendervoteresults!')
       return (
           <div>
             <Component {...props}/>

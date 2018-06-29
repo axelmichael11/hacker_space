@@ -124,18 +124,15 @@ class PollResultsPage extends React.Component {
         return data_values.push({x: key, y: data_object[key]})
      })
     }
-    console.log('getNoageData()', data_values)
     return data_values
   }
   
 
   generateCategories(yes_data_object, no_data_object, demographic_list){
     let data = [...Object.keys(yes_data_object), ...Object.keys(no_data_object)];
-    console.log('generate categories data!!!!!!!!!',data)
     let categories = {};
     if (demographic_list) {
       data.map((data)=>{
-        console.log(data)
         if (demographic_list[data]){
           categories[demographic_list[data]] = randomColor();
         } else {
@@ -147,13 +144,10 @@ class PollResultsPage extends React.Component {
           categories[data]=randomColor();
       })
     }
-    console.log('categories!!!!!!Sdflkjadsf',categories)
     return categories
   }
 
   handleDataExpand(value){
-    // let value= e.target.value
-    console.log('HANDLE DATA EXPAND', value)
       this.setState(oldState=>{
         return {
         [value]: !oldState[value]
@@ -168,95 +162,89 @@ class PollResultsPage extends React.Component {
   }
   
   render() {
-    console.log('pollResultsPage!!!!!!!!!!!!!!',this.state, this.props)
     let {classes} = this.props
     return (
       <div>
-                <Paper square elevation={2} className={classes.container}>
-            <Card>
-         
-          <TotalVotesGraph 
-          totalVotesData={this.state.pollData.totals_data} 
-          poll={this.props.poll}
-          />
+        <Paper square elevation={2} className={classes.container}>
+          <Card>
+            <TotalVotesGraph 
+              totalVotesData={this.state.pollData.totals_data} 
+              poll={this.props.poll}
+            />
           </Card>
-          </Paper>
-
-          
-          <PieResults title={'Age'}
-          totalsData={this.props.pollData.totals_data} 
-          yesData={this.state.yesAgeData} 
-          noData={this.state.noAgeData} 
-          categories={Object.keys(this.state.ageCategories)}
-          colorCategories= {this.state.ageCategories}
-          labelSentence={"have an age between"}
-          classes={classes}
-          dataExpanded={this.state.dataExpandedAge}
-          handleDataExpand={this.handleDataExpand}
-          expandedState="dataExpandedAge"
-          />
-          <PieResults title={'Gender'}
-          totalsData={this.props.pollData.totals_data} 
-          yesData={this.state.yesGenderData} 
-          noData={this.state.noGenderData} 
-          categories={Object.keys(this.state.genderCategories)}
-          colorCategories= {this.state.genderCategories}
-          labelSentence={" are of gender "}
-          classes={classes}
-          dataExpanded={this.state.dataExpandedGender}
-          handleDataExpand={this.handleDataExpand}
-          expandedState="dataExpandedGender"
-          />
-          <PieResults title={'Country'}
-          totalsData={this.props.pollData.totals_data} 
-          yesData={this.state.yesCountryData} 
-          noData={this.state.noCountryData} 
-          categories={Object.keys(this.state.countryCategories)}
-          colorCategories= {this.state.countryCategories}
-          labelSentence={" are from "}
-          classes={classes}
-          dataExpanded={this.state.dataExpandedCountry}
-          handleDataExpand={this.handleDataExpand}
-          expandedState="dataExpandedCountry"
-          />
-
-          <PieResults title={'Profession'}
-          totalsData={this.props.pollData.totals_data} 
-          yesData={this.state.yesProfessionData} 
-          noData={this.state.noProfessionData} 
-          categories={Object.keys(this.state.professionCategories)}
-          colorCategories= {this.state.professionCategories}
-          labelSentence={" have a profession of "}
-          classes={classes}
-          dataExpanded={this.state.dataExpandedProfession}
-          handleDataExpand={this.handleDataExpand}
-          expandedState="dataExpandedProfession"
-          />
-          <PieResults title={'Ethnicity'}
-          totalsData={this.props.pollData.totals_data} 
-          yesData={this.state.yesEthnicityData} 
-          noData={this.state.noEthnicityData} 
-          categories={Object.keys(this.state.ethnicityCategories)}
-          colorCategories= {this.state.ethnicityCategories}
-          labelSentence={" are of "}
-          classes={classes}
-          dataExpanded={this.state.dataExpandedEthnicity}
-          handleDataExpand={this.handleDataExpand}
-          expandedState="dataExpandedEthnicity"
-          />
-          <PieResults title={'Religion'}
-          totalsData={this.props.pollData.totals_data} 
-          yesData={this.state.yesReligionData} 
-          noData={this.state.noReligionData} 
-          categories={Object.keys(this.state.religionCategories)}
-          colorCategories= {this.state.religionCategories}
-          labelSentence={" are "}
-          classes={classes}
-          dataExpanded={this.state.dataExpandedReligion}
-          handleDataExpand={this.handleDataExpand}
-          expandedState="dataExpandedReligion"
-          />
-
+        </Paper>
+        <PieResults title={'Age'}
+        totalsData={this.props.pollData.totals_data} 
+        yesData={this.state.yesAgeData} 
+        noData={this.state.noAgeData} 
+        categories={Object.keys(this.state.ageCategories)}
+        colorCategories= {this.state.ageCategories}
+        labelSentence={"have an age between"}
+        classes={classes}
+        dataExpanded={this.state.dataExpandedAge}
+        handleDataExpand={this.handleDataExpand}
+        expandedState="dataExpandedAge"
+        />
+        <PieResults title={'Gender'}
+        totalsData={this.props.pollData.totals_data} 
+        yesData={this.state.yesGenderData} 
+        noData={this.state.noGenderData} 
+        categories={Object.keys(this.state.genderCategories)}
+        colorCategories= {this.state.genderCategories}
+        labelSentence={" are of gender "}
+        classes={classes}
+        dataExpanded={this.state.dataExpandedGender}
+        handleDataExpand={this.handleDataExpand}
+        expandedState="dataExpandedGender"
+        />
+        <PieResults title={'Country'}
+        totalsData={this.props.pollData.totals_data} 
+        yesData={this.state.yesCountryData} 
+        noData={this.state.noCountryData} 
+        categories={Object.keys(this.state.countryCategories)}
+        colorCategories= {this.state.countryCategories}
+        labelSentence={" are from "}
+        classes={classes}
+        dataExpanded={this.state.dataExpandedCountry}
+        handleDataExpand={this.handleDataExpand}
+        expandedState="dataExpandedCountry"
+        />
+        <PieResults title={'Profession'}
+        totalsData={this.props.pollData.totals_data} 
+        yesData={this.state.yesProfessionData} 
+        noData={this.state.noProfessionData} 
+        categories={Object.keys(this.state.professionCategories)}
+        colorCategories= {this.state.professionCategories}
+        labelSentence={" have a profession of "}
+        classes={classes}
+        dataExpanded={this.state.dataExpandedProfession}
+        handleDataExpand={this.handleDataExpand}
+        expandedState="dataExpandedProfession"
+        />
+        <PieResults title={'Ethnicity'}
+        totalsData={this.props.pollData.totals_data} 
+        yesData={this.state.yesEthnicityData} 
+        noData={this.state.noEthnicityData} 
+        categories={Object.keys(this.state.ethnicityCategories)}
+        colorCategories= {this.state.ethnicityCategories}
+        labelSentence={" are of "}
+        classes={classes}
+        dataExpanded={this.state.dataExpandedEthnicity}
+        handleDataExpand={this.handleDataExpand}
+        expandedState="dataExpandedEthnicity"
+        />
+        <PieResults title={'Religion'}
+        totalsData={this.props.pollData.totals_data} 
+        yesData={this.state.yesReligionData} 
+        noData={this.state.noReligionData} 
+        categories={Object.keys(this.state.religionCategories)}
+        colorCategories= {this.state.religionCategories}
+        labelSentence={" are "}
+        classes={classes}
+        dataExpanded={this.state.dataExpandedReligion}
+        handleDataExpand={this.handleDataExpand}
+        expandedState="dataExpandedReligion"
+        />
       </div>
     )
   }

@@ -67,15 +67,9 @@ class RatingPage extends React.Component {
 
     }
   }
-
-  
-
   render() {
     const {classes} = this.props;
-
-    console.log('explore page', this.state, this.props)
     return (
-        // <div className="endless-scroller">
         <div>
             <Typography variant="headline" >
                Coming Soon...        
