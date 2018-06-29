@@ -21,7 +21,6 @@ const styles = theme => ({
 
 
  const NoPolls = ({...props}) => {
-    console.log('no polls component', props)
       return(
         <div style={{textAlign:'center'}}>
             <CancelIcon style={{fontSize:40}}/>

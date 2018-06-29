@@ -26,7 +26,6 @@ class Loader extends React.Component{
     }
 
     componentWillUnmount(){
-        console.log('unmoutning timer')
         clearInterval(this.timer);
     }
 

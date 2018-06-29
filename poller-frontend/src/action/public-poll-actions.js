@@ -29,7 +29,6 @@ const addCreatedPollToPublicPolls = (poll) => (dispatch, getState) => {
     let {publicPolls} = getState()
 
     publicPolls[poll.created_at] = poll;
-    console.log('hitting public polls', publicPolls)
     return {type:'add_created_poll', payload: publicPolls}
 }
 
@@ -46,16 +45,13 @@ const filterOutPoll = (newPolls)=>{
     let newPollsLength = newPolls.length;
     let pollStateLength = Object.keys(publicPolls).length;
 
-    console.log('hitting fetch polls experiment')
     for (let i = 0; i <newPolls.length;i++ ){
-        console.log('POLL', newPolls[i])
         if (!publicPolls[newPolls[i].created_at]){
             publicPolls[newPolls[i].created_at]= newPolls[i];
         } else {
             alreadyExist++;
         }
     }
-    console.log('fetchPolls ExperimenTING', alreadyExist, newPollsLength, pollStateLength, publicPolls)
 
     if (alreadyExist === newPollsLength && newPollsLength>0){
         dispatch(maxDataReached())
@@ -75,7 +71,6 @@ export const getPublicPolls = () => (dispatch, getState) => {
     .then(res => {
         let parsed = {}
         parsed.polls = JSON.parse(res.text)
-        console.log('parsed from GET PUBLIC POLLS ACTION', parsed)
         fetchPollsExperiment(dispatch, getState, parsed.polls)
         parsed.status = res.status
         return parsed;
@@ -84,7 +79,6 @@ export const getPublicPolls = () => (dispatch, getState) => {
 
 
 export const deletePollFromPublic = (pollToDelete) => (dispatch, getState) => {
-    console.log("hitting delete poll from public!!!", pollToDelete)
     let { publicPolls } = getState();
     
     let list = Object.keys(publicPolls)

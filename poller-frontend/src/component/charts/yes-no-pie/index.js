@@ -32,9 +32,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const styles = theme =>({
   text:{
-    root:{
       margin:'auto',
-    },
   },
   legendContainer: {
     width: '90%',
@@ -59,6 +57,7 @@ const styles = theme =>({
     position:'relative'
 }
 },
+container: theme.overrides.MuiPaper,
   cardHeader:theme.overrides.PollCard.cardHeader,
   // collapse:theme.overrides.MuiCollapse,
   resultActionCard: theme.overrides.MuiCardActions,
@@ -89,14 +88,17 @@ class PieResults extends React.Component {
   }
 
   renderHelpText(){
-    console.log('THIS IS THE DATA!')
     return (<div style={{}}>
-    <Typography variant="subheading" style={{textAlign:'center'}}> {this.state.helpText}</Typography>
+    <Typography variant="subheading" 
+    // style={{textAlign:'center'}}
+    align="center"
+    > 
+    {this.state.helpText}
+    </Typography>
     </div>)
   }
 
   handleUpdateHelpText(d, vote){
-    console.log("HANLDE HELP TEXT METHOD", d)
     if (d.x=="Unknown"){
       this.setState({helpText:`${d.y}% of voters who voted ${vote} have an Unknown ${this.props.title}`})
     } else {
@@ -112,17 +114,14 @@ class PieResults extends React.Component {
     let color_data = []
     if (data.length> 0){
       data.map((category)=>{
-        console.log('category....!',category, this.props.colorCategories)
           color_data.push(this.props.colorCategories[category.x])
       })
-      console.log('COLOR DATAAA', color_data)
     }
   
     return color_data;
   }
   
 renderYesPie(){
-  console.log('this.props on Yes PIE', this.props)
   let {classes} = this.props
 
   return (
@@ -134,7 +133,6 @@ renderYesPie(){
         containerComponent={<VictoryContainer 
           style={{width:'100%'}}
         />}
-        // eventKey={(data)=>console.log('EVENT KEY DATA', data)}
         events={[
           {target: "data",
           eventHandlers: {
@@ -168,7 +166,6 @@ renderYesPie(){
 
 
 renderNoPie(){
-  console.log('this.props on NO PIE', this.props)
   let {classes} = this.props
 
   return (
@@ -203,7 +200,6 @@ renderNoPie(){
           data={this.props.noData}
           padAngle={1}
           animate={{ duration: 2000 }}
-          // style={{ labels: { fill: "white", fontSize: 20, fontWeight: "bold",width:'50%' } }}
           labelRadius={90}
           colorScale={this.state.noColorScale}
         />
@@ -236,7 +232,6 @@ renderLegendKey(){
 }
 
   render(){
-    console.log('yes-no pie charts', this.props, this.state)
     let {classes} = this.props
       return(
         <div>
@@ -277,6 +272,5 @@ renderLegendKey(){
 
 
 export default compose(
-  // connect(mapStateToProps, mapDispatchToProps),
   withStyles(styles, {withTheme:true}),
 )(PieResults);

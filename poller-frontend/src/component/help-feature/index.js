@@ -28,7 +28,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
 import CardMedia from '@material-ui/core/CardMedia';
 import MenuList from '@material-ui/core/MenuList';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -53,7 +52,13 @@ const styles = theme => ({
     container: theme.overrides.MuiPaper.root,
     helpBarButton:theme.uniqueStyles.helpBarButton,
     backButton: theme.uniqueStyles.backButton,
-    text: theme.typography.text,
+    text: {
+      fontFamily:"Play",
+        fontSize: 25,
+        display:'inline',
+
+
+    },
     expand: {
       transform: 'rotate(0deg)',
       transition: theme.transitions.create('transform', {
@@ -72,53 +77,42 @@ const styles = theme => ({
 
 
 const Help = ({...props}) => {
-  console.log('hitting help FEATRURE', props)
   return (
-<div className={props.classes.container}>
-<Button
-          size='small'
-          className={props.classes.backButton}
-          onClick={props.history.goBack}
-        >
-          <ArrayBackIcon/>
-        </Button>
-
-
-            <Button
-            className={props.classes.helpBarButton}
-            size='small'
-            >
-            <CardActions 
-              disableActionSpacing
-              onClick={props.handleHelpExpand}
-              disableActionSpacing
-              className="help-card-actions"
-              style={{boxSizing:'initial'}}
-            >
-                <Typography className={props.classes.text} variant="title">
-                  Help
-                </Typography>
-                
-                <IconButton
-                  className={classnames(props.classes.expand, {
-                    [props.classes.expandOpen]: props.helpExpanded,
-                  })}
-                  // onClick={this.handleExpandClick}
-                  aria-expanded={props.helpExpanded}
-                  aria-label="Show more"
-                >
-                  <ExpandMoreIcon style={{color:'white'}}/>
-                </IconButton>
-              </CardActions>
-            <Collapse in={props.helpExpanded} timeout="auto" unmountOnExit>
-              <CardContent>
-                  <Typography className={props.classes.text}>
-                  {props.helpText}
-                </Typography>
-              </CardContent>
-            </Collapse>
-            </Button>
-        </div>
+  <div className={props.classes.container}>
+    <Button
+      size='small'
+      className={props.classes.backButton}
+      onClick={props.history.goBack}>
+      <ArrayBackIcon/>
+    </Button>
+    <Button
+    className={props.classes.helpBarButton}
+    size='small'>
+      <CardActions 
+        disableActionSpacing
+        onClick={props.handleHelpExpand}
+        disableActionSpacing
+        style={{boxSizing:'initial'}}>
+        <Typography className={props.classes.text} variant="title">
+          Help
+        </Typography>
+        
+          <ExpandMoreIcon 
+          className={classnames(props.classes.expand, {
+            [props.classes.expandOpen]: props.helpExpanded,
+          })}
+          aria-expanded={props.helpExpanded}
+          style={{color:'white'}}/>
+      </CardActions>
+      <Collapse in={props.helpExpanded} timeout="auto" unmountOnExit>
+        <CardContent>
+            <Typography className={props.classes.text}>
+            {props.helpText}
+          </Typography>
+        </CardContent>
+      </Collapse>
+    </Button>
+    </div>
   )
 }
 

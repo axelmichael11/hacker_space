@@ -32,45 +32,64 @@ import Button from '@material-ui/core/Button';
 const styles = theme =>({
     container: theme.overrides.MuiPaper.root,
     cardHeader:theme.overrides.PollCard.cardHeader,
-    deleteButton: theme.overrides.MuiIcon
+    deleteButton: theme.overrides.MuiIcon,
+    titleFont:{
+        title: {
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.secondary.main,
+        }
+    },
+    cardContent:{
+        root:{
+          wordWrap: 'break-word'
+        }
+      }
 })
 
 
-const UserPollCard = ({classes, theme, pollActions, poll }) =>
-<div className={classes.container}>
- <Paper square elevation={2} className={classes.container}>
-            <Card>
-            <CardHeader
-                action={pollActions}
-                className={classes.cardHeader}
-            />
-            <Link to={{
-            pathname:`/poll/${poll.author_username}/${poll.created_at}`,
-            state: poll,
-            }}
-            style={{ textDecoration: 'none' }}
-            >
-            <CardContent>
-                <Typography variant="display2">
-                   "{poll.question}"
-                </Typography>
-            </CardContent>
-            <CardContent>
-            <Typography variant="subheading" component="p">
-                    {poll.subject}
-                </Typography>
-            <Typography variant="subheading" component="p">
-                    Poll Expiration: {poll.expiration} hours
-                </Typography>
-               
+const UserPollCard = ({classes, theme, pollActions, poll }) =>{
+    return (
+    <div className={classes.container}>
+    <Paper square elevation={2} className={classes.container}>
+                <Card style={{padding:7}}>
+                <CardHeader
+                    action={pollActions}
+                    className={classes.cardHeader}
+                    title={poll.author_username}
+                    // style={{color:'white'}}
+                    classes={{
+                        title: classes.cardHeader
+                    }}
+                />
+                <Link to={{
+                pathname:`/poll/${poll.author_username}/${poll.created_at}`,
+                state: poll,
+                }}
+                style={{ textDecoration: 'none' }}
+                >
+                <CardContent className={classes.cardContent}>
+                    <Typography variant="display3">
+                    "{poll.question}"
+                    </Typography>
+                </CardContent>
+                <CardContent>
                 <Typography variant="subheading" component="p">
-                    {'Author: '+poll.author_username}
-                </Typography>
-            </CardContent>
-            </Link>
-            </Card>
-    </Paper>
-</div>
+                        {poll.subject}
+                    </Typography>
+                <Typography variant="subheading" component="p">
+                        Poll Expiration: {poll.expiration} hours
+                    </Typography>
+                
+                    {/* <Typography variant="subheading" component="p">
+                        {'Author: '+poll.author_username}
+                    </Typography> */}
+                </CardContent>
+                </Link>
+                </Card>
+        </Paper>
+    </div>
+    )
+}
 
 
 export default compose(

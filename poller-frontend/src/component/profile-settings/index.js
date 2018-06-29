@@ -66,9 +66,7 @@ import HelpTab from '../help-feature'
 
 const SubmitButton = ({...props}) =>{
   return (
-    <div 
-    // className={props.classes.buttonContainer}
-    >
+    <div>
       <Button 
       variant="outlined"
       onClick={props.submitClick} 
@@ -85,13 +83,7 @@ const FeedBackSubmitButton = LoadingHOC(SubmitButton)
 
 const styles = theme => ({
   container: theme.overrides.MuiPaper,
-  // ageSelect:{
-  //   marginLeft: 15,
-  // },
-  // listContainer: theme.overrides.MuiListItem.container,
-  // listItem:theme.overrides.MuiListItem,
   button: theme.overrides.MuiButton,
- 
   text: theme.typography.text,
   expand: {
     transform: 'rotate(0deg)',
@@ -134,7 +126,6 @@ const MenuProps = {
 class ProfileSettings extends React.Component {
   constructor(props) {
     super(props)
-    console.log('this is hte props on profile settings', props)
     this.state = {...this.props.userProfile, 
       updatedAutoHideDuration: 4000,
       
@@ -198,10 +189,6 @@ class ProfileSettings extends React.Component {
     this.handleCloseList = this.handleCloseList.bind(this)
   }
 
-  componentWillMount() {
-    console.log('this.props', this.props.userProfile)
-  }
-
   
   handleUpdateAlert(){
     this.setState({profileUpdateAlert: !this.state.profileUpdateAlert });
@@ -209,7 +196,6 @@ class ProfileSettings extends React.Component {
 
   handleAgeChange(e) {
     let value = parseInt(e.target.value)
-    console.log('this should be the value now!',0 > value || 110 < value,  typeof value, ageValidation(value))
     if (ageValidation(value)){
       this.setState({ ageError: true })
     } else {
@@ -222,8 +208,6 @@ class ProfileSettings extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault()
-    // this.props.profileUpdate(this.state)
-    // this.props.history.push('/dashboard')
   }
 
   handleHelpExpand(){
@@ -358,7 +342,6 @@ class ProfileSettings extends React.Component {
       }
     })
     .catch(err=>{
-      console.log('this is the error updating profile', err, err.status)
       if (err.status===500){
         this.handleUpdateErrorSnackBarRequest()
         this.handleUpdateAlert()
@@ -472,7 +455,7 @@ class ProfileSettings extends React.Component {
         <HelpTab
           helpExpanded={this.state.helpExpanded}
           handleHelpExpand={this.handleHelpExpand}
-          classes={classes}
+          // classes={classes}
           helpText={this.state.helpText}
         />
 

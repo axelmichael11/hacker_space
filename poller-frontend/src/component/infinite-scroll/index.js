@@ -33,27 +33,22 @@ import NoPolls from './no-polls'
 import LoadingHOC from '../loading/loadingHOC.js'
 import MaxPolls from './max-polls'
 
-
-
-
 const styles = (theme) =>({
   button:theme.overrides.MuiButton,
 })
-
 
 const List = ({ ...props }) => {
   let pollList = Object.keys(props.list)
   return(
     <div className="list">
     {pollList.map((poll, key) => 
-      <div className="list-row" key={poll.objectID}>
+      <div className="list-row" key={key}>
         <UserPollCard
           pollActions={<IconButton
             onClick={(event)=> {
               props.handleOpenCardMenu(event)
               props.setPoll(poll)
-            }}
-            >
+            }}>
             <MoreVertIcon 
             style={{color:'#fff'}}
             />
@@ -67,12 +62,7 @@ const List = ({ ...props }) => {
   )
 }
 
-
-
-
 const withError = (conditionFn)  => (Component) => (props) => {
-  console.log('hitting withError')
-
   return (
   <div>
         <Component {...props} />
@@ -89,9 +79,7 @@ const withError = (conditionFn)  => (Component) => (props) => {
   )
 }
 
-
-const WithLoading = (conditionFn) => (Component) => (props) => {
-  console.log('hitting withLoading' ,props, Component)
+const withLoading = (conditionFn) => (Component) => (props) => {
   return(
     <div>
     <Component {...props} />
@@ -103,9 +91,7 @@ const WithLoading = (conditionFn) => (Component) => (props) => {
   )
 }
 
-const WithNoPolls  = (conditionFn) => (Component) => (props) => {
-  console.log('hitting WITH NO POLLS', props)
-    
+const withNoPolls  = (conditionFn) => (Component) => (props) => {
   return (
     <div>
       <Component {...props} />
@@ -116,51 +102,33 @@ const WithNoPolls  = (conditionFn) => (Component) => (props) => {
    )
 }
 
-
-
-      const withInfiniteScroll =(conditionFn) => (Component) => 
-      class WithInfiniteScroll extends React.Component {
+const withInfiniteScroll =(conditionFn) => (Component) => 
+  class WithInfiniteScroll extends React.Component {
        constructor(props) {
-            super(props);
-            this.state={
-              scrollY : document.scrollY,
-              innerHeight: document.innerHeight,
-    
-            }
-            this.onScroll = this.onScroll.bind(this);
-            } 
-    
-          componentWillMount(){
-            console.log('infinite scroll component!', this.state, this.props);
+          super(props);
+          this.state={
+            scrollY : document.scrollY,
+            innerHeight: document.innerHeight,
           }
-    
+          this.onScroll = this.onScroll.bind(this);
+        } 
         componentDidMount() {
-          console.log("hiting component DID MOUNT")
           window.addEventListener('scroll',  this.onScroll, true);
         }
-    
         componentWillUnmount() {
-          console.log("hiting component WILL UNMOUNT")
           window.removeEventListener('scroll', this.onScroll, true );
         }
-    
         onScroll(){
-          console.log("hiting onscroll methoD", conditionFn(this.props))
-    
           if (conditionFn(this.props)){
            _.throttle(this.props.fetchPolls(), 800)
           }
         }
-    
         render() {
-          console.log('INFINITE SCROLL', window.innerHeight, window.pageYOffset,'>=', document.body.offsetHeight, )
           return (<Component {...this.props} />)
         }
       }
 
-  
-
-   const withMaxPublicPolls = (conditionFn) => (Component) => (props) =>
+  const withMaxPublicPolls = (conditionFn) => (Component) => (props) =>
     <div>
       <Component {...props} />
       <div>
@@ -169,7 +137,7 @@ const WithNoPolls  = (conditionFn) => (Component) => (props) => {
     </div>
 
 
-
+//additional props
  const mapStateToProps = state => ({
   noPolls:state.noPolls,
   loggedIn: state.loggedIn,
@@ -192,15 +160,19 @@ const infiniteScrollCondition = props =>
 const loadingCondition = props =>
 props.Loading;
 
-
 const errorCondition = props =>
- !props.Loading && props.error;
+ !props.Loading 
+ && props.error;
 
  const noPollsCondition = props =>
- Object.keys(props.list).length === 0 && !props.Loading && !props.error;
+ Object.keys(props.list).length === 0 
+ && !props.Loading 
+ && !props.error;
 
  const maxPublicPollsCondition = props =>
- props.maxPublicPolls && Object.keys(props.list).length > 0 && !props.Loading && !props.error ;
+ props.maxPublicPolls 
+ && Object.keys(props.list).length > 0 
+ && !props.Loading && !props.error ;
 
 
   const AdvancedList = compose(
@@ -208,25 +180,10 @@ const errorCondition = props =>
     withError(errorCondition),
     withInfiniteScroll(infiniteScrollCondition),
     withMaxPublicPolls(maxPublicPollsCondition),
-    WithNoPolls(noPollsCondition),
-    WithLoading(loadingCondition),
+    withNoPolls(noPollsCondition),
+    withLoading(loadingCondition),
   )(List);
 
-  // const AdvancedList = compose(
-  //   branch(
-  //     (props) =>
-  //     props.pollCount === 0
-  //     && !props.error,
-  //     renderComponent(WithNoPolls)
-  //   ),
-  //   branch(
-  //     (props) =>
-  //      props.pollCount > 0
-  //     && !props.error,
-  //     renderComponent(InfiniteLoad)
-  //   ),
-
-  // )(InfiniteLoad)
 
   export default AdvancedList
 

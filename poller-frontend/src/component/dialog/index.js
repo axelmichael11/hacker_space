@@ -25,14 +25,11 @@ import HelpTab from '../help-feature'
 
 const SubmitButton = ({...props}) =>{
   return (
-    <div 
-    // className={props.classes.buttonContainer}
-    >
+    <div>
       <Button 
       variant="outlined"
       onClick={props.submitClick} 
-      className={props.classes.button}
-      >
+      className={props.classes.button}>
       {props.dialogSubmitText}
       </Button>
     </div>
@@ -44,20 +41,11 @@ const SubmitButton = ({...props}) =>{
 const FeedBackSubmitButton = LoadingHOC(SubmitButton)
 
 const styles = theme => ({
-    // root: {
-    //   width: '100%',
-    //   maxWidth: 360,
-    //   backgroundColor: theme.palette.background.paper,
-    // },
-
-  
   });
 
   
 
 const ResponsiveDialog = ({...props}) => {
-    // const { fullScreen } = props;
-   console.log('props on responsive dialog', props)
   
     return (
       <div>
@@ -67,9 +55,9 @@ const ResponsiveDialog = ({...props}) => {
         >
           <DialogTitle > {props.dialogTitle}</DialogTitle>
           <DialogContent>
-            <DialogContentText>
+            <div>
               {props.dialogContent}
-            </DialogContentText>
+            </div>
           </DialogContent>
           <DialogActions>
                <div className={props.classes.container}>
@@ -99,12 +87,9 @@ const ResponsiveDialog = ({...props}) => {
   }
 
 ResponsiveDialog.propTypes = {
-//   fullScreen: PropTypes.bool.isRequired,
 timeError:PropTypes.func.isRequired,
 dialogTitle: PropTypes.string.isRequired,
-// dialogContent: PropTypes.object.isRequired,
 dialogSubmitText:PropTypes.string.isRequired,
-// dialogActions:PropTypes.array.isRequired,
 dialogOpen: PropTypes.bool.isRequired,
 handleClose: PropTypes.func.isRequired,
 submitClick:PropTypes.func.isRequired,
@@ -113,10 +98,6 @@ submitClick:PropTypes.func.isRequired,
 
 
 export default compose(
-    // These are both single-argument HOCs
-    // connect(mapStateToProps, mapDispatchToProps),
-    // withMobileDialog(),
     withStyles(styles)
   )(ResponsiveDialog)
 
-// export default withMobileDialog()(ResponsiveDialog);

@@ -1,5 +1,4 @@
 const superagent = require('superagent');
-// const request = require('request');
 
 import {setAuthToken,setAuth0Profile } from './auth0-actions.js'
 
@@ -26,7 +25,6 @@ const storeUserProfile = (userProfile) => {
         return parsed
       })
       .catch(err => {
-        console.log(err)
       })
   }
 
@@ -38,13 +36,11 @@ const storeUserProfile = (userProfile) => {
       .set('Authorization', `Bearer ${auth0Token}`)
       .then(res => {
         let parsed = JSON.parse(res.text)
-        console.log('got the user...',parsed)
         dispatch(storeUserProfile(parsed))
         dispatch(login())
         return parsed
       })
       .catch(err => {
-        console.log(err)
       })
   }
 

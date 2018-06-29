@@ -15,7 +15,6 @@ publicPoll.exploreValidate = function(incomingPublicPoll){
     if (!publicPoll.author_username  || typeof publicPoll.author_username !== 'string'){
         throw new Error('invalid author_username type or length, or nonexistant property');
     }
-    console.log('here is the date function,', Date.parse(explorePoll.created_at))
     return publicPoll
 }
 

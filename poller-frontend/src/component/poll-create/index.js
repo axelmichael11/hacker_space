@@ -308,7 +308,6 @@ class PollCreatePage extends React.Component {
       let {pollSubject, pollQuestion} = this.state
       let {nickname} = this.props.userProfile
       let poll = Object.assign({}, {pollSubject, pollQuestion, nickname})
-      console.log('this is the poll', poll)
       if (poll.pollSubject.length < 5){
           this.handleSubjectValidationError();
           return;
@@ -321,7 +320,6 @@ class PollCreatePage extends React.Component {
       this.setState({pollCreateLoad:true})
       this.props.pollSend(poll)
       .then((res)=>{
-          console.log('this is the response', res)
           if (res.status===200){
             this.handlePollClear()
             this.handlePollCreateSuccess()
@@ -410,7 +408,7 @@ class PollCreatePage extends React.Component {
         <HelpTab
           helpExpanded={this.state.helpExpanded}
           handleHelpExpand={this.handleHelpExpand}
-          classes={classes}
+          // classes={classes}
           helpText={this.state.helpText}
         />
 
@@ -449,8 +447,6 @@ class PollCreatePage extends React.Component {
                 <FormControl fullWidth>
                   <InputLabel >{this.state.questionError ? this.state.questionErrorText : "Question"}</InputLabel>
                   <Input
-                    // error={this.state.questionError}
-                    // label={this.state.subjectError ? this.state.subjectErrorText : null}
                     multiline={true}
                     id="adornment-amount"
                     value={this.state.pollQuestion}
@@ -475,18 +471,18 @@ class PollCreatePage extends React.Component {
             </CardContent>
           </Card>
         </Paper>
-        <Paper className={classes.container}>
+        <Paper className={classes.container} style={{marginBottom:10}}>
           <CardContent className={classes.cardHeader}>
             <Typography variant="headline" component="h1" className={classes.cardHeader}>
               My Polls
             </Typography>
           </CardContent>
-          <Divider/>
+          </Paper>
+
           <div className="list">
             <MyPolls
             Loading={this.state.myPollsLoad}
             userPolls={this.props.userPolls}
-            // classes={classes}
             loadingError={this.state.myPollsError}
             loadingErrorMessage={this.state.myPollsErrorMessage}
             handleLoadingError={this.handleMyPollsError}
@@ -496,7 +492,6 @@ class PollCreatePage extends React.Component {
             handlePollDeleteAlertOpen={this.handlePollDeleteAlertOpen}
             />
           </div>
-        </Paper>
 
 
          <Snackbar
@@ -578,7 +573,6 @@ export const mapStateToProps = state => ({
     pollDelete: (poll)=> dispatch(pollDelete(poll)),
   })
   
-  // export default connect(mapStateToProps, mapDispatchToProps)(PollCreatePage)
   PollCreatePage.propTypes = {
     classes: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,

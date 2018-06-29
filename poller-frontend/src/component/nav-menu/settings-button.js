@@ -9,7 +9,6 @@ import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 
 
-
 const styles = theme => ({
     root: {
       width: '100%',
@@ -33,7 +32,6 @@ class ProfileButton extends React.Component{
     }
 
     render(){
-        console.log('this.PROPS on the home button', this.context, this.props.history)
         return (
             <div>
                 <MenuItem onClick={()=>this.nextPath()}>Profile</MenuItem>
@@ -50,7 +48,6 @@ export const mapDispatchToProps = dispatch => ({
 
 
   export default compose(
-    // These are both single-argument HOCs
     connect(mapStateToProps, mapDispatchToProps),
     withStyles(styles),
     withRouter

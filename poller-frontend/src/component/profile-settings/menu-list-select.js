@@ -68,13 +68,8 @@ const styles = theme => ({
 
 
 const MenuListSelect = ({list, listTitle, handleOpenList, selectedItem, anchorEl, handleCloseList,  classes, theme, renderMenuItems, changeListValue })=> {
-
-  console.log("props on menulistselect", classes)
-
       return (
-      <CardContent 
-      // className={classes.cardContent}
-      >
+      <CardContent>
         <Toolbar 
         className={classes.cardContent}
         >
@@ -91,10 +86,7 @@ const MenuListSelect = ({list, listTitle, handleOpenList, selectedItem, anchorEl
         onClick={handleOpenList}
         className={classes.listItem}
       >
-        <ListItemText
-          primary={selectedItem}
-          // secondary={country_list[this.state.country]}
-        />
+          <ListItemText primary={selectedItem}/>
         <DropDownArrowIcon/>
 
       </ListItem>
@@ -127,16 +119,13 @@ const MenuListSelect = ({list, listTitle, handleOpenList, selectedItem, anchorEl
 }
 
 
-// list, listTitle, handleListItemClick, selectedItem, anchorEl, handleCloseList,
 MenuListSelect.propTypes = {
-
   list: PropTypes.object.isRequired,
   listTitle: PropTypes.string.isRequired,
   handleOpenList: PropTypes.func.isRequired,
   changeListValue: PropTypes.func.isRequired, 
   selectedItem: PropTypes.string.isRequired,
   handleCloseList: PropTypes.func.isRequired,
-  // anchorEl: PropTypes.object,
   renderMenuItems: PropTypes.func.isRequired
 };
 

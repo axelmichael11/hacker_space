@@ -4,7 +4,6 @@ const pollValidate = require('./poll-validation')
 
 const env = {
     uid: process.env.uid,
-    users: process.env.userTable
 };
 
 
@@ -12,7 +11,6 @@ const env = {
 
 module.exports = {
     postPollQuery : function(res, user, validatedPoll){
-        console.log('THIS IS THE DATA...', user, validatedPoll)
         Client.query(`
         WITH poll AS (INSERT INTO polls (author_id, author_username, subject, question)
         VALUES ($1, $2, $3, $4) RETURNING created_at, id, author_id, subject, question, author_username)
@@ -29,11 +27,10 @@ module.exports = {
         if (success && success.command==='UPDATE' && success.rowCount== 1) {
             res.status(200).json(success.rows[0])
         } else {
-            if (err.name =='error' && err.constraint=='poller_data_polls_id_check') {
-            res.status(550).send({error: err.name})
+            if (err.name =='error' && err.constraint=='polls_id_check') {
+                res.status(550).send({error: err.name})
             } else {
-                console.log('this is the error from DB on pOST POLL', err)
-            res.status(500).send('unknown error')
+                res.status(500).send('unknown error')
             }
         }
         })
@@ -78,11 +75,9 @@ module.exports = {
         ],
         function(err, success) {
           if (success) {
-            console.log('this is success from POLLLLLLLLS DB', success)
             res.status(200).send(success.rows)
           } else {
             if (err) {
-              console.log('err.name', err)
               res.status(500).send({error: err})
             }
           }

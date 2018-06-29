@@ -10,14 +10,9 @@ import Snackbar from '@material-ui/core/Snackbar';
 
 
 const styles =theme=>({
-  
 })
 
-
-
 const WithLoading =  (loadingCondition) => (Component) => (props) => {
-  console.log('hititng with loading !!!', props)
-
   return (
     <div>
     {loadingCondition(props) ? <Loader start={Date.now()} {...props}/> : <Component {...props}/>}
@@ -27,10 +22,12 @@ const WithLoading =  (loadingCondition) => (Component) => (props) => {
 
 
 const loadingCondition = props =>
-  props.Loading && !props.loadingError;
+  props.Loading 
+  && !props.loadingError;
 
 const errorCondition =  props =>
-!props.Loading && props.loadingError;
+!props.Loading 
+&& props.loadingError;
 
 
 const LoadingHOC = compose(

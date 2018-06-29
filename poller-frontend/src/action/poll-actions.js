@@ -17,7 +17,6 @@ const superagent = require('superagent');
           }
         })
         .catch(err => {
-          console.log('this is the error', err)
           return err
         })
   }

@@ -14,9 +14,7 @@ import Typography from '@material-ui/core/Typography';
 
 
 class NoPolls extends React.Component {
-  
   render(){
-    console.log('yes-no pie charts', this.props, this.state)
       return(
         <div className="no-data">
             <Typography variant="headline" component="h3" style={{width:'100%' , margin:'auto', textAlign:'center' }}>You don't have any polls...</Typography>

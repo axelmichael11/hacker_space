@@ -15,26 +15,22 @@ poll.userPollValidate = function(incomingPoll){
     if (!poll.pollQuestion || poll.pollQuestion.length < 10 || typeof poll.pollQuestion !== 'string'){
         throw new Error('invalid question type or length, or nonexistant property');
     }
-    console.log('successfully validated pool,', poll)
     return poll
 }
 
 
 poll.deletePollValidate = function(incomingPoll){
-  console.log('this is the poll', incomingPoll)
   let {created_at} = incomingPoll;
   
   let poll = Object.assign({},{created_at});
   if (!poll.created_at || typeof poll.created_at !== 'string'){
     throw new Error('invalid incomingPoll type or length, or nonexistant property');
   }
-  console.log('this is the formated poll!', poll.created_at)
   return poll;
 }
 
 poll.formatPollDeleteSend = function(queryResult){
   let {created_at} = queryResult;
-  console.log('this is the typeof!', typeof created_at)
   let deletedPoll = Object.assign({},{created_at});
   if (!deletedPoll.created_at || typeof deletedPoll.created_at !== 'string'){
     throw new Error('invalid poll type or length, or nonexistant property');
@@ -45,7 +41,6 @@ poll.formatPollDeleteSend = function(queryResult){
 
 
 poll.formatPollSend = function(queryResult){
-  console.log('ROWS', queryResult)
   let {question, subject, created_at} = queryResult;
   let returnedpoll = Object.assign({},{question, subject, created_at});
   return returnedpoll
@@ -58,7 +53,7 @@ poll.getInfo = function(token){
         .then((response)=>{
           return response.body
         })
-        .catch(err=> console.log('error',err))
+        .catch(err=> console.log(err))
 }
 
 
@@ -72,15 +67,13 @@ poll.sendId = function(sub, token, rows){
     .then(res => {
         try {
           let parsed2 = JSON.parse(res.text)
-        //   expect(parsed2).toBeTruthy();
-        //   console.log('this is the response from the api, stored uid', parsed2,'THIS IS THE WHOLE RESPONSE',res);
           return parsed2
         } catch (err) {
-          console.log('THIS IS THE ERRORR FROM AUTH0 API METADATA!!!',err)
+          console.log(err)
         }
       })
       .catch(err => {
-        console.log('THIS IS THE ERRORR FROM AUTH0 API METADATA!!!',err)
+        console.log(err)
       })
     }
 

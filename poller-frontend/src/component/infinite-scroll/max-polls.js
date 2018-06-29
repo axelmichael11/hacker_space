@@ -14,20 +14,13 @@ import { withStyles } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/cancel'
 import Paper from '@material-ui/core/Paper';
 
-
-
-
-
-
 const styles = theme => ({
     container: theme.overrides.MuiPaper,
     button:theme.overrides.MuiButton
 })
 
 const MaxPolls = ({...props}) => {
-    console.log('props on max polls', props)
     return(
-
         <div style={{textAlign:'center'}}>
         <CancelIcon style={{fontSize:40}}/>
         <Typography variant="headline" >

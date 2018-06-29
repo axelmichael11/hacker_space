@@ -17,7 +17,6 @@ const report = {}
     .then(user=>{
       validation.validateUid(user)
       .then(user=>{
-        console.log('hitting query stage', voteData, user )
         query.reportPoll(res, user, voteData)
       })
       .catch(err=>console.log(err))
@@ -25,5 +24,4 @@ const report = {}
     .catch(err=>console.log(err))
   }
 
-
-  module.exports = report;
+module.exports = report;

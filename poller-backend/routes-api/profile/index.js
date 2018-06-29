@@ -36,10 +36,8 @@ const checkJwt = require('../../server/checkjwt')
         function(err, success) {
           if (err) res.json({response: err})
           if (success) {
-            console.log('successfully deleted from the database in database... HERE IS THE SUCCESS', success);
             res.json({data: 'USER DELETED FROM DB'})
           } else {
-            console.log(err);
             res.status(500).json({message:"unsuccessful in putting in data..."})
           }
         }

@@ -28,10 +28,6 @@ let plugins = [
 if (production)
   plugins = plugins.concat([new CleanPlugin(), new UglifyPlugin()])
 
-
-  
-console.log('this is the production!!!!', production)
-
 module.exports = {
   mode:'production',
   plugins,

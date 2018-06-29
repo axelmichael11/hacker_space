@@ -38,16 +38,13 @@ class ReportButton extends React.Component{
       };
 
       reportPoll(){
-          console.log('report POlL!!')
           this.setState({ reportLoading: true });
           this.props.reportPoll(this.props.poll)
           .then((res)=>{
-              console.log(res)
               this.setState({ reportLoading: false });
 
             })
           .catch((err)=>{
-              console.log(err)
               this.setState({ reportLoading: false });
 
             })
